@@ -257,3 +257,10 @@ export const contentHasPlaceholders: boolean = JSON.stringify({
   experience,
   contact,
 }).includes(TODO_COPY);
+
+/**
+ * Ship gate, independent of TODO_COPY. Flip to true only when Jarrod locks
+ * metrics/title AND the real resume.pdf is in public/. Robots stays
+ * `noindex, nofollow` until both this is true and no placeholders remain.
+ */
+export const siteIndexable = false;

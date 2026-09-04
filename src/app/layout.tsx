@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import { Fraunces } from "next/font/google";
-import { contact, contentHasPlaceholders, hero, site } from "@/content";
+import {
+  contact,
+  contentHasPlaceholders,
+  hero,
+  site,
+  siteIndexable,
+} from "@/content";
 import { hasText } from "@/lib/content";
 import "./globals.css";
 
@@ -16,10 +22,11 @@ export const metadata: Metadata = {
   metadataBase: siteUrl,
   title: site.title,
   description: site.description,
-  // Stay out of search results until every TODO_COPY placeholder is replaced.
-  robots: contentHasPlaceholders
-    ? { index: false, follow: false }
-    : { index: true, follow: true },
+  // Indexable only when the ship gate is open AND no TODO_COPY remains.
+  robots:
+    siteIndexable && !contentHasPlaceholders
+      ? { index: true, follow: true }
+      : { index: false, follow: false },
   alternates: {
     canonical: "./",
   },

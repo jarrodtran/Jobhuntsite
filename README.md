@@ -44,7 +44,7 @@ All copy lives in [`src/content.ts`](src/content.ts). Components only read from 
 | `contact.location`, `github`, `availability`, `clearance` | Optional; omitted by default |
 | `site.nav` | In-page section links in the header |
 
-Placeholders are written as `TODO_COPY: hint` via the `todo()` helper. Blank or omitted optional fields (for example `location`) are never rendered — the UI drops them rather than showing an empty label. While any `TODO_COPY` remains anywhere in the content, the site is served with `robots: noindex`; once the last placeholder is replaced, indexing turns on automatically.
+Placeholders are written as `TODO_COPY: hint` via the `todo()` helper. Blank or omitted optional fields (for example `location`) are never rendered — the UI drops them rather than showing an empty label. Indexing is gated twice: the site is served with `robots: noindex, nofollow` while any `TODO_COPY` remains anywhere in the content, and also while `siteIndexable` in `src/content.ts` is `false`. Flip `siteIndexable` to `true` only when the metrics and title are locked and the real `public/resume.pdf` is in place.
 
 Swap [`public/resume.pdf`](public/resume.pdf) with the current resume. Replace [`public/og.png`](public/og.png) when the copy is real.
 
@@ -72,6 +72,6 @@ Deferred until real copy exists:
 
 - Analytics (Plausible or Umami), added the day content ships
 - HTML `/resume` print route
-- Indexing (`robots` flips from noindex automatically once no `TODO_COPY` remains)
+- Indexing (`robots` stays noindex until `siteIndexable` is flipped to `true` and no `TODO_COPY` remains)
 - Case studies, writing, or per-audience (`?for=`) highlight ordering
 - A “coming soon” work grid — never ship an empty one
