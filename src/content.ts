@@ -9,16 +9,15 @@
  * (see `contentHasPlaceholders`). Optional fields such as `location` may be
  * omitted or left blank; the UI hides blank fields rather than rendering
  * empty labels.
+ *
+ * Copy v1 for PR #2 — locked application metrics only.
+ * Pending Jarrod lock: hero.title + proofChips numbers.
  */
 
 export const TODO_COPY = "TODO_COPY";
 
 /** Mark a string as placeholder copy. `hint` tells Copy what belongs here. */
-const todo = (hint: string): string => `${TODO_COPY}: ${hint}`;
-
-/* ------------------------------------------------------------------ */
-/* Types                                                               */
-/* ------------------------------------------------------------------ */
+export const todo = (hint: string): string => `${TODO_COPY}: ${hint}`;
 
 export type Audience =
   | "big-tech"
@@ -29,51 +28,36 @@ export type Audience =
 
 export type RoleId = "ai-enablement" | "bizops" | "cos" | "vc";
 
-/** Short, scannable claim rendered as a chip under the hero voice line. */
 export type ProofChip = {
-  /** The chip text, e.g. a scope or result. Keep it under ~6 words. */
   label: string;
-  /** Optional leading figure. Leave out when there is no defensible number. */
   metric?: string;
 };
 
 export type Hero = {
   name: string;
-  /** Headline title shown directly under the name. */
   title: string;
-  /** First-person line that says what you do and for whom. */
   voiceLine: string;
   proofChips: ProofChip[];
-  /** Pedigree row. Hidden when empty. */
   employers: string[];
 };
 
 export type Role = {
   id: RoleId;
-  /** Section heading. */
   label: string;
-  /** Exactly one role should be primary; it leads the section order. */
   primary: boolean;
-  /** One or two sentences on why this role is a fit. */
   summary: string;
-  /** Outcome-led evidence bullets that support the fit. */
   evidence: string[];
-  /** Stored for future per-audience ordering; not rendered today. */
   audiences: Audience[];
-  /** Experience entries that back this role, by `ExperienceEntry.id`. */
   experienceIds?: string[];
 };
 
 export type ExperienceEntry = {
-  /** Stable id used by `Role.experienceIds` and anchor links. */
   id: string;
   company: string;
   title: string;
   start: string;
   end: string;
-  /** Optional. Blank or omitted values are never rendered. */
   location?: string;
-  /** Reporting line, team size, budget or mandate. Hidden when blank. */
   scopeLine?: string;
   bullets: string[];
   url?: string;
@@ -82,10 +66,8 @@ export type ExperienceEntry = {
 export type Contact = {
   email: string;
   linkedin: string;
-  /** Path under `public/`. Prefixed with basePath by `asset()`. */
   resumePdf: string;
   github?: string;
-  /** Optional. Blank or omitted values are never rendered. */
   location?: string;
   availability?: string;
   clearance?: string;
@@ -93,7 +75,6 @@ export type Contact = {
 
 export type NavLink = {
   label: string;
-  /** In-page anchor, e.g. `#roles`. */
   href: `#${string}`;
 };
 
@@ -105,25 +86,16 @@ export type Site = {
   nav: NavLink[];
 };
 
-/* ------------------------------------------------------------------ */
-/* Content                                                             */
-/* ------------------------------------------------------------------ */
-
 export const hero: Hero = {
   name: "Jarrod Tran",
-  title: "AI Strategy and Operations Leader",
-  voiceLine:
-    "I turn AI from a pilot into operating cadence for executive teams.",
+  title: "Manager, AI & Factory Strategy",
+  voiceLine: "I turn ambiguous mandates into operating systems that move.",
   proofChips: [
-    { label: todo("proof chip 1 — scope or result, under 6 words") },
-    { label: todo("proof chip 2 — scope or result, under 6 words") },
-    { label: todo("proof chip 3 — scope or result, under 6 words") },
+    { metric: "10k+", label: "Energy Manufacturing AI-native" },
+    { metric: "$260M", label: "annualized cost-down" },
+    { metric: "$2B→$10B", label: "Apple India revenue" },
   ],
-  employers: [
-    todo("employer 1"),
-    todo("employer 2"),
-    todo("employer 3"),
-  ],
+  employers: ["Tesla", "Waymo", "Apple", "Amazon"],
 };
 
 export const roles: Role[] = [
@@ -131,76 +103,129 @@ export const roles: Role[] = [
     id: "ai-enablement",
     label: "AI Enablement Strategy and Ops",
     primary: true,
-    summary: todo("one or two sentences on why this is the primary target"),
+    summary:
+      "I make large manufacturing orgs AI-native: as-is to to-be, ship, then hand off to a sustaining team. Enablement plus custom buildouts, not a pilot graveyard.",
     evidence: [
-      todo("outcome-led evidence bullet for AI enablement"),
-      todo("second evidence bullet for AI enablement"),
+      "AI enablement across Tesla Energy Manufacturing for 10,000 employees, with successor hand-off.",
+      "FDE team for custom AI buildouts: 20+ tools, 1,000+ active users, ~$1.6M productivity.",
     ],
     audiences: ["ai-startup", "big-tech", "defense", "robotics"],
-    experienceIds: ["exp-1"],
+    experienceIds: ["tesla-ai"],
   },
   {
     id: "bizops",
     label: "Business Operations",
     primary: false,
-    summary: todo("one or two sentences on business operations fit"),
-    evidence: [todo("outcome-led evidence bullet for bizops")],
+    summary:
+      "I turn capacity, cost, and launch choices into one executable operating cadence so leadership can move without ad-hoc reporting.",
+    evidence: [
+      "Sequenced a $23M / 50+ initiative portfolio: $260M annualized cost-down, $156M incremental annual profit; Megapack scale 3.2×.",
+      "Built Waymo engineering-ops cadence: annual planning, OKRs, resource plans, and decision milestones.",
+    ],
     audiences: ["big-tech", "ai-startup"],
-    experienceIds: ["exp-1", "exp-2"],
+    experienceIds: ["tesla-ai", "waymo", "apple-india"],
   },
   {
     id: "cos",
     label: "Chief of Staff",
     primary: false,
-    summary: todo("one or two sentences on chief-of-staff fit"),
-    evidence: [todo("outcome-led evidence bullet for chief of staff")],
+    summary:
+      "I scale and launch hard programs under ambiguity, then install the hand-off so the work sticks with a sustaining owner.",
+    evidence: [
+      "Advance 4680 / Project Roadrunner from cell pilot to production-ready platform with stage gates and cross-functional launch ownership.",
+      "Translate org priorities into an operating system across hardware, software, fleet, product, and legal at Waymo.",
+    ],
     audiences: ["ai-startup", "defense", "robotics"],
-    experienceIds: ["exp-2"],
+    experienceIds: ["tesla-4680", "waymo", "tesla-ai"],
   },
   {
     id: "vc",
     label: "VC Platform",
     primary: false,
-    summary: todo("one or two sentences on venture platform / ops fit"),
-    evidence: [todo("outcome-led evidence bullet for VC platform")],
+    summary:
+      "I bring operator systems for portfolio companies: ground truth, clear decisions, and follow-through on launches and scale.",
+    evidence: [
+      "Zero-to-one iPhone India launch system: revenue $2B→$10B, units 4.3M→16.9M, exports 6 to 40+ countries.",
+      "Capacity economics and AI adoption on one roadmap for Energy Manufacturing.",
+    ],
     audiences: ["venture"],
+    experienceIds: ["apple-india", "tesla-ai", "waymo"],
   },
 ];
 
 export const experience: ExperienceEntry[] = [
   {
-    id: "exp-1",
-    company: todo("most recent company"),
-    title: todo("title held"),
-    start: todo("start year"),
+    id: "tesla-ai",
+    company: "Tesla",
+    title: "Manager, AI & Factory Strategy",
+    start: "2023",
     end: "Present",
-    // location intentionally omitted until Copy confirms it should show.
-    scopeLine: todo("reporting line; team size; budget or mandate"),
+    scopeLine:
+      "Energy Manufacturing — AI enablement for 10k+ employees; global planning; FDE for custom buildouts",
     bullets: [
-      todo("outcome-led bullet first (result, then how)"),
-      todo("second bullet, still outcome-first"),
+      "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees): as-is to to-be to ship to hand-off to a sustaining team.",
+      "Own strategy on what we build, where we build it, and when we launch, plus regulatory and cost mitigation.",
+      "Stand up an FDE team for custom AI buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity).",
+      "Sequence a $23M / 50+ initiative portfolio: $260M annualized cost-down, $156M incremental annual profit; Megapack scale 3.2×.",
+    ],
+    url: "https://www.tesla.com/megapack",
+  },
+  {
+    id: "waymo",
+    company: "Waymo",
+    title: "Strategy & Operations Manager",
+    start: "2022",
+    end: "2023",
+    scopeLine:
+      "Engineering operations — annual planning, OKRs, resource plans, and leadership cadence",
+    bullets: [
+      "Translate org priorities into an executable operating system across hardware, software, fleet, product, and legal.",
+      "Build annual planning, OKRs, resource plans, business reviews, and decision milestones so bottlenecks surface without ad-hoc reporting.",
     ],
   },
   {
-    id: "exp-2",
-    company: todo("prior company"),
-    title: todo("title held"),
-    start: todo("start year"),
-    end: todo("end year"),
-    location: "",
-    scopeLine: todo("reporting line; team size; budget or mandate"),
+    id: "apple-india",
+    company: "Apple",
+    title: "Strategic Operations Program Manager",
+    start: "2021",
+    end: "2022",
+    scopeLine:
+      "iPhone India launch — site, supplier, line, regulation, and demand readiness",
     bullets: [
-      todo("outcome-led bullet first"),
-      todo("second bullet"),
+      "Drive the zero-to-one operating system for iPhone manufacturing in India under exacting quality, regulatory, and timing requirements.",
+      "Ship the ramp: revenue $2B→$10B, units 4.3M→16.9M, exports expanded from 6 to 40+ countries.",
+    ],
+  },
+  {
+    id: "tesla-4680",
+    company: "Tesla",
+    title: "Program Manager, Special Projects",
+    start: "2018",
+    end: "2021",
+    scopeLine:
+      "4680 / Project Roadrunner — stage gates and launch readiness for an emerging cell platform",
+    bullets: [
+      "Advance Project Roadrunner from early battery-cell pilot toward a production-ready platform.",
+      "Install stage gates, readiness reviews, supplier coordination, and cross-functional launch ownership across engineering, production, and supply chain.",
+    ],
+  },
+  {
+    id: "amazon",
+    company: "Amazon",
+    title: "Operations Area Manager",
+    start: "2017",
+    end: "2018",
+    scopeLine: "High-volume fulfillment — frontline ops leadership",
+    bullets: [
+      "Led a team of 100+ associates in a high-volume fulfillment center.",
     ],
   },
 ];
 
 export const contact: Contact = {
-  email: "TODO_COPY@example.com",
-  linkedin: "https://www.linkedin.com/in/TODO_COPY",
+  email: "jarrodtran@outlook.com",
+  linkedin: "https://www.linkedin.com/in/jarrodtran/",
   resumePdf: "/resume.pdf",
-  // location, github, availability and clearance stay omitted until useful.
 };
 
 export const site: Site = {
@@ -215,10 +240,6 @@ export const site: Site = {
   ],
 };
 
-/* ------------------------------------------------------------------ */
-/* Derived values                                                      */
-/* ------------------------------------------------------------------ */
-
 export const primaryRole: Role = roles.find((role) => role.primary) ?? roles[0];
 
 export const secondaryRoles: Role[] = roles.filter(
@@ -230,7 +251,6 @@ export const targetingLine: string =
     ? `Also a fit for: ${secondaryRoles.map((role) => role.label).join(", ")}.`
     : "";
 
-/** True while any string anywhere in the content still carries a placeholder. */
 export const contentHasPlaceholders: boolean = JSON.stringify({
   hero,
   roles,
