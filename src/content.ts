@@ -1,3 +1,24 @@
+/**
+ * Single source of truth for every word on the site.
+ *
+ * Copy owns this file. Components only read from it, so prose changes should
+ * never require touching `src/components`.
+ *
+ * Placeholders are prefixed with `TODO_COPY:` and produced by the `todo()`
+ * helper below. While any placeholder remains, the site stays `noindex`
+ * (see `contentHasPlaceholders`). Optional fields such as `location` may be
+ * omitted or left blank; the UI hides blank fields rather than rendering
+ * empty labels.
+ *
+ * Copy v1 for PR #2 — locked application metrics only.
+ * Pending Jarrod lock: hero.title + proofChips numbers.
+ */
+
+export const TODO_COPY = "TODO_COPY";
+
+/** Mark a string as placeholder copy. `hint` tells Copy what belongs here. */
+export const todo = (hint: string): string => `${TODO_COPY}: ${hint}`;
+
 export type Audience =
   | "big-tech"
   | "ai-startup"
@@ -5,49 +26,56 @@ export type Audience =
   | "robotics"
   | "venture";
 
-export type Profile = {
+export type RoleId = "ai-enablement" | "bizops" | "cos" | "vc";
+
+export type ProofChip = {
+  label: string;
+  metric?: string;
+};
+
+export type Hero = {
   name: string;
-  primaryTitle: string;
-  positioning: string;
-  location: string;
-  email: string;
-  linkedin: string;
-  resumePdf: string;
+  title: string;
+  voiceLine: string;
+  proofChips: ProofChip[];
   employers: string[];
-  github?: string;
-  availability?: string;
-  clearance?: string;
 };
 
 export type Role = {
-  id: string;
+  id: RoleId;
   label: string;
   primary: boolean;
-  fit: string;
+  summary: string;
+  evidence: string[];
   audiences: Audience[];
+  experienceIds?: string[];
 };
 
-export type ProofPoint = {
-  metric: string;
-  label: string;
-};
-
-export type Highlight = {
-  outcome: string;
-  scope: string;
-  how: string;
-  audiences: Audience[];
-};
-
-export type Experience = {
+export type ExperienceEntry = {
+  id: string;
   company: string;
   title: string;
   start: string;
   end: string;
-  location: string;
-  scopeLine: string;
+  location?: string;
+  scopeLine?: string;
   bullets: string[];
   url?: string;
+};
+
+export type Contact = {
+  email: string;
+  linkedin: string;
+  resumePdf: string;
+  github?: string;
+  location?: string;
+  availability?: string;
+  clearance?: string;
+};
+
+export type NavLink = {
+  label: string;
+  href: `#${string}`;
 };
 
 export type Site = {
@@ -55,25 +83,19 @@ export type Site = {
   description: string;
   origin: string;
   basePath: string;
+  nav: NavLink[];
 };
 
-// Edit this file to replace TODOs with real copy. Optional fields (github,
-// availability, clearance) stay omitted unless they help the hunt.
-
-export const profile: Profile = {
+export const hero: Hero = {
   name: "Jarrod Tran",
-  primaryTitle: "AI Strategy and Operations Leader",
-  positioning:
-    "I turn AI from a pilot into operating cadence for executive teams.",
-  location: "TODO: City, ST",
-  email: "todo@example.com",
-  linkedin: "https://www.linkedin.com/in/todo",
-  resumePdf: "/resume.pdf",
-  employers: [
-    "[TODO] Company One",
-    "[TODO] Company Two",
-    "[TODO] Company Three",
+  title: "Manager, AI & Factory Strategy",
+  voiceLine: "I turn ambiguous mandates into operating systems that move.",
+  proofChips: [
+    { metric: "10k+", label: "Energy Manufacturing AI-native" },
+    { metric: "$260M", label: "annualized cost-down" },
+    { metric: "$2B→$10B", label: "Apple India revenue" },
   ],
+  employers: ["Tesla", "Waymo", "Apple", "Amazon"],
 };
 
 export const roles: Role[] = [
@@ -81,105 +103,164 @@ export const roles: Role[] = [
     id: "ai-enablement",
     label: "AI Enablement Strategy and Ops",
     primary: true,
-    fit: "TODO: one sentence on why this is the primary slot.",
+    summary:
+      "I make large manufacturing orgs AI-native: as-is to to-be, ship, then hand off to a sustaining team. Enablement plus custom buildouts, not a pilot graveyard.",
+    evidence: [
+      "AI enablement across Tesla Energy Manufacturing for 10,000 employees, with successor hand-off.",
+      "FDE team for custom AI buildouts: 20+ tools, 1,000+ active users, ~$1.6M productivity.",
+    ],
     audiences: ["ai-startup", "big-tech", "defense", "robotics"],
+    experienceIds: ["tesla-ai"],
   },
   {
     id: "bizops",
     label: "Business Operations",
     primary: false,
-    fit: "TODO: one sentence on bizops fit.",
+    summary:
+      "I turn capacity, cost, and launch choices into one executable operating cadence so leadership can move without ad-hoc reporting.",
+    evidence: [
+      "Sequenced a $23M / 50+ initiative portfolio: $260M annualized cost-down, $156M incremental annual profit; Megapack scale 3.2×.",
+      "Built Waymo engineering-ops cadence: annual planning, OKRs, resource plans, and decision milestones.",
+    ],
     audiences: ["big-tech", "ai-startup"],
+    experienceIds: ["tesla-ai", "waymo", "apple-india"],
   },
   {
     id: "cos",
     label: "Chief of Staff",
     primary: false,
-    fit: "TODO: one sentence on chief-of-staff fit.",
+    summary:
+      "I scale and launch hard programs under ambiguity, then install the hand-off so the work sticks with a sustaining owner.",
+    evidence: [
+      "Advance 4680 / Project Roadrunner from cell pilot to production-ready platform with stage gates and cross-functional launch ownership.",
+      "Translate org priorities into an operating system across hardware, software, fleet, product, and legal at Waymo.",
+    ],
     audiences: ["ai-startup", "defense", "robotics"],
+    experienceIds: ["tesla-4680", "waymo", "tesla-ai"],
   },
   {
     id: "vc",
     label: "VC Platform",
     primary: false,
-    fit: "TODO: one sentence on venture platform/ops fit.",
+    summary:
+      "I bring operator systems for portfolio companies: ground truth, clear decisions, and follow-through on launches and scale.",
+    evidence: [
+      "Zero-to-one iPhone India launch system: revenue $2B→$10B, units 4.3M→16.9M, exports 6 to 40+ countries.",
+      "Capacity economics and AI adoption on one roadmap for Energy Manufacturing.",
+    ],
     audiences: ["venture"],
+    experienceIds: ["apple-india", "tesla-ai", "waymo"],
   },
 ];
 
-export const targetingLine = `Also a fit for: ${roles
-  .filter((role) => !role.primary)
-  .map((role) => role.label)
-  .join(", ")}.`;
-
-export const proof: ProofPoint[] = [
+export const experience: ExperienceEntry[] = [
   {
-    metric: "XX%",
-    label:
-      "TODO: scope and result (e.g. 400 sellers adopted; turnaround down 35%)",
-  },
-  {
-    metric: "$X.XM",
-    label: "TODO: budget, P&L, or savings owned, plus the business result",
-  },
-  {
-    metric: "N",
-    label: "TODO: org, market, or program scale plus the outcome",
-  },
-];
-
-export const highlights: Highlight[] = [
-  {
-    outcome:
-      "TODO: outcome with a number (e.g. Cut proposal cycle time 35% for 400 sellers).",
-    scope: "TODO: reported to [role]; N people; $X budget; timeframe.",
-    how: "TODO: one line on how — the operating move, not the task list.",
-    audiences: ["ai-startup", "big-tech"],
-  },
-  {
-    outcome: "TODO: second outcome with a number.",
-    scope: "TODO: reporting line, org size, budget, timeframe.",
-    how: "TODO: one line on how.",
-    audiences: ["defense", "robotics"],
-  },
-  {
-    outcome: "TODO: third outcome with a number.",
-    scope: "TODO: reporting line, org size, budget, timeframe.",
-    how: "TODO: one line on how.",
-    audiences: ["venture", "ai-startup"],
-  },
-];
-
-export const experience: Experience[] = [
-  {
-    company: "[TODO] Most recent company",
-    title: "[TODO] Title",
+    id: "tesla-ai",
+    company: "Tesla",
+    title: "Manager, AI & Factory Strategy",
     start: "2023",
     end: "Present",
-    location: "[TODO] City",
-    scopeLine: "TODO: reported to CEO; 4 reports; $12M plan",
+    scopeLine:
+      "Energy Manufacturing — AI enablement for 10k+ employees; global planning; FDE for custom buildouts",
     bullets: [
-      "TODO: outcome-led bullet first (number + result).",
-      "TODO: second bullet, still outcome-first.",
+      "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees): as-is to to-be to ship to hand-off to a sustaining team.",
+      "Own strategy on what we build, where we build it, and when we launch, plus regulatory and cost mitigation.",
+      "Stand up an FDE team for custom AI buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity).",
+      "Sequence a $23M / 50+ initiative portfolio: $260M annualized cost-down, $156M incremental annual profit; Megapack scale 3.2×.",
+    ],
+    url: "https://www.tesla.com/megapack",
+  },
+  {
+    id: "waymo",
+    company: "Waymo",
+    title: "Strategy & Operations Manager",
+    start: "2022",
+    end: "2023",
+    scopeLine:
+      "Engineering operations — annual planning, OKRs, resource plans, and leadership cadence",
+    bullets: [
+      "Translate org priorities into an executable operating system across hardware, software, fleet, product, and legal.",
+      "Build annual planning, OKRs, resource plans, business reviews, and decision milestones so bottlenecks surface without ad-hoc reporting.",
     ],
   },
   {
-    company: "[TODO] Prior company",
-    title: "[TODO] Title",
-    start: "2020",
-    end: "2023",
-    location: "[TODO] City",
-    scopeLine: "TODO: reporting line; team size; budget or mandate",
+    id: "apple-india",
+    company: "Apple",
+    title: "Strategic Operations Program Manager",
+    start: "2021",
+    end: "2022",
+    scopeLine:
+      "iPhone India launch — site, supplier, line, regulation, and demand readiness",
     bullets: [
-      "TODO: outcome-led bullet first.",
-      "TODO: second bullet.",
+      "Drive the zero-to-one operating system for iPhone manufacturing in India under exacting quality, regulatory, and timing requirements.",
+      "Ship the ramp: revenue $2B→$10B, units 4.3M→16.9M, exports expanded from 6 to 40+ countries.",
+    ],
+  },
+  {
+    id: "tesla-4680",
+    company: "Tesla",
+    title: "Program Manager, Special Projects",
+    start: "2018",
+    end: "2021",
+    scopeLine:
+      "4680 / Project Roadrunner — stage gates and launch readiness for an emerging cell platform",
+    bullets: [
+      "Advance Project Roadrunner from early battery-cell pilot toward a production-ready platform.",
+      "Install stage gates, readiness reviews, supplier coordination, and cross-functional launch ownership across engineering, production, and supply chain.",
+    ],
+  },
+  {
+    id: "amazon",
+    company: "Amazon",
+    title: "Operations Area Manager",
+    start: "2017",
+    end: "2018",
+    scopeLine: "High-volume fulfillment — frontline ops leadership",
+    bullets: [
+      "Led a team of 100+ associates in a high-volume fulfillment center.",
     ],
   },
 ];
 
+export const contact: Contact = {
+  email: "jarrodtran@outlook.com",
+  linkedin: "https://www.linkedin.com/in/jarrodtran/",
+  resumePdf: "/resume.pdf",
+};
+
 export const site: Site = {
-  title: `${profile.name} — ${profile.primaryTitle}`,
-  description: profile.positioning,
+  title: `${hero.name} — ${hero.title}`,
+  description: hero.voiceLine,
   origin: "https://jarrodtran.github.io",
   basePath: process.env.NEXT_PUBLIC_BASE_PATH ?? "",
+  nav: [
+    { label: "Roles", href: "#roles" },
+    { label: "Experience", href: "#experience" },
+    { label: "Contact", href: "#contact" },
+  ],
 };
+
+export const primaryRole: Role = roles.find((role) => role.primary) ?? roles[0];
+
+export const secondaryRoles: Role[] = roles.filter(
+  (role) => role.id !== primaryRole.id,
+);
+
+export const targetingLine: string =
+  secondaryRoles.length > 0
+    ? `Also a fit for: ${secondaryRoles.map((role) => role.label).join(", ")}.`
+    : "";
+
+export const contentHasPlaceholders: boolean = JSON.stringify({
+  hero,
+  roles,
+  experience,
+  contact,
+}).includes(TODO_COPY);
+
+/**
+ * Ship gate, independent of TODO_COPY. Flip to true only when Jarrod locks
+ * metrics/title AND the real resume.pdf is in public/. Robots stays
+ * `noindex, nofollow` until both this is true and no placeholders remain.
+ */
+export const siteIndexable = false;
