@@ -52,10 +52,7 @@ When content is real, flip `robots` in [`src/app/layout.tsx`](src/app/layout.tsx
 
 The workflow in [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) builds with `NEXT_PUBLIC_BASE_PATH=/Jobhuntsite` and deploys `out/` on pushes to `main`. Pull requests lint and build only.
 
-One-time repo settings:
-
-1. **Pages source** → Settings → Pages → Source: **GitHub Actions**.
-2. **Visibility.** This repo is private. GitHub Pages on a private repo needs GitHub Pro or Team. On the free plan, make the repo public before the first deploy. The published site is public either way.
+The workflow enables Pages (source: GitHub Actions) on first deploy. GitHub Pages on a **private** repo still needs GitHub Pro or Team; this repo is public, so the site can go live.
 
 Site URL after a successful deploy: `https://jarrodtran.github.io/Jobhuntsite/`.
 
