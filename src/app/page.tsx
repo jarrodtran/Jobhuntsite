@@ -1,9 +1,8 @@
 import { Contact } from "@/components/Contact";
 import { Experience } from "@/components/Experience";
 import { Hero } from "@/components/Hero";
-import { Highlights } from "@/components/Highlights";
 import { Nav } from "@/components/Nav";
-import { Proof } from "@/components/Proof";
+import { Roles } from "@/components/Roles";
 
 export default function Home() {
   return (
@@ -11,8 +10,7 @@ export default function Home() {
       <Nav />
       <main id="main">
         <Hero />
-        <Proof />
-        <Highlights />
+        <Roles />
         <Experience />
       </main>
       <Contact />
