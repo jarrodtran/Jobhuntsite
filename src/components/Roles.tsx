@@ -1,5 +1,5 @@
 import { primaryRole, secondaryRoles, type Role } from "@/content";
-import { experienceByIds, hasText } from "@/lib/content";
+import { experienceByIds, hasText, joinMeta } from "@/lib/content";
 
 export function Roles() {
   const ordered = [primaryRole, ...secondaryRoles];
@@ -29,6 +29,15 @@ function RoleSection({ role }: { role: Role }) {
   const evidence = role.evidence.filter(hasText);
   const related = experienceByIds(role.experienceIds);
   const headingId = `role-${role.id}`;
+  // Same employer can appear twice (e.g. two Tesla stints); add dates so the links read distinctly.
+  const companyCounts = related.reduce<Record<string, number>>((acc, entry) => {
+    acc[entry.company] = (acc[entry.company] ?? 0) + 1;
+    return acc;
+  }, {});
+  const linkLabel = (entry: (typeof related)[number]) =>
+    companyCounts[entry.company] > 1
+      ? `${entry.company} (${joinMeta([entry.start, entry.end], "–")})`
+      : entry.company;
 
   return (
     <li
@@ -69,7 +78,7 @@ function RoleSection({ role }: { role: Role }) {
                 href={`#${entry.id}`}
                 className="underline decoration-rule underline-offset-4 hover:decoration-foreground"
               >
-                {entry.company}
+                {linkLabel(entry)}
               </a>
             </span>
           ))}
