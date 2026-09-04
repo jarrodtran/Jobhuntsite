@@ -2,7 +2,7 @@
 
 Minimalist single-page site for the job hunt: AI enablement strategy and ops, business operations, chief of staff, and VC platform roles. Recruiters get title, employers, scoped proof, and a resume link in the first viewport. Hiring managers get highlights and experience on scroll.
 
-The shell is live-shaped but filled with `TODO` placeholders. Phase 1 is the layout and deploy path. Real copy is Phase 2.
+The shell is live-shaped but filled with `TODO_COPY` placeholders. Phase 1 is the layout and deploy path. Real copy is Phase 2.
 
 ## Local development
 
@@ -31,22 +31,22 @@ Then open `http://localhost:3000/Jobhuntsite/`.
 
 ## Editing content
 
-All copy lives in [`src/content.ts`](src/content.ts). You should not need to touch components to update the site.
+All copy lives in [`src/content.ts`](src/content.ts). Components only read from it, so you should not need to touch `src/components` to update the site.
 
-| Field | What it drives |
+| Export | What it drives |
 | --- | --- |
-| `profile.name`, `primaryTitle`, `positioning` | Hero identity |
-| `profile.employers` | Pedigree row under the targeting line |
-| `profile.email`, `linkedin`, `resumePdf`, `location` | Contact and CTAs |
-| `profile.github`, `availability`, `clearance` | Optional; omitted by default |
-| `roles` | Primary title plus the “Also a fit for” line |
-| `proof` | Three stats in the first viewport (metric + scope + result) |
-| `highlights` | Hiring-manager list. `audiences` is stored, not rendered |
-| `experience` | Timeline. Lead with an outcome-led bullet. `scopeLine` is reporting line, team, budget |
+| `hero.name`, `title`, `voiceLine` | Hero identity and first-person positioning line |
+| `hero.proofChips` | Chips under the voice line. `metric` is optional; leave it out when there is no defensible number |
+| `hero.employers` | Pedigree row. Hidden when empty |
+| `roles` | “Where I fit” sections, primary first, plus the “Also a fit for” line. `evidence` bullets and `experienceIds` back each role. `audiences` is stored, not rendered |
+| `experience` | Timeline. `id` is the anchor target used by `Role.experienceIds`. Lead with an outcome-led bullet. `location` and `scopeLine` are optional |
+| `contact.email`, `linkedin`, `resumePdf` | Contact footer and CTAs |
+| `contact.location`, `github`, `availability`, `clearance` | Optional; omitted by default |
+| `site.nav` | In-page section links in the header |
 
-Replace every `TODO` before making the repo public. Swap [`public/resume.pdf`](public/resume.pdf) with the current resume. Replace [`public/og.png`](public/og.png) when the copy is real.
+Placeholders are written as `TODO_COPY: hint` via the `todo()` helper. Blank or omitted optional fields (for example `location`) are never rendered — the UI drops them rather than showing an empty label. While any `TODO_COPY` remains anywhere in the content, the site is served with `robots: noindex`; once the last placeholder is replaced, indexing turns on automatically.
 
-When content is real, flip `robots` in [`src/app/layout.tsx`](src/app/layout.tsx) from `{ index: false, follow: false }` to `{ index: true }`.
+Swap [`public/resume.pdf`](public/resume.pdf) with the current resume. Replace [`public/og.png`](public/og.png) when the copy is real.
 
 ## Deploy (GitHub Pages)
 
@@ -72,6 +72,6 @@ Deferred until real copy exists:
 
 - Analytics (Plausible or Umami), added the day content ships
 - HTML `/resume` print route
-- Indexing (`robots` stays noindex while placeholders remain)
+- Indexing (`robots` flips from noindex automatically once no `TODO_COPY` remains)
 - Case studies, writing, or per-audience (`?for=`) highlight ordering
 - A “coming soon” work grid — never ship an empty one
