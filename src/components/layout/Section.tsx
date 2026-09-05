@@ -10,13 +10,13 @@ import type { SectionMeta } from "@/lib/schema";
  */
 export const sectionShellClass = "mx-auto w-full max-w-content px-5 md:px-8";
 
-/** Section label: text-xs uppercase, wide tracking, muted. */
+/** Section label: 11px, semibold, uppercase, 0.14em tracking, muted. */
 export const sectionLabelClass =
-  "text-xs font-medium uppercase tracking-widest text-muted";
+  "text-label font-semibold uppercase tracking-label text-muted";
 
 /**
  * Gap above the section. `section` is the default rhythm (`--spacing-section`);
- * `tight` (3rem) is for a section that directly follows the proof band.
+ * `tight` (3rem) is for a section that directly follows the proof strip.
  */
 type Spacing = "section" | "tight";
 

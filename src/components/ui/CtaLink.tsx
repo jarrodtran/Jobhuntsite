@@ -9,12 +9,15 @@ type Props = {
 };
 
 const baseClass =
-  "inline-flex h-11 items-center justify-center rounded-md px-5 text-sm font-semibold";
+  "inline-flex h-11 items-center justify-center rounded-md px-6 text-sm font-semibold";
 
-/** Solid = ink fill. Ghost = no border; band tint on hover. No motion. */
+/**
+ * Solid = ink fill, black on hover: the inevitable button. Ghost = no border,
+ * muted text that goes ink on hover with a 5% ink wash. No motion.
+ */
 const variantClass: Record<Variant, string> = {
   solid: "bg-ink text-bg hover:bg-accent",
-  ghost: "bg-transparent text-ink hover:bg-band",
+  ghost: "bg-transparent text-muted hover:bg-ink/5 hover:text-ink",
 };
 
 /**
