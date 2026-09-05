@@ -36,7 +36,7 @@ export function Hero() {
       </hgroup>
 
       {heroView.voiceLine ? (
-        <p data-slot="voice" className="mt-4 max-w-voice text-base">
+        <p data-slot="voice" className="mt-3 max-w-voice text-sm text-muted">
           {heroView.voiceLine}
         </p>
       ) : null}
