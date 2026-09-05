@@ -8,8 +8,8 @@ import { experienceView, proofBandView } from "@/lib/selectors";
  * Open = the locked bullets. `ExperienceRows` is the only client component on
  * the page; everything else is static.
  *
- * Sits 3rem under the proof band; falls back to the normal section gap when
- * Copy has emptied the band.
+ * Sits 3rem under the proof strip; falls back to the normal section gap when
+ * Copy has emptied `proofBand`.
  */
 export function Experience() {
   return (
