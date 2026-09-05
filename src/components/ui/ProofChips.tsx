@@ -26,12 +26,12 @@ export function ProofChips({ chips, label, className }: Props) {
       {chips.map((chip) => (
         <li
           key={`${chip.metric ?? ""}${chip.label}`}
-          className="flex min-w-0 flex-col gap-y-0.5 rounded-md border border-hairline px-3 py-2 hover:border-ink"
+          className="flex min-w-0 flex-col gap-y-0.5 rounded-md border border-hairline px-4 py-3 hover:border-ink"
         >
           {chip.metric ? (
             <span
               data-slot="metric"
-              className="text-sm font-semibold tabular-nums leading-tight text-ink"
+              className="text-xl font-semibold tabular-nums leading-tight text-ink"
             >
               {chip.metric}
             </span>
