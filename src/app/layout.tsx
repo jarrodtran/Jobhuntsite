@@ -1,13 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces } from "next/font/google";
-import {
-  contact,
-  contentHasPlaceholders,
-  hero,
-  site,
-  siteIndexable,
-} from "@/content";
-import { hasText } from "@/lib/content";
+import { seoView } from "@/lib/selectors";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -16,60 +9,49 @@ const fraunces = Fraunces({
   variable: "--font-fraunces",
 });
 
-const siteUrl = new URL(`${site.origin}${site.basePath || ""}/`);
-
+/**
+ * All metadata is derived from content: <title> and OG title come from
+ * hero.name + hero.title, descriptions from hero.voiceLine. Image URLs are
+ * absolute and basePath-prefixed so they resolve under /Jobhuntsite.
+ * Indexing is gated by `siteIndexable` and the absence of TODO_COPY.
+ */
 export const metadata: Metadata = {
-  metadataBase: siteUrl,
-  title: site.title,
-  description: site.description,
-  // Indexable only when the ship gate is open AND no TODO_COPY remains.
-  robots:
-    siteIndexable && !contentHasPlaceholders
-      ? { index: true, follow: true }
-      : { index: false, follow: false },
+  metadataBase: seoView.siteUrl,
+  title: seoView.title,
+  description: seoView.description,
+  robots: seoView.indexable
+    ? { index: true, follow: true }
+    : { index: false, follow: false },
   alternates: {
     canonical: "./",
   },
   openGraph: {
-    title: site.title,
-    description: site.description,
-    url: "./",
-    siteName: hero.name,
     type: "website",
+    title: seoView.title,
+    description: seoView.description,
+    url: "./",
+    siteName: seoView.siteName,
     images: [
       {
-        url: "/og.png",
-        width: 1200,
-        height: 630,
-        alt: `${hero.name} — ${hero.title}`,
+        url: seoView.ogImage.url,
+        width: seoView.ogImage.width,
+        height: seoView.ogImage.height,
+        alt: seoView.ogImage.alt,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: site.title,
-    description: site.description,
-    images: ["/og.png"],
+    title: seoView.title,
+    description: seoView.description,
+    images: [seoView.ogImage.url],
   },
   icons: {
     icon: [
-      { url: new URL("favicon.ico", siteUrl), sizes: "32x32" },
-      { url: new URL("favicon.svg", siteUrl), type: "image/svg+xml" },
+      { url: seoView.icons.ico, sizes: "32x32" },
+      { url: seoView.icons.svg, type: "image/svg+xml" },
     ],
   },
-};
-
-const personJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Person",
-  name: hero.name,
-  jobTitle: hero.title,
-  email: `mailto:${contact.email}`,
-  url: siteUrl.href,
-  sameAs: [
-    contact.linkedin,
-    ...(hasText(contact.github) ? [contact.github] : []),
-  ],
 };
 
 export default function RootLayout({
@@ -78,17 +60,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={fraunces.variable} id="top">
+    <html lang={seoView.lang} className={fraunces.variable} id="top">
       <body className="bg-background text-foreground antialiased">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:bg-background focus:px-3 focus:py-2"
         >
-          Skip to content
+          {seoView.skipToContent}
         </a>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(seoView.jsonLd) }}
         />
         {children}
       </body>
