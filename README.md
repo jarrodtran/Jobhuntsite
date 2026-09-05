@@ -1,8 +1,8 @@
 # Jarrod Tran — personal site
 
-Minimalist single-page site for the job hunt: AI enablement strategy and ops, business operations, chief of staff, and VC platform roles. Recruiters get title, employers, scoped proof, and a resume link in the first viewport. Hiring managers get highlights and experience on scroll.
+Minimalist single-page site for the job hunt: AI enablement strategy and ops, business operations, chief of staff, and VC platform roles. Recruiters get title, employers, scoped proof, and a resume link in the first viewport. Hiring managers get role fit and experience on scroll.
 
-The shell is live-shaped but filled with `TODO_COPY` placeholders. Phase 1 is the layout and deploy path. Real copy is Phase 2.
+Content is locked (Copy v1) and the site is served `noindex` until `siteIndexable` is flipped. Visual design is the next pass; the structure is built to take it without markup changes.
 
 ## Local development
 
@@ -29,24 +29,70 @@ pnpm dlx serve out
 
 Then open `http://localhost:3000/Jobhuntsite/`.
 
+## Architecture
+
+One page, one direction of data flow:
+
+```
+src/content.ts          Copy-owned data. Every word on the site.
+      │
+src/lib/schema.ts       Eng-owned types for that data.
+src/lib/selectors.ts    Render-ready views: blanks dropped, primary role first,
+      │                 experience ids resolved, basePath applied. Validates
+      │                 content at build time.
+src/lib/url.ts          The only module that reads NEXT_PUBLIC_BASE_PATH.
+      │
+src/components/         Dumb renderers. Import from @/lib/selectors only.
+  layout/               SiteHeader, Section (shared shell + <h2>)
+  sections/             Hero, Roles, Experience, Contact — the scan path
+  ui/                   CtaLink, ProofChips, EmployerRow, Bullets
+      │
+src/app/page.tsx        Composes sections in scan-path order.
+src/app/layout.tsx      <title>, OG, Twitter, JSON-LD, robots — all from seoView.
+src/app/globals.css     Design tokens (type scale, spacing, motion) + hooks.
+```
+
+**Recruiter scan path** (top to bottom): Hero (name → title → voice line → proof chips → employers → Resume/LinkedIn/Email) → Where I fit (primary role, then "Also a fit for") → Experience → Contact. `sectionOrder` in `selectors.ts` drives the header nav; `page.tsx` renders in the same order.
+
+**Ownership.** Copy edits `src/content.ts` and nothing else. Eng owns `src/lib`. FE Designer owns `src/app/globals.css` and the class strings inside `src/components`; the markup exposes stable hooks (`data-section`, `data-slot`, `data-role`, `data-primary`, `data-entry`, `data-cta`) so a visual overhaul does not need to change structure.
+
+**Content validation.** `selectors.ts` throws during `next build` if a role has no (or more than one) `primary`, an `experienceIds` entry points at an unknown `id`, or a required contact field is blank. A typo cannot ship.
+
 ## Editing content
 
-All copy lives in [`src/content.ts`](src/content.ts). Components only read from it, so you should not need to touch `src/components` to update the site.
+All copy lives in [`src/content.ts`](src/content.ts). Types are in [`src/lib/schema.ts`](src/lib/schema.ts). Components never import content directly, so prose, metric, and ordering changes should never require touching `src/components`.
 
 | Export | What it drives |
 | --- | --- |
-| `hero.name`, `title`, `voiceLine` | Hero identity and first-person positioning line |
+| `hero.name`, `title`, `voiceLine` | Hero identity and first-person positioning line. Also `<title>`, OG title/description, and JSON-LD `jobTitle` |
 | `hero.proofChips` | Chips under the voice line. `metric` is optional; leave it out when there is no defensible number |
 | `hero.employers` | Pedigree row. Hidden when empty |
-| `roles` | “Where I fit” sections, primary first, plus the “Also a fit for” line. `evidence` bullets and `experienceIds` back each role. `audiences` is stored, not rendered |
-| `experience` | Timeline. `id` is the anchor target used by `Role.experienceIds`. Lead with an outcome-led bullet. `location` and `scopeLine` are optional |
+| `roles` | "Where I fit". The one `primary: true` role renders first with a badge; the rest sit under "Also a fit for". `evidence` bullets and `experienceIds` back each role. `audiences` is stored, not rendered |
+| `experience` | Timeline. `id` is the anchor target used by `Role.experienceIds`. Lead with an outcome-led bullet. `location`, `scopeLine`, and `url` are optional |
 | `contact.email`, `linkedin`, `resumePdf` | Contact footer and CTAs |
 | `contact.location`, `github`, `availability`, `clearance` | Optional; omitted by default |
-| `site.nav` | In-page section links in the header |
+| `site.origin`, `lang`, `ogImage` | Canonical origin, `<html lang>`, and OG image path/dimensions |
+| `sections` | Heading, anchor id, and nav label per section |
+| `ui` | Every non-content string: CTA labels, badge text, a11y labels, date separator |
 
-Placeholders are written as `TODO_COPY: hint` via the `todo()` helper. Blank or omitted optional fields (for example `location`) are never rendered — the UI drops them rather than showing an empty label. Indexing is gated twice: the site is served with `robots: noindex, nofollow` while any `TODO_COPY` remains anywhere in the content, and also while `siteIndexable` in `src/content.ts` is `false`. Flip `siteIndexable` to `true` only when the metrics and title are locked and the real `public/resume.pdf` is in place.
+Placeholders are written as `TODO_COPY: hint` via the `todo()` helper. Blank or omitted optional fields (for example `location`) are never rendered — the selectors drop them before components see them. Indexing is gated twice: the site is served with `robots: noindex, nofollow` while any `TODO_COPY` remains anywhere in the content, and also while `siteIndexable` in `src/content.ts` is `false`. Flip `siteIndexable` to `true` only when the metrics and title are locked and the real `public/resume.pdf` is in place.
 
-Swap [`public/resume.pdf`](public/resume.pdf) with the current resume. Replace [`public/og.png`](public/og.png) when the copy is real.
+[`public/resume.pdf`](public/resume.pdf) is the site-aligned one-pager. Replace [`public/og.png`](public/og.png) when the visual design lands; the OG tags already read title and description from `hero`, so only the image file needs to change (keep 1200×630 or update `site.ogImage`).
+
+## Styling and extension points
+
+[`src/app/globals.css`](src/app/globals.css) is the visual-overhaul surface. Tokens are exposed as Tailwind utilities:
+
+| Token | Utility | Used for |
+| --- | --- | --- |
+| `--text-display`, `--text-display-lg` | `text-display`, `sm:text-display-lg` | Hero name |
+| `--text-h2`, `--text-h3` | `text-h2`, `text-h3` | Section and card headings |
+| `--text-body`, `--text-small`, `--text-meta` | body default, `text-small`, `text-meta` | Prose, bullets, meta lines |
+| `--container-content`, `--container-measure` | `max-w-content`, `max-w-measure` | Page column, prose measure |
+| `--spacing-gutter`, `--spacing-section`, `--spacing-block` | `px-gutter`, `mt-section`, `mt-block` | Horizontal gutter, vertical rhythm |
+| `--motion-duration`, `--motion-ease` | default transition, `ease-soft` | Hover/focus transitions; `prefers-reduced-motion` collapses them |
+
+The `link` utility styles inline text links. Markup hooks for targeted styling: `[data-section]`, `[data-component="site-header"]`, `[data-slot]`, `[data-role][data-primary]`, `[data-entry]`, `[data-cta]`.
 
 ## Deploy (GitHub Pages)
 
@@ -64,7 +110,7 @@ A custom domain (recommended for a job hunt) drops the `/Jobhuntsite` prefix:
 2. In the workflow, set `NEXT_PUBLIC_BASE_PATH` to empty (`NEXT_PUBLIC_BASE_PATH: ""` or remove the env var).
 3. Point DNS at GitHub Pages and set the custom domain in repo Settings → Pages.
 
-[`src/lib/asset.ts`](src/lib/asset.ts) prefixes raw asset URLs (`resume.pdf`, etc.) from `NEXT_PUBLIC_BASE_PATH`. Do not use it with `next/link`.
+[`src/lib/url.ts`](src/lib/url.ts) is the only module that reads `NEXT_PUBLIC_BASE_PATH`. `asset()` prefixes public-folder paths (`resume.pdf`, `og.png`) for raw `<a href>` and metadata; `siteUrl` is the canonical homepage URL. Do not use `asset()` with `next/link`.
 
 ## What this shell is not (Phase 2+)
 
