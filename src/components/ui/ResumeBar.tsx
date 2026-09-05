@@ -52,7 +52,9 @@ export function ResumeBar({ cta, watchId }: Props) {
         data-variant="bar"
         tabIndex={visible ? undefined : -1}
         className="flex h-12 items-center justify-center text-sm font-semibold text-bg"
-        {...(cta.external ? { rel: "noopener" } : {})}
+        {...(cta.external
+          ? { target: "_blank", rel: "noopener noreferrer" }
+          : {})}
         {...(cta.download ? { download: true, type: "application/pdf" } : {})}
       >
         {cta.label}

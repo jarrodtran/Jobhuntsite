@@ -13,8 +13,9 @@
  * Placeholders are prefixed with `TODO_COPY:` and produced by the `todo()`
  * helper below. While any placeholder remains, the site stays `noindex`.
  *
- * Locked (do not edit without Jarrod): hero.title, hero.voiceLine,
- * hero.proofChips, proofBand, roles, experience, contact.
+ * Reposition (CoS / BizOps primary): hero.seat, hero.edge, hero.voiceLine,
+ * hero.proofChips, roles primary flags, and experience bullet order may move
+ * with Jarrod's approval. Do not invent metrics — use TODO_COPY for gaps.
  */
 
 import type {
@@ -36,44 +37,43 @@ export const todo = (hint: string): string => `${TODO_COPY}: ${hint}`;
 
 export const hero: Hero = {
   name: "Jarrod Tran",
-  title: "Manager, AI & Factory Strategy",
-  voiceLine: "I turn ambiguous mandates into operating systems that move.",
+  seat: "Chief of Staff / Business Operations",
+  edge: "AI enablement as the operating edge",
+  voiceLine:
+    "I turn ambiguous executive mandates into operating cadence leadership can run.",
+  // Ops/portfolio first; AI org scale is the differentiator, not the lead.
   proofChips: [
     { metric: "$260M", label: "annualized cost-down" },
-    { metric: "10k+", label: "AI-native org" },
-    { metric: "$2B→$10B", label: "Apple India revenue" },
+    { metric: "$156M", label: "incremental annual profit" },
+    { metric: "10k+", label: "AI-native org enabled" },
   ],
   employers: ["Tesla", "Waymo", "Apple", "Amazon"],
 };
 
 /**
- * Secondary proof strip under the hero. Locked: the hero chips lead with
- * money; these three are the next tier and each already appears in the Tesla
- * experience bullets. Order is display order.
+ * Secondary proof strip under the hero. Empty on purpose: Tesla numbers now
+ * live once in the hero chips and again only inside Experience bullets.
+ * Re-populate only with non-overlapping proof.
  */
-export const proofBand: ProofBand = [
-  { metric: "$156M", label: "annual profit" },
-  { metric: "3.2×", label: "Megapack scale" },
-  { metric: "20+", label: "AI tools" },
-];
+export const proofBand: ProofBand = [];
 
 export const roles: Role[] = [
   {
-    id: "ai-enablement",
-    label: "AI Enablement",
+    id: "cos",
+    label: "Chief of Staff",
     primary: true,
     summary:
-      "I make large manufacturing orgs AI-native: as-is to to-be, ship, then hand off to a sustaining team. Enablement plus custom buildouts, not a pilot graveyard.",
+      "I scale and launch hard programs under ambiguity, then install the hand-off so the work sticks with a sustaining owner.",
     evidence: [
-      "AI enablement across Tesla Energy Manufacturing for 10,000 employees, with successor hand-off.",
-      "FDE team for custom AI buildouts: 20+ tools, 1,000+ active users, ~$1.6M productivity.",
+      "Translate org priorities into an operating system across hardware, software, fleet, product, and legal at Waymo.",
+      "Advance 4680 / Project Roadrunner from cell pilot to production-ready platform with stage gates and cross-functional launch ownership.",
     ],
-    audiences: ["ai-startup", "big-tech", "defense", "robotics"],
-    experienceIds: ["tesla-ai"],
+    audiences: ["ai-startup", "defense", "robotics", "big-tech"],
+    experienceIds: ["waymo", "tesla-4680", "tesla-ai"],
   },
   {
     id: "bizops",
-    label: "BizOps",
+    label: "Business Operations",
     primary: false,
     summary:
       "I turn capacity, cost, and launch choices into one executable operating cadence so leadership can move without ad-hoc reporting.",
@@ -85,27 +85,29 @@ export const roles: Role[] = [
     experienceIds: ["tesla-ai", "waymo", "apple-india"],
   },
   {
-    id: "cos",
-    label: "Chief of Staff",
+    id: "ai-enablement",
+    label: "AI Enablement",
     primary: false,
     summary:
-      "I scale and launch hard programs under ambiguity, then install the hand-off so the work sticks with a sustaining owner.",
+      "I make large manufacturing orgs AI-native: as-is to to-be, ship, then hand off to a sustaining team. Enablement plus custom buildouts, not a pilot graveyard.",
     evidence: [
-      "Advance 4680 / Project Roadrunner from cell pilot to production-ready platform with stage gates and cross-functional launch ownership.",
-      "Translate org priorities into an operating system across hardware, software, fleet, product, and legal at Waymo.",
+      "AI enablement across Tesla Energy Manufacturing for 10,000 employees, with successor hand-off.",
+      "FDE team for custom AI buildouts: 20+ tools, 1,000+ active users, ~$1.6M productivity.",
     ],
-    audiences: ["ai-startup", "defense", "robotics"],
-    experienceIds: ["tesla-4680", "waymo", "tesla-ai"],
+    audiences: ["ai-startup", "big-tech", "defense", "robotics"],
+    experienceIds: ["tesla-ai"],
   },
   {
     id: "vc",
     label: "VC Platform",
     primary: false,
+    // Hidden until Jarrod supplies non-Tesla platform / founder evidence.
+    hidden: true,
     summary:
       "I bring operator systems for portfolio companies: ground truth, clear decisions, and follow-through on launches and scale.",
     evidence: [
       "Zero-to-one iPhone India launch system: revenue $2B→$10B, units 4.3M→16.9M, exports 6 to 40+ countries.",
-      "Capacity economics and AI adoption on one roadmap for Energy Manufacturing.",
+      todo("VC Platform: add portfolio, founder, or platform proof beyond Apple launch ops"),
     ],
     audiences: ["venture"],
     experienceIds: ["apple-india", "tesla-ai", "waymo"],
@@ -122,10 +124,15 @@ export const experience: ExperienceEntry[] = [
     scopeLine:
       "Energy Manufacturing — AI enablement for 10k+ employees; global planning; FDE for custom buildouts",
     bullets: [
+      // Portfolio / cadence first for CoS-BizOps readers; AI enablement second.
       "Sequence a $23M / 50+ initiative portfolio: $260M annualized cost-down, $156M incremental annual profit; Megapack scale 3.2×.",
       "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees): as-is to to-be to ship to hand-off to a sustaining team.",
       "Stand up an FDE team for custom AI buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity).",
       "Own strategy on what we build, where we build it, and when we launch, plus regulatory and cost mitigation.",
+      // Ownership qualifier — do not invent; Jarrod fills.
+      todo(
+        "Tesla $260M / $156M / 3.2×: clarify personal vs team vs org ownership and realized vs annualized",
+      ),
     ],
     url: "https://www.tesla.com/megapack",
   },
@@ -140,6 +147,9 @@ export const experience: ExperienceEntry[] = [
     bullets: [
       "Translate org priorities into an executable operating system across hardware, software, fleet, product, and legal.",
       "Build annual planning, OKRs, resource plans, business reviews, and decision milestones so bottlenecks surface without ad-hoc reporting.",
+      todo(
+        "Waymo: add outcome metrics if available (decision latency, org size supported, exec audience)",
+      ),
     ],
   },
   {
@@ -153,6 +163,9 @@ export const experience: ExperienceEntry[] = [
     bullets: [
       "Drive the zero-to-one operating system for iPhone manufacturing in India under exacting quality, regulatory, and timing requirements.",
       "Ship the ramp: revenue $2B→$10B, units 4.3M→16.9M, exports expanded from 6 to 40+ countries.",
+      todo(
+        "Apple $2B→$10B: clarify personal vs program vs market ownership if challenged",
+      ),
     ],
   },
   {
@@ -166,6 +179,9 @@ export const experience: ExperienceEntry[] = [
     bullets: [
       "Advance Project Roadrunner from early battery-cell pilot toward a production-ready platform.",
       "Install stage gates, readiness reviews, supplier coordination, and cross-functional launch ownership across engineering, production, and supply chain.",
+      todo(
+        "4680 / Roadrunner: add yield, readiness %, or launch milestone if defensible",
+      ),
     ],
   },
   {
@@ -175,6 +191,7 @@ export const experience: ExperienceEntry[] = [
     start: "2017",
     end: "2018",
     scopeLine: "High-volume fulfillment — frontline ops leadership",
+    compact: true,
     bullets: [
       "Led a team of 100+ associates in a high-volume fulfillment center.",
     ],
@@ -185,6 +202,7 @@ export const contact: Contact = {
   email: "jarrodtran@outlook.com",
   linkedin: "https://www.linkedin.com/in/jarrodtran/",
   resumePdf: "/resume.pdf",
+  // todo("Confirm public email vs Outlook; add location / availability / clearance if targeting defense"),
 };
 
 export const site: Site = {
@@ -195,18 +213,18 @@ export const site: Site = {
 };
 
 /**
- * Recruiter scan path, top to bottom (FE Designer IA): Hero → Experience →
- * Fit → Footer. Object order here is render order and nav order. `navLabel`
- * is omitted for the hero (the header wordmark links to top).
+ * Recruiter scan path, top to bottom (FE Designer IA): Hero → Fit →
+ * Experience → Footer. Object order here is render order and nav order.
+ * `navLabel` is omitted for the hero (the header wordmark links to top).
  */
 export const sections: Record<SectionId, SectionMeta> = {
   hero: { id: "hero", heading: hero.name },
+  roles: { id: "roles", heading: "Where I fit", navLabel: "Fit" },
   experience: {
     id: "experience",
     heading: "Experience",
     navLabel: "Experience",
   },
-  roles: { id: "roles", heading: "Where I fit", navLabel: "Fit" },
   contact: { id: "contact", heading: "Contact", navLabel: "Contact" },
 };
 
@@ -225,6 +243,7 @@ export const ui: UiStrings = {
   },
   roles: {
     primaryBadge: "Primary target",
+    alsoLabel: "Also a fit for",
   },
   experience: {
     dateRangeSeparator: "–",
@@ -233,7 +252,8 @@ export const ui: UiStrings = {
 
 /**
  * Ship gate, independent of TODO_COPY. Flip to true only when Jarrod locks
- * metrics/title AND the real resume.pdf is in public/. Robots stays
- * `noindex, nofollow` until both this is true and no placeholders remain.
+ * seat + metrics + claim language AND the real resume.pdf is in public/.
+ * Robots stays `noindex, nofollow` until both this is true and no placeholders
+ * remain.
  */
 export const siteIndexable = false;

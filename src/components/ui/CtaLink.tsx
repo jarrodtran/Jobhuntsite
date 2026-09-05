@@ -36,7 +36,9 @@ export function CtaLink({ cta, variant, className, id }: Props) {
       className={[baseClass, variantClass[variant], className]
         .filter(Boolean)
         .join(" ")}
-      {...(cta.external ? { rel: "noopener" } : {})}
+      {...(cta.external
+        ? { target: "_blank", rel: "noopener noreferrer" }
+        : {})}
       {...(cta.download ? { download: true, type: "application/pdf" } : {})}
     >
       {cta.label}

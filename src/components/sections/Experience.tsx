@@ -3,13 +3,12 @@ import { ExperienceRows } from "@/components/sections/ExperienceRows";
 import { experienceView, proofBandView } from "@/lib/selectors";
 
 /**
- * Primary scan path. Reverse-chronological rows; each row is closed by default
- * except the current role. Closed = dates + title + company + scope line.
- * Open = the locked bullets. `ExperienceRows` is the only client component on
- * the page; everything else is static.
+ * Hiring-manager scan path after Fit. Reverse-chronological rows; current role
+ * open on first paint. Closed rows show an outcome preview; compact rows are
+ * pedigree-only. `ExperienceRows` is the only client component on the page.
  *
- * Sits 3rem under the proof strip; falls back to the normal section gap when
- * Copy has emptied `proofBand`.
+ * Uses tight spacing when a proof strip precedes it; otherwise the normal
+ * section gap (Fit → Experience).
  */
 export function Experience() {
   return (
