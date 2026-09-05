@@ -38,8 +38,8 @@ export const hero: Hero = {
   title: "Manager, AI & Factory Strategy",
   voiceLine: "I turn ambiguous mandates into operating systems that move.",
   proofChips: [
-    { metric: "10k+", label: "Energy Manufacturing AI-native" },
     { metric: "$260M", label: "annualized cost-down" },
+    { metric: "10k+", label: "Energy Manufacturing AI-native" },
     { metric: "$2B→$10B", label: "Apple India revenue" },
   ],
   employers: ["Tesla", "Waymo", "Apple", "Amazon"],
