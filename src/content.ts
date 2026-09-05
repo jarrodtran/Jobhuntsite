@@ -48,7 +48,7 @@ export const hero: Hero = {
 export const roles: Role[] = [
   {
     id: "ai-enablement",
-    label: "AI Enablement Strategy and Ops",
+    label: "AI Enablement",
     primary: true,
     summary:
       "I make large manufacturing orgs AI-native: as-is to to-be, ship, then hand off to a sustaining team. Enablement plus custom buildouts, not a pilot graveyard.",
@@ -61,7 +61,7 @@ export const roles: Role[] = [
   },
   {
     id: "bizops",
-    label: "Business Operations",
+    label: "BizOps",
     primary: false,
     summary:
       "I turn capacity, cost, and launch choices into one executable operating cadence so leadership can move without ad-hoc reporting.",
