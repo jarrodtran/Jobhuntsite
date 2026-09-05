@@ -5,8 +5,9 @@ type Props = {
 };
 
 /**
- * Employer strip: "Tesla · Waymo · Apple · Amazon". A real list so assistive
- * tech announces the count; the dot separators are CSS, not data.
+ * Quiet employer strip: "Tesla · Waymo · Apple · Amazon" in text-xs muted, no
+ * logos. A real list so assistive tech announces the count; the mid-dot
+ * separators are CSS, not data.
  * Hook: `data-slot="employers"`.
  */
 export function EmployerRow({ employers, label, className }: Props) {
@@ -16,7 +17,7 @@ export function EmployerRow({ employers, label, className }: Props) {
     <ul
       data-slot="employers"
       aria-label={label}
-      className={["flex flex-wrap items-baseline gap-x-2 text-sm text-muted", className]
+      className={["flex flex-wrap items-baseline gap-x-2 text-xs text-muted", className]
         .filter(Boolean)
         .join(" ")}
     >

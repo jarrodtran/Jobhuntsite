@@ -10,7 +10,7 @@ export function Bullets({ items, className }: Props) {
   return (
     <ul
       data-slot="bullets"
-      className={["list-disc space-y-2 pl-5 text-sm text-ink", className]
+      className={["list-disc space-y-2 pl-4 text-sm leading-relaxed text-ink marker:text-muted", className]
         .filter(Boolean)
         .join(" ")}
     >

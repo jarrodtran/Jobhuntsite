@@ -10,9 +10,25 @@ import type { SectionMeta } from "@/lib/schema";
  */
 export const sectionShellClass = "mx-auto w-full max-w-content px-5 md:px-8";
 
+/** Section label: text-xs uppercase, wide tracking, muted. */
+export const sectionLabelClass =
+  "text-xs font-medium uppercase tracking-widest text-muted";
+
+/**
+ * Gap above the section. `section` is the default rhythm (`--spacing-section`);
+ * `tight` (3rem) is for a section that directly follows the proof band.
+ */
+type Spacing = "section" | "tight";
+
+const spacingClass: Record<Spacing, string> = {
+  section: "mt-section",
+  tight: "mt-12",
+};
+
 type Props = {
   meta: SectionMeta;
   children: ReactNode;
+  spacing?: Spacing;
   className?: string;
 };
 
@@ -20,20 +36,25 @@ export function headingId(meta: SectionMeta): string {
   return `${meta.id}-heading`;
 }
 
-export function Section({ meta, children, className }: Props) {
+export function Section({
+  meta,
+  children,
+  spacing = "section",
+  className,
+}: Props) {
   return (
     <section
       id={meta.id}
       data-section={meta.id}
       aria-labelledby={headingId(meta)}
-      className={[sectionShellClass, "mt-section scroll-mt-8", className]
+      className={[sectionShellClass, spacingClass[spacing], "scroll-mt-8", className]
         .filter(Boolean)
         .join(" ")}
     >
       <h2
         id={headingId(meta)}
         data-slot="section-heading"
-        className="text-sm font-medium text-muted"
+        className={sectionLabelClass}
       >
         {meta.heading}
       </h2>

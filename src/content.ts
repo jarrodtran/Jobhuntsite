@@ -14,13 +14,14 @@
  * helper below. While any placeholder remains, the site stays `noindex`.
  *
  * Locked (do not edit without Jarrod): hero.title, hero.voiceLine,
- * hero.proofChips, roles, experience, contact.
+ * hero.proofChips, proofBand, roles, experience, contact.
  */
 
 import type {
   Contact,
   ExperienceEntry,
   Hero,
+  ProofBand,
   Role,
   SectionId,
   SectionMeta,
@@ -44,6 +45,17 @@ export const hero: Hero = {
   ],
   employers: ["Tesla", "Waymo", "Apple", "Amazon"],
 };
+
+/**
+ * Secondary proof strip under the hero. Locked: the hero chips lead with
+ * money; these three are the next tier and each already appears in the Tesla
+ * experience bullets. Order is display order.
+ */
+export const proofBand: ProofBand = [
+  { metric: "$156M", label: "incremental annual profit" },
+  { metric: "3.2×", label: "Megapack production scale" },
+  { metric: "20+", label: "AI tools shipped" },
+];
 
 export const roles: Role[] = [
   {
@@ -207,6 +219,9 @@ export const ui: UiStrings = {
   hero: {
     proofChipsLabel: "Proof points",
     employersLabel: "Employers",
+  },
+  proofBand: {
+    label: "More proof points",
   },
   roles: {
     primaryBadge: "Primary target",

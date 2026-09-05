@@ -16,6 +16,7 @@ import {
   contact,
   experience,
   hero,
+  proofBand,
   roles,
   sections,
   site,
@@ -153,23 +154,37 @@ export const navView = {
 // Hero
 // ---------------------------------------------------------------------------
 
+/** Drop chips with no label and blank metrics so a chip never renders empty. */
+function visibleChips(chips: ReadonlyArray<ProofChip>): ProofChip[] {
+  return chips
+    .filter((chip) => hasText(chip.label))
+    .map<ProofChip>((chip) => ({
+      label: chip.label,
+      ...(hasText(chip.metric) ? { metric: chip.metric } : {}),
+    }));
+}
+
 export const heroView = {
   section: sections.hero,
   name: hero.name,
   title: hero.title,
   voiceLine: hasText(hero.voiceLine) ? hero.voiceLine : null,
-  proofChips: hero.proofChips
-    .filter((chip) => hasText(chip.label))
-    .map<ProofChip>((chip) => ({
-      label: chip.label,
-      ...(hasText(chip.metric) ? { metric: chip.metric } : {}),
-    })),
+  proofChips: visibleChips(hero.proofChips),
   proofChipsLabel: ui.hero.proofChipsLabel,
   employers: visible(hero.employers),
   employersLabel: ui.hero.employersLabel,
-  /** Primary first (solid), then secondary (outline). */
+  /** Primary first (solid), then secondary (ghost). */
   primaryCta: resumeCta,
   secondaryCta: linkedinCta,
+};
+
+// ---------------------------------------------------------------------------
+// Proof band — secondary metrics strip between hero and Experience
+// ---------------------------------------------------------------------------
+
+export const proofBandView = {
+  label: ui.proofBand.label,
+  chips: visibleChips(proofBand),
 };
 
 // ---------------------------------------------------------------------------
@@ -274,6 +289,7 @@ export const footerView = {
 
 export const contentHasPlaceholders: boolean = JSON.stringify({
   hero,
+  proofBand,
   roles,
   experience,
   contact,
