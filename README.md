@@ -2,7 +2,7 @@
 
 Minimalist single-page site for the job hunt: AI enablement strategy and ops, business operations, chief of staff, and VC platform roles. Recruiters get title, employers, scoped proof, and a resume link in the first viewport. Hiring managers get role fit and experience on scroll.
 
-Content is locked (Copy v1) and the site is served `noindex` until `siteIndexable` is flipped. The visual pass (chip cards, proof band, timeline rail) is in; the structure exposes stable hooks so further retuning does not need markup changes.
+Content is locked (Copy v1) and the site is served `noindex` until `siteIndexable` is flipped. The visual bar is an operator memo, not a portfolio: warm paper, one `$260M` figure block, hairline rules, one white product panel. The structure exposes stable hooks so further retuning does not need markup changes.
 
 ## Local development
 
@@ -45,16 +45,17 @@ src/lib/url.ts          The only module that reads NEXT_PUBLIC_BASE_PATH.
 src/components/         Dumb renderers. Import from @/lib/selectors only.
   layout/               SiteHeader, Section (shared shell + <h2>), SiteFooter
   sections/             Hero, ProofBand, Experience (+ ExperienceRows, client), Fit
-  ui/                   CtaLink, ProofChips, EmployerRow, Bullets, card (shared classes)
+  ui/                   CtaLink, ProofChips, ResumeBar (client), EmployerRow, Bullets,
+                        card (shared classes)
       │
 src/app/page.tsx        Composes sections in scan-path order.
 src/app/layout.tsx      <title>, OG, Twitter, JSON-LD, robots — all from seoView.
 src/app/globals.css     Design tokens (palette, column, rhythm, motion) + hooks.
 ```
 
-**Recruiter scan path** (top to bottom, per FE Designer spec): Hero (name → title → voice → featured `$` chip + pair → Resume solid + LinkedIn ghost → employer strip) → Proof band (full-bleed stone strip, three secondary metrics split by hairlines; not a nav section) → Experience (primary scan path; accordion rows, current role open as a card) → Where I fit (one compact row of low-contrast role chips, primary badge on the primary role only) → Footer (email + LinkedIn). `sectionOrder` in `selectors.ts` drives the header nav; `page.tsx` renders in the same order.
+**Recruiter scan path** (top to bottom, per FE Designer spec): Hero (name → title → voice whisper → the `$260M` figure block with the secondary pair → Resume solid + LinkedIn ghost → one muted employer line) → Proof strip (three secondary metrics between hairline rules; not a nav section) → Experience (primary scan path; list-like rows, current role open as the product panel) → Where I fit (one line of text links to the backing experience rows, primary first) → Footer (email + LinkedIn). `sectionOrder` in `selectors.ts` drives the header nav; `page.tsx` renders in the same order. Under 640px a fixed h-12 Resume bar (`ResumeBar`) rides the bottom edge while any of the hero is on screen and slides away once it has scrolled off.
 
-**Experience accordion.** `ExperienceRows` is the only client component. Closed row = dates + title + company + scope line, flat with a hairline underneath; open row = the locked bullets inside a white card (same treatment as the featured chip). One row open at a time at every width; the current role (`end` is a word such as "Present") is open on first paint and server-rendered, so the page reads correctly before hydration. Under 640px dates stack above the title and the open card bleeds 1rem into the gutter; from 640px a hairline rail runs down the left with a 7rem date column (`--rail`) beside it. Motion is 150ms on `grid-template-rows` (height), opacity, and the chevron rotation.
+**Experience accordion.** `ExperienceRows` and `ResumeBar` are the only client components. Closed row = dates + title + company + scope line with a hairline underneath, no padding beyond the column; open row = the product panel: white card, 1.25rem padding, the 7rem date column (`--rail`) as its left rail, bullets aligned to the title column. One row open at a time at every width; the current role (`end` is a word such as "Present") is open on first paint and server-rendered, so the page reads correctly before hydration. A `#<experience-id>` hash (the Fit links, or a shared URL) opens that row. Under 640px dates stack above the title and the panel runs edge to edge. Motion is 150ms on `grid-template-rows` (height), opacity, and the chevron rotation.
 
 **Ownership.** Copy edits `src/content.ts` and nothing else. Eng owns `src/lib`. FE Designer owns `src/app/globals.css` and the class strings inside `src/components`; the markup exposes stable hooks (`data-section`, `data-slot`, `data-role`, `data-primary`, `data-entry`, `data-cta`) so a visual overhaul does not need to change structure.
 
@@ -67,10 +68,10 @@ All copy lives in [`src/content.ts`](src/content.ts). Types are in [`src/lib/sch
 | Export | What it drives |
 | --- | --- |
 | `hero.name`, `title`, `voiceLine` | Hero identity and first-person positioning line. Also `<title>`, OG title/description, and JSON-LD `jobTitle` |
-| `hero.proofChips` | Chips under the voice line. The first chip renders as the featured card (money leads); the rest as the pair. `metric` is optional; leave it out when there is no defensible number |
+| `hero.proofChips` | The figure block under the voice line. The first chip is the lead figure (`text-5xl`); the rest are the secondary pair in ruled cells. `metric` is optional; leave it out when there is no defensible number |
 | `proofBand` | Secondary metrics in the full-bleed strip under the hero. Same shape as a chip; every figure must already appear in `experience`. Hidden when empty |
 | `hero.employers` | Pedigree row. Hidden when empty |
-| `roles` | "Where I fit" chips. The one `primary: true` role renders first with the badge. `summary`, `evidence`, `audiences`, and `experienceIds` are stored and validated but not rendered — proof lives in Experience bullets |
+| `roles` | "Where I fit" text links. The one `primary: true` role renders first with the badge. Each link points at the first entry in `experienceIds` (a role with none renders as plain text). `summary`, `evidence`, and `audiences` are stored and validated but not rendered — proof lives in Experience bullets |
 | `experience` | Accordion rows. `id` is the anchor target and the key `Role.experienceIds` points at. Lead with an outcome-led bullet. `location` and `scopeLine` are optional; `url` is stored, not rendered |
 | `contact.email`, `linkedin` | Footer links. `resumePdf` drives the hero Resume CTA |
 | `contact.location`, `github`, `availability`, `clearance` | Stored, not rendered (footer is email + LinkedIn only) |
@@ -84,20 +85,21 @@ Placeholders are written as `TODO_COPY: hint` via the `todo()` helper. Blank or 
 
 ## Styling and extension points
 
-[`src/app/globals.css`](src/app/globals.css) is the visual surface. Type uses Tailwind's default scale (name `text-4xl` semibold tracking-tight, title `text-base` medium muted, voice `text-sm` muted, featured chip `text-3xl`, pair chips `text-xl`, proof band `text-lg`, section labels `text-xs` uppercase tracking-widest). Everything else is a token:
+[`src/app/globals.css`](src/app/globals.css) is the visual surface. Type is Inter on Tailwind's default scale with two weights that matter (semibold/bold) and muted for everything else: name `text-5xl` semibold `tracking-tighter`; title `text-base` muted; voice `text-sm` muted; lead figure `text-5xl` bold tabular `tracking-tighter`; pair `text-2xl` semibold; proof strip `text-lg` semibold; experience titles semibold; every label (section headings, figure labels, the Fit badge) is `text-label` 11px semibold uppercase `tracking-label`. Everything else is a token:
 
 | Token | Utility | Value / used for |
 | --- | --- | --- |
-| `--bg`, `--ink`, `--muted`, `--hairline`, `--accent` | `bg-bg`, `text-ink`, `text-muted`, `border-hairline`, `bg-accent` | Tailwind stone: `#FAFAF9`, `#0A0A0A`, `#57534E`, `#E7E5E4`, `#1C1917` |
-| `--surface`, `--band` | `bg-surface`, `bg-band` | White card surface; stone-100 proof band |
-| `--card-shadow`, `--card-radius` | `shadow-card`, `rounded-card` | `0 1px 2px rgb(0 0 0 / 0.04)`; 0.75rem. Shared via `cardClass` in `src/components/ui/card.ts` |
+| `--bg`, `--ink`, `--muted`, `--hairline`, `--accent` | `bg-bg`, `text-ink`, `text-muted`, `border-hairline`, `bg-accent` | Warm paper `#F7F6F3`, ink `#111`, muted `#5F5B56`, hairline `#E7E5E4`, accent (solid-CTA hover) `#000` |
+| `--surface` | `bg-surface` | White. The only surface besides paper: the `$260M` block and the open experience panel |
+| `--card-shadow`, `--card-radius` | `shadow-card`, `rounded-card` | `0 1px 0 rgb(17 17 17 / 0.04)`; 0.5rem. Shared via `cardClass` / `bleedCardClass` (edge-to-edge under 640px) in `src/components/ui/card.ts` |
+| `--text-label`, `--tracking-label` | `text-label`, `tracking-label` | 11px / 1rem line height; 0.14em |
 | `--font-inter` → `--font-sans` | body default | Inter with `system-ui` fallback; sans only |
-| `--container-content`, `--container-voice` | `max-w-content`, `max-w-voice` | 40rem page column; ~64ch voice line |
-| `--spacing-section` | `mt-section` | 5rem gap between sections. Hero→proof band is 2.5rem (`mt-10`) and proof band→Experience 3rem (`Section spacing="tight"`) |
-| `--rail` | `sm:grid-cols-[var(--rail)_1fr_auto]`, `sm:pl-[calc(var(--rail)+2rem)]` | 7rem experience date column beside the hairline rail |
-| `--motion-duration`, `--motion-ease` | default transition, `ease-soft` | 150ms ease; only the accordion animates (grid rows, opacity, chevron). `prefers-reduced-motion` collapses it |
+| `--container-content`, `--container-voice` | `max-w-content`, `max-w-voice` | 40rem page column; 60ch voice line (one line at desktop) |
+| `--spacing-section` | `mt-section` | 5rem gap between sections. Hero→proof strip is 2.5rem (`mt-10`) and strip→Experience 3rem (`Section spacing="tight"`) |
+| `--rail` | `sm:grid-cols-[var(--rail)_1fr_auto]`, `sm:pl-[calc(1.25rem+var(--rail)+1rem)]` | 7rem experience date column; inside the open panel it is the left rail the bullets clear |
+| `--motion-duration`, `--motion-ease` | default transition, `ease-soft` | 150ms ease; only the accordion (grid rows, opacity, chevron) and the mobile Resume bar (translate) animate. `prefers-reduced-motion` collapses it |
 
-Page padding is `px-5 md:px-8` (1.25rem → 2rem at ≥768) on the shared shell in `Section.tsx`. Hovers are flat colour swaps with no transition; focus rings are 2px ink, offset 2. The `link` utility styles inline text links. Markup hooks for targeted styling: `[data-section]`, `[data-component="site-header" | "proof-band"]`, `[data-slot]`, `[data-lead]`, `[data-role][data-primary]`, `[data-entry][data-open]`, `[data-cta][data-variant]`.
+Page padding is `px-5 md:px-8` (1.25rem → 2rem at ≥768) on the shared shell in `Section.tsx`. Hovers are flat colour swaps with no transition; focus rings are 2px ink, offset 2. The `link` utility styles inline text links. Markup hooks for targeted styling: `[data-section]`, `[data-component="site-header" | "proof-band" | "resume-bar"]`, `[data-slot]`, `[data-lead]`, `[data-role][data-primary]`, `[data-entry][data-open]`, `[data-cta][data-variant]`.
 
 ## Deploy (GitHub Pages)
 
