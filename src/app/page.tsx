@@ -6,15 +6,14 @@ import { Hero } from "@/components/sections/Hero";
 import { ProofBand } from "@/components/sections/ProofBand";
 
 /**
- * Recruiter scan path (FE Designer IA), top to bottom:
- *   Hero (name, title, voice, $260M figure block, CTAs, employers)
- *   → Proof strip (secondary metrics between hairlines; not a nav section)
- *   → Experience (primary scan path; accordion rows)
- *   → Fit (one line of role text links)
+ * Recruiter scan path (CoS / BizOps reposition), top to bottom:
+ *   Hero (name, seat, edge, voice, ops-first proof, CTAs, employers)
+ *   → Fit (primary summary + evidence; muted adjacent seats)
+ *   → Experience (accordion with closed-row outcome preview)
  *   → Footer (email + LinkedIn)
  *
- * Order here must match `sectionOrder` in src/lib/selectors.ts, which drives
- * the header nav.
+ * ProofBand stays in the tree but no-ops while `proofBand` is empty (dedupe).
+ * Order here must match `sectionOrder` in src/lib/selectors.ts.
  */
 export default function Home() {
   return (
@@ -23,8 +22,8 @@ export default function Home() {
       <main id="main">
         <Hero />
         <ProofBand />
-        <Experience />
         <Fit />
+        <Experience />
       </main>
       <SiteFooter />
     </>

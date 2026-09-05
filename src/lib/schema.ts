@@ -29,8 +29,17 @@ export type ProofChip = {
 
 export type Hero = {
   name: string;
-  /** Drives the <h1> subtitle, <title>, OG title, and JSON-LD jobTitle. */
-  title: string;
+  /**
+   * Market seat recruiters should route into (e.g. Chief of Staff / BizOps).
+   * Drives the hero subtitle, <title>, OG title, and JSON-LD jobTitle — not the
+   * current employer job title (that lives on the Experience row).
+   */
+  seat: string;
+  /**
+   * Quiet adjacent line under the seat (e.g. AI enablement as the operating
+   * edge). Hidden when blank.
+   */
+  edge?: string;
   /** One first-person line. Drives meta description and OG description. */
   voiceLine: string;
   /** Headline chips. Order is display order; the first chip is the visual lead. */
@@ -52,12 +61,17 @@ export type Role = {
   label: string;
   /** Exactly one role must be primary; it renders first and gets the badge. */
   primary: boolean;
-  /** Stored, not rendered. Proof lives in Experience bullets (FE Designer spec). */
+  /** One-sentence fit argument. Rendered for the primary role. */
   summary: string;
-  /** Stored, not rendered. */
+  /** Proof lines. The first is rendered under the primary summary. */
   evidence: string[];
   /** Stored for future per-audience ordering. Not rendered. */
   audiences: Audience[];
+  /**
+   * When true, the role is omitted from the Fit section (kept in content for
+   * later). Use for under-evidenced seats such as VC Platform.
+   */
+  hidden?: boolean;
   /** `ExperienceEntry.id`s that back this role. Validated at build; the first is the Fit link target. */
   experienceIds?: string[];
 };
@@ -75,6 +89,11 @@ export type ExperienceEntry = {
   /** Reporting line, team, budget. One line. */
   scopeLine?: string;
   bullets: string[];
+  /**
+   * When true, render as a single compact line (pedigree only) instead of an
+   * expandable row. Use for early roles that pad more than they prove.
+   */
+  compact?: boolean;
   /** Company or program link. Stored, not rendered (rows are buttons, not links). */
   url?: string;
 };
@@ -134,6 +153,8 @@ export type UiStrings = {
   };
   roles: {
     primaryBadge: string;
+    /** Heading for non-primary roles under the primary proof block. */
+    alsoLabel: string;
   };
   experience: {
     /** Separator between start and end inside a date range. */

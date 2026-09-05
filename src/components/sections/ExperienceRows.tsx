@@ -11,40 +11,77 @@ type Props = {
 };
 
 /**
- * Accordion. One row open at a time at every width; the current role is open
- * on first paint (server-rendered, so it reads correctly before hydration).
- * A `#<entry-id>` hash — from the Fit links or a shared URL — opens that row.
+ * Accordion. One expandable row open at a time; the current role opens on
+ * first paint. Closed rows show dates + title + company + a one-line outcome
+ * preview so impact scans without a click. Compact (pedigree) rows are not
+ * expandable. Closing never leaves the section fully collapsed.
  *
- * Closed rows are a list: dates, title, company, scope, a hairline under each,
- * no padding beyond the column. The open row is the product panel: white card,
- * 1.25rem padding, the 7rem date column (`--rail`) as its left rail and the
- * bullets aligned to the title column. At ≥1024 the panel pads 1.5rem and the
- * rail widens to 8rem (`--rail` steps in globals.css, so the bullet offset
- * below follows it). Under 640px the panel runs edge to edge and dates stack
- * above the title. Motion is 150ms on grid rows (height), opacity, and the
- * chevron.
+ * A `#<entry-id>` hash — from Fit links or a shared URL — opens that row.
  *
- * Hooks: `data-entry="<id>"`, `data-open`, `data-slot` on dates, title,
- * company, scope, panel, bullets.
+ * Hooks: `data-entry="<id>"`, `data-open`, `data-compact`, `data-slot` on
+ * dates, title, company, scope, preview, panel, bullets.
  */
 export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
+  const expandableIds = rows.filter((row) => !row.compact).map((row) => row.id);
   const [openId, setOpenId] = useState<string | null>(
-    () => rows.find((row) => row.defaultOpen)?.id ?? null,
+    () => rows.find((row) => row.defaultOpen)?.id ?? expandableIds[0] ?? null,
   );
 
   useEffect(() => {
     const openFromHash = () => {
       const id = decodeURIComponent(window.location.hash.slice(1));
-      if (id && rows.some((row) => row.id === id)) setOpenId(id);
+      if (!id || !rows.some((row) => row.id === id)) return;
+      const target = rows.find((row) => row.id === id);
+      if (target?.compact) return;
+      setOpenId(id);
     };
     openFromHash();
     window.addEventListener("hashchange", openFromHash);
     return () => window.removeEventListener("hashchange", openFromHash);
   }, [rows]);
 
+  const toggle = (id: string) => {
+    setOpenId((current) => {
+      if (current !== id) return id;
+      // Keep one expandable row open so the section never fully collapses.
+      return expandableIds.find((other) => other !== id) ?? current;
+    });
+  };
+
   return (
     <ol className="mt-3">
       {rows.map((row) => {
+        if (row.compact) {
+          return (
+            <li
+              key={row.id}
+              id={row.id}
+              data-entry={row.id}
+              data-compact="true"
+              className="scroll-mt-8 border-b border-hairline py-3.5 lg:py-4"
+            >
+              <p className="text-sm leading-snug text-ink">
+                <span className="font-semibold tracking-tight">{row.company}</span>
+                <span className="text-muted"> · {row.title}</span>
+                <span className="tabular-nums text-muted">
+                  {" · "}
+                  <DateText date={row.start} />
+                  {row.start && row.end ? dateRangeSeparator : null}
+                  <DateText date={row.end} />
+                </span>
+              </p>
+              {row.previewBullet ? (
+                <p
+                  data-slot="preview"
+                  className="mt-1 text-sm leading-snug text-muted"
+                >
+                  {row.previewBullet}
+                </p>
+              ) : null}
+            </li>
+          );
+        }
+
         const open = openId === row.id;
         const headingId = `${row.id}-heading`;
         const panelId = `${row.id}-panel`;
@@ -68,7 +105,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                   type="button"
                   aria-expanded={open}
                   aria-controls={panelId}
-                  onClick={() => setOpenId(open ? null : row.id)}
+                  onClick={() => toggle(row.id)}
                   className={[
                     "group grid w-full grid-cols-[1fr_auto] gap-x-4 gap-y-0.5 text-left sm:grid-cols-[var(--rail)_1fr_auto]",
                     open ? "p-5 lg:p-6" : "py-3.5 lg:py-4",
@@ -104,6 +141,14 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                         {row.scopeLine}
                       </span>
                     ) : null}
+                    {!open && row.previewBullet ? (
+                      <span
+                        data-slot="preview"
+                        className="mt-1.5 block text-sm leading-snug text-ink"
+                      >
+                        {row.previewBullet}
+                      </span>
+                    ) : null}
                   </span>
                 </button>
               </h3>
@@ -114,7 +159,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                 aria-labelledby={headingId}
                 aria-hidden={!open}
                 data-slot="panel"
-                className="grid transition-[grid-template-rows,opacity] duration-150 ease-soft"
+                className="grid transition-[grid-template-rows,opacity] duration-150 ease-soft motion-reduce:transition-none"
                 style={{
                   gridTemplateRows: open ? "1fr" : "0fr",
                   opacity: open ? 1 : 0,
@@ -148,7 +193,7 @@ function Chevron({ open }: { open: boolean }) {
       strokeLinecap="round"
       strokeLinejoin="round"
       className={[
-        "mt-1 self-start text-muted transition-transform duration-150 ease-soft group-hover:text-ink sm:col-start-3 sm:row-start-1",
+        "mt-1 self-start text-muted transition-transform duration-150 ease-soft motion-reduce:transition-none group-hover:text-ink sm:col-start-3 sm:row-start-1",
         open ? "rotate-180" : "",
       ]
         .filter(Boolean)
