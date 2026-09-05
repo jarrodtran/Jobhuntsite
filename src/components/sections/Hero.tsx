@@ -13,6 +13,11 @@ import { heroView } from "@/lib/selectors";
  * competes with the number. Under 640px a fixed Resume bar rides the bottom
  * edge whenever the hero's own Resume button is off-screen.
  *
+ * ≥1024 the stack stays a stack (no two-column split) and grows into the 52rem
+ * measure by type and air instead: $260M steps to text-6xl, the pair to
+ * text-3xl, the top pad to 5rem. The name holds at text-5xl so the figure
+ * still owns the fold.
+ *
  * Hooks: `data-section="hero"`, `data-slot` on each row (name, title, voice,
  * proof-chips, ctas, employers); `data-component="resume-bar"`.
  */
@@ -25,7 +30,7 @@ export function Hero() {
       id={heroView.section.id}
       data-section={heroView.section.id}
       aria-labelledby={headingId}
-      className={`${sectionShellClass} pt-12 sm:pt-16`}
+      className={`${sectionShellClass} pt-12 sm:pt-16 lg:pt-20`}
     >
       <hgroup>
         <h1
@@ -35,13 +40,16 @@ export function Hero() {
         >
           {heroView.name}
         </h1>
-        <p data-slot="title" className="mt-3 text-base text-muted">
+        <p data-slot="title" className="mt-3 text-base text-muted lg:text-lg">
           {heroView.title}
         </p>
       </hgroup>
 
       {heroView.voiceLine ? (
-        <p data-slot="voice" className="mt-1.5 max-w-voice text-sm text-muted">
+        <p
+          data-slot="voice"
+          className="mt-1.5 max-w-voice text-sm text-muted lg:text-base"
+        >
           {heroView.voiceLine}
         </p>
       ) : null}
@@ -49,10 +57,13 @@ export function Hero() {
       <ProofChips
         chips={heroView.proofChips}
         label={heroView.proofChipsLabel}
-        className="mt-8"
+        className="mt-8 lg:mt-10"
       />
 
-      <div data-slot="ctas" className="mt-4 flex flex-col gap-2 sm:flex-row sm:gap-3">
+      <div
+        data-slot="ctas"
+        className="mt-4 flex flex-col gap-2 sm:flex-row sm:gap-3 lg:mt-5"
+      >
         <CtaLink
           id={heroResumeId}
           cta={heroView.primaryCta}

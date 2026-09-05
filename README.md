@@ -94,12 +94,12 @@ Placeholders are written as `TODO_COPY: hint` via the `todo()` helper. Blank or 
 | `--card-shadow`, `--card-radius` | `shadow-card`, `rounded-card` | `0 1px 0 rgb(17 17 17 / 0.04)`; 0.5rem. Shared via `cardClass` / `bleedCardClass` (edge-to-edge under 640px) in `src/components/ui/card.ts` |
 | `--text-label`, `--tracking-label` | `text-label`, `tracking-label` | 11px / 1rem line height; 0.14em |
 | `--font-inter` → `--font-sans` | body default | Inter with `system-ui` fallback; sans only |
-| `--container-content`, `--container-voice` | `max-w-content`, `max-w-voice` | 40rem page column; 60ch voice line (one line at desktop) |
-| `--spacing-section` | `mt-section` | 5rem gap between sections. Hero→proof strip is 2.5rem (`mt-10`) and strip→Experience 3rem (`Section spacing="tight"`) |
-| `--rail` | `sm:grid-cols-[var(--rail)_1fr_auto]`, `sm:pl-[calc(1.25rem+var(--rail)+1rem)]` | 7rem experience date column; inside the open panel it is the left rail the bullets clear |
+| `--measure` → `--container-content`, `--container-voice` | `max-w-content`, `max-w-voice` | Responsive page column: full width <640, `min(44rem, 100%)` ≥640, `min(52rem, 100%)` ≥1024 (never past 56rem); 60ch voice line (one line at desktop) |
+| `--section-gap` → `--spacing-section` | `mt-section` | 5rem gap between sections, 6rem ≥1024. Hero→proof strip is 2.5rem (`mt-10`, 3rem ≥1024) and strip→Experience 3rem (`Section spacing="tight"`, 4rem ≥1024) |
+| `--rail` | `sm:grid-cols-[var(--rail)_1fr_auto]`, `sm:pl-[calc(1.25rem+var(--rail)+1rem)]` | 7rem experience date column, 8rem ≥1024; inside the open panel it is the left rail the bullets clear |
 | `--motion-duration`, `--motion-ease` | default transition, `ease-soft` | 150ms ease; only the accordion (grid rows, opacity, chevron) and the mobile Resume bar (translate) animate. `prefers-reduced-motion` collapses it |
 
-Page padding is `px-5 md:px-8` (1.25rem → 2rem at ≥768) on the shared shell in `Section.tsx`. Hovers are flat colour swaps with no transition; focus rings are 2px ink, offset 2. The `link` utility styles inline text links. Markup hooks for targeted styling: `[data-section]`, `[data-component="site-header" | "proof-band" | "resume-bar"]`, `[data-slot]`, `[data-lead]`, `[data-role][data-primary]`, `[data-entry][data-open]`, `[data-cta][data-variant]`.
+Page padding is `px-5 md:px-8` (1.25rem → 2rem at ≥768) on the shared shell in `Section.tsx`. The layout is one column at every width; it grows into the monitor by measure and type, not by adding columns. At ≥1024 the hero stays stacked and steps up instead: `$260M` `text-6xl`, the pair `text-3xl` in a 15rem column, title `text-lg`, voice `text-base`; proof strip values `text-xl`; open experience panel `p-6` on the 8rem rail; Fit links `text-lg`. Hovers are flat colour swaps with no transition; focus rings are 2px ink, offset 2. The `link` utility styles inline text links. Markup hooks for targeted styling: `[data-section]`, `[data-component="site-header" | "proof-band" | "resume-bar"]`, `[data-slot]`, `[data-lead]`, `[data-role][data-primary]`, `[data-entry][data-open]`, `[data-cta][data-variant]`.
 
 ## Deploy (GitHub Pages)
 

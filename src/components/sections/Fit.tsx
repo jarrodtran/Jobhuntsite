@@ -18,7 +18,7 @@ export function Fit() {
     <Section meta={rolesView.section}>
       <ul
         data-slot="role-chips"
-        className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-base"
+        className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-base lg:mt-4 lg:gap-x-4 lg:text-lg"
       >
         {rolesView.chips.map((chip) => {
           const linkClass = [
@@ -31,7 +31,7 @@ export function Fit() {
               key={chip.id}
               data-role={chip.id}
               data-primary={chip.primary}
-              className="flex items-baseline gap-x-3 after:text-muted after:content-['·'] last:after:content-none"
+              className="flex items-baseline gap-x-3 after:text-muted after:content-['·'] last:after:content-none lg:gap-x-4"
             >
               {chip.href ? (
                 <a href={chip.href} className={linkClass}>
