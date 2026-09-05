@@ -3,8 +3,8 @@
  *
  * Components import from here, never from `@/content` directly. Every view is
  * already filtered (blank optional fields dropped), ordered (primary role
- * first), and resolved (experience ids → entries, public paths → basePath
- * URLs). Components stay dumb: map, render, done.
+ * first), and resolved (public paths → basePath URLs). Components stay dumb:
+ * map, render, done.
  *
  * Module load also validates the content. A bad `experienceIds` reference or a
  * missing primary role throws here, which fails `next build` during static
@@ -81,14 +81,16 @@ validateContent();
 // Shared shapes
 // ---------------------------------------------------------------------------
 
-export type CtaKind = "resume" | "linkedin" | "email" | "github";
+export type CtaKind = "resume" | "linkedin" | "email";
 
 export type Cta = {
   kind: CtaKind;
   label: string;
   href: string;
-  /** Opens off-site; components add rel="noopener" where they choose to. */
+  /** Opens off-site; components add rel="noopener". */
   external: boolean;
+  /** Browser should save the target instead of navigating (Resume PDF). */
+  download: boolean;
 };
 
 export type Anchor = {
@@ -96,52 +98,43 @@ export type Anchor = {
   label: string;
 };
 
-function resumeCta(label = ui.cta.resume): Cta {
-  return {
-    kind: "resume",
-    label,
-    href: asset(contact.resumePdf),
-    external: false,
-  };
-}
+const resumeCta: Cta = {
+  kind: "resume",
+  label: ui.cta.resume,
+  href: asset(contact.resumePdf),
+  external: false,
+  download: true,
+};
 
-function linkedinCta(): Cta {
-  return {
-    kind: "linkedin",
-    label: ui.cta.linkedin,
-    href: contact.linkedin,
-    external: true,
-  };
-}
+const linkedinCta: Cta = {
+  kind: "linkedin",
+  label: ui.cta.linkedin,
+  href: contact.linkedin,
+  external: true,
+  download: false,
+};
 
-function emailCta(label = ui.cta.email): Cta {
-  return {
-    kind: "email",
-    label,
-    href: mailto(contact.email),
-    external: false,
-  };
-}
-
-function githubCta(): Cta | null {
-  if (!hasText(contact.github)) return null;
-  return {
-    kind: "github",
-    label: ui.cta.github,
-    href: contact.github,
-    external: true,
-  };
-}
+/** Email address as its own label so the footer reads as a real address line. */
+const emailCta: Cta = {
+  kind: "email",
+  label: contact.email,
+  href: mailto(contact.email),
+  external: false,
+  download: false,
+};
 
 // ---------------------------------------------------------------------------
 // Sections + navigation
 // ---------------------------------------------------------------------------
 
-/** Scan-path order. Drives both render order in page.tsx and the header nav. */
+/**
+ * Scan-path order (FE Designer IA): Hero → Experience → Fit → Footer.
+ * Drives both render order in page.tsx and the header nav.
+ */
 export const sectionOrder: SectionMeta[] = [
   sections.hero,
-  sections.roles,
   sections.experience,
+  sections.roles,
   sections.contact,
 ];
 
@@ -154,7 +147,6 @@ export const navView = {
       href: `#${section.id}`,
       label: section.navLabel as string,
     })),
-  resume: resumeCta(),
 };
 
 // ---------------------------------------------------------------------------
@@ -175,70 +167,33 @@ export const heroView = {
   proofChipsLabel: ui.hero.proofChipsLabel,
   employers: visible(hero.employers),
   employersLabel: ui.hero.employersLabel,
-  ctas: [resumeCta(), linkedinCta(), emailCta()] satisfies Cta[],
+  /** Primary first (solid), then secondary (outline). */
+  primaryCta: resumeCta,
+  secondaryCta: linkedinCta,
 };
 
 // ---------------------------------------------------------------------------
-// Roles ("Where I fit")
+// Roles ("Where I fit") — one compact row of chips, primary first
 // ---------------------------------------------------------------------------
 
-export type RoleView = {
+export type RoleChip = {
   id: Role["id"];
-  anchorId: string;
   label: string;
   primary: boolean;
-  summary: string | null;
-  evidence: string[];
-  backedBy: Anchor[];
 };
-
-function experienceByIds(ids: string[] | undefined): ExperienceEntry[] {
-  if (!ids || ids.length === 0) return [];
-  return ids
-    .map((id) => experience.find((entry) => entry.id === id))
-    .filter((entry): entry is ExperienceEntry => entry !== undefined);
-}
-
-function dateRange(entry: ExperienceEntry): string {
-  return joinMeta([entry.start, entry.end], ui.experience.dateRangeSeparator);
-}
-
-function toRoleView(role: Role): RoleView {
-  const related = experienceByIds(role.experienceIds);
-  // The same employer can appear twice (two Tesla stints); add dates so links read distinctly.
-  const companyCounts = related.reduce<Record<string, number>>((acc, entry) => {
-    acc[entry.company] = (acc[entry.company] ?? 0) + 1;
-    return acc;
-  }, {});
-
-  return {
-    id: role.id,
-    anchorId: `role-${role.id}`,
-    label: role.label,
-    primary: role.primary,
-    summary: hasText(role.summary) ? role.summary : null,
-    evidence: visible(role.evidence),
-    backedBy: related.map((entry) => ({
-      href: `#${entry.id}`,
-      label:
-        companyCounts[entry.company] > 1
-          ? `${entry.company} (${dateRange(entry)})`
-          : entry.company,
-    })),
-  };
-}
 
 const primaryRole = roles.find((role) => role.primary) ?? roles[0];
 
 export const rolesView = {
   section: sections.roles,
-  primary: toRoleView(primaryRole),
-  secondary: roles
-    .filter((role) => role.id !== primaryRole.id)
-    .map(toRoleView),
+  chips: [primaryRole, ...roles.filter((role) => role.id !== primaryRole.id)]
+    .filter((role) => hasText(role.label))
+    .map<RoleChip>((role) => ({
+      id: role.id,
+      label: role.label,
+      primary: role.primary,
+    })),
   primaryBadge: ui.roles.primaryBadge,
-  secondaryHeading: ui.roles.secondaryHeading,
-  backedByLabel: ui.roles.backedBy,
 };
 
 // ---------------------------------------------------------------------------
@@ -260,27 +215,39 @@ function toDateLabel(value: string): DateLabel | null {
   return { label: trimmed, dateTime: ISO_DATE.test(trimmed) ? trimmed : null };
 }
 
-export type ExperienceView = {
+function dateRange(entry: ExperienceEntry): string {
+  return joinMeta([entry.start, entry.end], ui.experience.dateRangeSeparator);
+}
+
+/** "Current" = the end date is a word (e.g. "Present"), not a date. */
+function isCurrent(entry: ExperienceEntry): boolean {
+  return hasText(entry.end) && !ISO_DATE.test(entry.end.trim());
+}
+
+export type ExperienceRow = {
   id: string;
   company: string;
-  companyUrl: string | null;
   title: string;
   start: DateLabel | null;
   end: DateLabel | null;
-  /** Plain-text range for aria labels and link text, e.g. "2018–2021". */
+  /** Plain-text range for aria labels, e.g. "2018–2021". */
   dateRange: string;
   location: string | null;
   scopeLine: string | null;
   bullets: string[];
+  /** Expanded on first paint. Exactly one row (the current role, else the first). */
+  defaultOpen: boolean;
 };
+
+const defaultOpenId: string | null =
+  experience.find(isCurrent)?.id ?? experience[0]?.id ?? null;
 
 export const experienceView = {
   section: sections.experience,
   dateRangeSeparator: ui.experience.dateRangeSeparator,
-  entries: experience.map<ExperienceView>((entry) => ({
+  rows: experience.map<ExperienceRow>((entry) => ({
     id: entry.id,
     company: entry.company,
-    companyUrl: hasText(entry.url) ? entry.url : null,
     title: entry.title,
     start: toDateLabel(entry.start),
     end: toDateLabel(entry.end),
@@ -288,21 +255,17 @@ export const experienceView = {
     location: hasText(entry.location) ? entry.location : null,
     scopeLine: hasText(entry.scopeLine) ? entry.scopeLine : null,
     bullets: visible(entry.bullets),
+    defaultOpen: entry.id === defaultOpenId,
   })),
 };
 
 // ---------------------------------------------------------------------------
-// Contact
+// Footer — email + LinkedIn only
 // ---------------------------------------------------------------------------
 
-export const contactView = {
+export const footerView = {
   section: sections.contact,
-  /** Optional one-liners (location, clearance, availability). Empty when none set. */
-  details: visible([contact.location, contact.clearance, contact.availability]),
-  email: emailCta(contact.email),
-  links: [linkedinCta(), githubCta(), resumeCta()].filter(
-    (cta): cta is Cta => cta !== null,
-  ),
+  links: [emailCta, linkedinCta] satisfies Cta[],
 };
 
 // ---------------------------------------------------------------------------

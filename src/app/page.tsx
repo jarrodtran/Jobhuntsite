@@ -1,15 +1,15 @@
+import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
-import { Contact } from "@/components/sections/Contact";
 import { Experience } from "@/components/sections/Experience";
+import { Fit } from "@/components/sections/Fit";
 import { Hero } from "@/components/sections/Hero";
-import { Roles } from "@/components/sections/Roles";
 
 /**
- * Recruiter scan path, top to bottom:
- *   Hero (who, title, voice, proof, employers, CTAs)
- *   → Where I fit (roles, primary first)
- *   → Experience
- *   → Contact / Resume
+ * Recruiter scan path (FE Designer IA), top to bottom:
+ *   Hero (name, title, voice, chips, CTAs, employers)
+ *   → Experience (primary scan path; accordion rows)
+ *   → Fit (one compact row of role chips)
+ *   → Footer (email + LinkedIn)
  *
  * Order here must match `sectionOrder` in src/lib/selectors.ts, which drives
  * the header nav.
@@ -20,10 +20,10 @@ export default function Home() {
       <SiteHeader />
       <main id="main">
         <Hero />
-        <Roles />
         <Experience />
+        <Fit />
       </main>
-      <Contact />
+      <SiteFooter />
     </>
   );
 }

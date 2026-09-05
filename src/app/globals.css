@@ -1,68 +1,50 @@
 @import "tailwindcss";
 
 /*
- * Design tokens. FE Designer: this file is the visual-overhaul surface.
- * Components reference tokens by name (text-h2, mt-section, max-w-content,
- * ease-soft), so retuning typography, spacing, and motion here restyles the
- * whole site without touching src/components.
+ * Design tokens (FE Designer spec). This file is the visual surface; components
+ * reference tokens by name (max-w-content, mt-section, ease-soft, text-ink),
+ * so retuning here restyles the site without touching src/components.
  *
  * Structural hooks available in the markup:
- *   [data-section="hero|roles|experience|contact"]  top-level sections
+ *   [data-section="hero|experience|roles|contact"]  top-level sections
  *   [data-component="site-header"]                  chrome
  *   [data-slot="..."]                               named rows inside a section
- *   [data-role="<id>"] [data-primary="true"]        role cards
- *   [data-entry="<id>"]                             experience entries
- *   [data-cta="resume|linkedin|email|github"]       calls to action
+ *   [data-role="<id>"] [data-primary="true"]        role chips
+ *   [data-entry="<id>"] [data-open="true|false"]    experience rows
+ *   [data-cta="resume|linkedin|email"]              calls to action
  */
 
 :root {
   /* Palette */
-  --background: #fafaf7;
-  --foreground: #1a1916;
-  --muted: #5c574f;
-  --accent: #1f4a3a;
-  --accent-fg: #fafaf7;
-  --rule: #e6e3db;
+  --bg: #fafaf9;
+  --ink: #0a0a0a;
+  --muted: #52525b;
+  --hairline: #e4e4e7;
+  --accent: #18181b;
 
-  /* Motion */
-  --motion-duration: 200ms;
-  --motion-ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  /* Experience date rail width at ≥640 (spec: w-28) */
+  --rail: 7rem;
+
+  /* Motion: 150ms ease, opacity/height only */
+  --motion-duration: 150ms;
+  --motion-ease: ease;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-bg: var(--bg);
+  --color-ink: var(--ink);
   --color-muted: var(--muted);
+  --color-hairline: var(--hairline);
   --color-accent: var(--accent);
-  --color-accent-fg: var(--accent-fg);
-  --color-rule: var(--rule);
 
-  --font-serif: var(--font-fraunces), "Times New Roman", serif;
   --font-sans:
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
 
-  /* Type scale (mobile-first; components opt into larger steps at breakpoints) */
-  --text-display: 2.125rem;
-  --text-display--line-height: 1.15;
-  --text-display-lg: 2.5rem;
-  --text-display-lg--line-height: 1.1;
-  --text-h2: 1.375rem;
-  --text-h2--line-height: 1.3;
-  --text-h3: 1.125rem;
-  --text-h3--line-height: 1.4;
-  --text-body: 1.0625rem;
-  --text-body--line-height: 1.6;
-  --text-small: 0.95rem;
-  --text-small--line-height: 1.55;
-  --text-meta: 0.875rem;
-  --text-meta--line-height: 1.5;
-
-  /* Layout rhythm */
-  --container-content: 45rem;
-  --container-measure: 65ch;
-  --spacing-gutter: 1.5rem;
+  /* Layout: single column, 40rem measure, 8pt rhythm */
+  --container-content: 40rem;
+  --container-voice: 42ch;
   --spacing-section: 4rem;
-  --spacing-block: 2rem;
 
   /* Motion */
   --default-transition-duration: var(--motion-duration);
@@ -70,15 +52,14 @@
   --ease-soft: var(--motion-ease);
 }
 
-/* Inline text link. Used wherever prose links appear (roles, experience, contact). */
+/* Inline text link: hairline underline → ink on hover. No motion. */
 @utility link {
   text-decoration-line: underline;
-  text-decoration-color: var(--rule);
-  text-underline-offset: 4px;
-  transition: text-decoration-color var(--motion-duration) var(--motion-ease);
+  text-decoration-color: var(--hairline);
+  text-underline-offset: 3px;
 
   &:hover {
-    text-decoration-color: var(--foreground);
+    text-decoration-color: var(--ink);
   }
 }
 
@@ -101,14 +82,15 @@ html {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg);
+  color: var(--ink);
   font-family: var(--font-sans);
-  font-size: var(--text-body);
-  line-height: var(--text-body--line-height);
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
+/* Focus rings: 2px ink, offset 2 */
 :focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
 }

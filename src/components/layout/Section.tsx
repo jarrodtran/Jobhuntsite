@@ -2,19 +2,16 @@ import type { ReactNode } from "react";
 import type { SectionMeta } from "@/lib/schema";
 
 /**
- * Shared shell for every top-level section. Owns the container width, gutter,
- * and vertical rhythm so FE Designer changes them once (see `--container-content`,
- * `--spacing-gutter`, `--spacing-section` in globals.css).
+ * Shared shell for every top-level block. Single column, 40rem max, page pad
+ * 1.25rem → 2rem at ≥768 (see `--container-content` in globals.css).
  *
  * Hooks: `data-section="<id>"` on the wrapper; `data-slot="section-heading"`
  * on the <h2>.
  */
-export const sectionShellClass =
-  "mx-auto w-full max-w-content px-gutter";
+export const sectionShellClass = "mx-auto w-full max-w-content px-5 md:px-8";
 
 type Props = {
   meta: SectionMeta;
-  as?: "section" | "footer";
   children: ReactNode;
   className?: string;
 };
@@ -23,24 +20,24 @@ export function headingId(meta: SectionMeta): string {
   return `${meta.id}-heading`;
 }
 
-export function Section({ meta, as: Tag = "section", children, className }: Props) {
+export function Section({ meta, children, className }: Props) {
   return (
-    <Tag
+    <section
       id={meta.id}
       data-section={meta.id}
       aria-labelledby={headingId(meta)}
-      className={[sectionShellClass, "mt-section", className]
+      className={[sectionShellClass, "mt-section scroll-mt-8", className]
         .filter(Boolean)
         .join(" ")}
     >
       <h2
         id={headingId(meta)}
         data-slot="section-heading"
-        className="font-serif text-h2 tracking-tight"
+        className="text-sm font-medium text-muted"
       >
         {meta.heading}
       </h2>
       {children}
-    </Tag>
+    </section>
   );
 }

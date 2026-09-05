@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Fraunces } from "next/font/google";
+import { Inter } from "next/font/google";
 import { seoView } from "@/lib/selectors";
 import "./globals.css";
 
-const fraunces = Fraunces({
+const inter = Inter({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-fraunces",
+  variable: "--font-inter",
 });
 
 /**
@@ -60,11 +60,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang={seoView.lang} className={fraunces.variable} id="top">
-      <body className="bg-background text-foreground antialiased">
+    <html lang={seoView.lang} className={inter.variable} id="top">
+      <body className="bg-bg text-ink antialiased">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:bg-background focus:px-3 focus:py-2"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:bg-bg focus:px-3 focus:py-2"
         >
           {seoView.skipToContent}
         </a>

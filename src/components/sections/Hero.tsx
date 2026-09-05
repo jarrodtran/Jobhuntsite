@@ -5,12 +5,12 @@ import { ProofChips } from "@/components/ui/ProofChips";
 import { heroView } from "@/lib/selectors";
 
 /**
- * First viewport, in reading order: name → title → voice line → proof chips →
- * employers → CTAs. This is the recruiter's five-second scan; nothing else
- * belongs here.
+ * First viewport, tight left-aligned stack in this order and no other:
+ * name → title → voice → chips → CTAs (Resume solid, LinkedIn outline) →
+ * employer strip. Not a centered marketing hero.
  *
  * Hooks: `data-section="hero"`, `data-slot` on each row (name, title, voice,
- * proof-chips, employers, ctas).
+ * proof-chips, ctas, employers).
  */
 export function Hero() {
   const headingId = `${heroView.section.id}-heading`;
@@ -20,23 +20,23 @@ export function Hero() {
       id={heroView.section.id}
       data-section={heroView.section.id}
       aria-labelledby={headingId}
-      className={`${sectionShellClass} pt-8`}
+      className={`${sectionShellClass} pt-10`}
     >
       <hgroup>
         <h1
           id={headingId}
           data-slot="name"
-          className="font-serif text-display tracking-tight sm:text-display-lg"
+          className="text-3xl font-semibold tracking-tight sm:text-4xl"
         >
           {heroView.name}
         </h1>
-        <p data-slot="title" className="mt-2 text-h3 text-foreground">
+        <p data-slot="title" className="mt-2 text-lg font-medium text-muted">
           {heroView.title}
         </p>
       </hgroup>
 
       {heroView.voiceLine ? (
-        <p data-slot="voice" className="mt-4 max-w-measure">
+        <p data-slot="voice" className="mt-4 max-w-voice text-base">
           {heroView.voiceLine}
         </p>
       ) : null}
@@ -44,27 +44,19 @@ export function Hero() {
       <ProofChips
         chips={heroView.proofChips}
         label={heroView.proofChipsLabel}
-        className="mt-5"
+        className="mt-6"
       />
+
+      <div data-slot="ctas" className="mt-6 flex flex-col gap-2 sm:flex-row">
+        <CtaLink cta={heroView.primaryCta} variant="solid" />
+        <CtaLink cta={heroView.secondaryCta} variant="outline" />
+      </div>
 
       <EmployerRow
         employers={heroView.employers}
         label={heroView.employersLabel}
-        className="mt-5"
+        className="mt-6"
       />
-
-      <div
-        data-slot="ctas"
-        className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-2"
-      >
-        {heroView.ctas.map((cta, index) => (
-          <CtaLink
-            key={cta.kind}
-            cta={cta}
-            variant={index === 0 ? "primary" : "text"}
-          />
-        ))}
-      </div>
     </section>
   );
 }

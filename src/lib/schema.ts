@@ -40,14 +40,17 @@ export type Hero = {
 
 export type Role = {
   id: RoleId;
+  /** Rendered as a chip in "Where I fit". */
   label: string;
   /** Exactly one role must be primary; it renders first and gets the badge. */
   primary: boolean;
+  /** Stored, not rendered. Proof lives in Experience bullets (FE Designer spec). */
   summary: string;
+  /** Stored, not rendered. */
   evidence: string[];
   /** Stored for future per-audience ordering. Not rendered. */
   audiences: Audience[];
-  /** `ExperienceEntry.id`s that back this role, in display order. Validated at build. */
+  /** `ExperienceEntry.id`s that back this role. Validated at build; not rendered. */
   experienceIds?: string[];
 };
 
@@ -64,7 +67,7 @@ export type ExperienceEntry = {
   /** Reporting line, team, budget. One line. */
   scopeLine?: string;
   bullets: string[];
-  /** Company or program link. Optional. */
+  /** Company or program link. Stored, not rendered (rows are buttons, not links). */
   url?: string;
 };
 
@@ -73,6 +76,7 @@ export type Contact = {
   linkedin: string;
   /** Public-folder path, e.g. "/resume.pdf". Prefixed with basePath at render. */
   resumePdf: string;
+  /** Stored, not rendered. Footer is email + LinkedIn only. */
   github?: string;
   location?: string;
   availability?: string;
@@ -111,8 +115,6 @@ export type UiStrings = {
   cta: {
     resume: string;
     linkedin: string;
-    email: string;
-    github: string;
   };
   hero: {
     proofChipsLabel: string;
@@ -120,8 +122,6 @@ export type UiStrings = {
   };
   roles: {
     primaryBadge: string;
-    secondaryHeading: string;
-    backedBy: string;
   };
   experience: {
     /** Separator between start and end inside a date range. */

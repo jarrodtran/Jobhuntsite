@@ -183,17 +183,18 @@ export const site: Site = {
 };
 
 /**
- * Recruiter scan path, top to bottom. Order here is render order and nav
- * order. `navLabel` is omitted for the hero (the header wordmark links to top).
+ * Recruiter scan path, top to bottom (FE Designer IA): Hero → Experience →
+ * Fit → Footer. Object order here is render order and nav order. `navLabel`
+ * is omitted for the hero (the header wordmark links to top).
  */
 export const sections: Record<SectionId, SectionMeta> = {
   hero: { id: "hero", heading: hero.name },
-  roles: { id: "roles", heading: "Where I fit", navLabel: "Roles" },
   experience: {
     id: "experience",
     heading: "Experience",
     navLabel: "Experience",
   },
+  roles: { id: "roles", heading: "Where I fit", navLabel: "Fit" },
   contact: { id: "contact", heading: "Contact", navLabel: "Contact" },
 };
 
@@ -202,8 +203,6 @@ export const ui: UiStrings = {
   cta: {
     resume: "Resume",
     linkedin: "LinkedIn",
-    email: "Email",
-    github: "GitHub",
   },
   hero: {
     proofChipsLabel: "Proof points",
@@ -211,8 +210,6 @@ export const ui: UiStrings = {
   },
   roles: {
     primaryBadge: "Primary target",
-    secondaryHeading: "Also a fit for",
-    backedBy: "Backed by",
   },
   experience: {
     dateRangeSeparator: "–",
