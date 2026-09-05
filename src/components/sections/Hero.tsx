@@ -10,14 +10,15 @@ import { heroView } from "@/lib/selectors";
  * name (text-5xl, tracking-tighter) → title (muted) → voice (text-sm, muted:
  * a whisper) → the $260M figure block with the secondary pair → Resume
  * (solid ink) + LinkedIn (ghost) → one muted employer line. Nothing else
- * competes with the number. Under 640px a fixed Resume bar also rides the
- * bottom edge until the hero has scrolled off.
+ * competes with the number. Under 640px a fixed Resume bar rides the bottom
+ * edge whenever the hero's own Resume button is off-screen.
  *
  * Hooks: `data-section="hero"`, `data-slot` on each row (name, title, voice,
  * proof-chips, ctas, employers); `data-component="resume-bar"`.
  */
 export function Hero() {
   const headingId = `${heroView.section.id}-heading`;
+  const heroResumeId = `${heroView.section.id}-resume`;
 
   return (
     <section
@@ -53,6 +54,7 @@ export function Hero() {
 
       <div data-slot="ctas" className="mt-4 flex flex-col gap-2 sm:flex-row sm:gap-3">
         <CtaLink
+          id={heroResumeId}
           cta={heroView.primaryCta}
           variant="solid"
           className="w-full sm:w-auto"
@@ -70,7 +72,7 @@ export function Hero() {
         className="mt-5"
       />
 
-      <ResumeBar cta={heroView.primaryCta} watchId={heroView.section.id} />
+      <ResumeBar cta={heroView.primaryCta} watchId={heroResumeId} />
     </section>
   );
 }

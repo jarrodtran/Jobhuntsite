@@ -6,6 +6,8 @@ type Props = {
   cta: Cta;
   variant: Variant;
   className?: string;
+  /** Stable id when another component needs to observe this control. */
+  id?: string;
 };
 
 const baseClass =
@@ -24,9 +26,10 @@ const variantClass: Record<Variant, string> = {
  * `data-cta` carries the kind (resume | linkedin | email) and `data-variant`
  * the look, so FE Designer can target either without touching markup.
  */
-export function CtaLink({ cta, variant, className }: Props) {
+export function CtaLink({ cta, variant, className, id }: Props) {
   return (
     <a
+      id={id}
       href={cta.href}
       data-cta={cta.kind}
       data-variant={variant}
