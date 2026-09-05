@@ -40,7 +40,7 @@ export type Hero = {
 };
 
 /**
- * Secondary proof under the hero (full-bleed strip before Experience). Same
+ * Secondary proof under the hero (hairline strip before Experience). Same
  * shape as a hero chip; every figure must already appear in `experience`.
  * Hidden when empty.
  */
@@ -48,7 +48,7 @@ export type ProofBand = ProofChip[];
 
 export type Role = {
   id: RoleId;
-  /** Rendered as a chip in "Where I fit". */
+  /** Rendered as a text link in "Where I fit". */
   label: string;
   /** Exactly one role must be primary; it renders first and gets the badge. */
   primary: boolean;
@@ -58,7 +58,7 @@ export type Role = {
   evidence: string[];
   /** Stored for future per-audience ordering. Not rendered. */
   audiences: Audience[];
-  /** `ExperienceEntry.id`s that back this role. Validated at build; not rendered. */
+  /** `ExperienceEntry.id`s that back this role. Validated at build; the first is the Fit link target. */
   experienceIds?: string[];
 };
 
