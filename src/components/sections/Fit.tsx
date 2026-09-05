@@ -2,10 +2,11 @@ import { Section } from "@/components/layout/Section";
 import { rolesView } from "@/lib/selectors";
 
 /**
- * "Where I fit", demoted to one compact row of role chips. Primary role first
- * with the only badge. Summaries and evidence are not rendered — proof lives
- * in the Experience bullets. Deliberately low-contrast (hairline pills, muted
- * text, no cards) so it never competes with Experience above it.
+ * "Where I fit" as one line of text links, not chips. Each role links to the
+ * experience row that backs it (the accordion opens that row on hash change).
+ * Primary role first, set in ink with the badge as an 11px caps aside; the
+ * rest are muted. Summaries and evidence are not rendered — proof lives in the
+ * Experience bullets.
  *
  * Hooks: `data-section="roles"`, `data-slot="role-chips"`, `data-role="<id>"`,
  * `data-primary="true|false"`, `data-slot="badge"`.
@@ -15,28 +16,41 @@ export function Fit() {
 
   return (
     <Section meta={rolesView.section}>
-      <ul data-slot="role-chips" className="mt-3 flex flex-wrap gap-2">
-        {rolesView.chips.map((chip) => (
-          <li
-            key={chip.id}
-            data-role={chip.id}
-            data-primary={chip.primary}
-            className={[
-              "inline-flex items-center gap-x-2 rounded-full border border-hairline px-3 py-1 text-sm",
-              chip.primary ? "text-ink" : "text-muted",
-            ].join(" ")}
-          >
-            <span>{chip.label}</span>
-            {chip.primary ? (
-              <span
-                data-slot="badge"
-                className="rounded-full bg-band px-1.5 py-0.5 text-xs text-muted"
-              >
-                {rolesView.primaryBadge}
-              </span>
-            ) : null}
-          </li>
-        ))}
+      <ul
+        data-slot="role-chips"
+        className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-base"
+      >
+        {rolesView.chips.map((chip) => {
+          const linkClass = [
+            "link",
+            chip.primary ? "font-semibold text-ink" : "text-muted hover:text-ink",
+          ].join(" ");
+
+          return (
+            <li
+              key={chip.id}
+              data-role={chip.id}
+              data-primary={chip.primary}
+              className="flex items-baseline gap-x-3 after:text-muted after:content-['·'] last:after:content-none"
+            >
+              {chip.href ? (
+                <a href={chip.href} className={linkClass}>
+                  {chip.label}
+                </a>
+              ) : (
+                <span className={linkClass}>{chip.label}</span>
+              )}
+              {chip.primary ? (
+                <span
+                  data-slot="badge"
+                  className="text-label font-semibold uppercase tracking-label text-muted"
+                >
+                  {rolesView.primaryBadge}
+                </span>
+              ) : null}
+            </li>
+          );
+        })}
       </ul>
     </Section>
   );

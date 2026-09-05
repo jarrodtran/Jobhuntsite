@@ -188,13 +188,15 @@ export const proofBandView = {
 };
 
 // ---------------------------------------------------------------------------
-// Roles ("Where I fit") — one compact row of chips, primary first
+// Roles ("Where I fit") — one line of text links, primary first
 // ---------------------------------------------------------------------------
 
 export type RoleChip = {
   id: Role["id"];
   label: string;
   primary: boolean;
+  /** Anchor of the first backing experience entry, or null when none is listed. */
+  href: Anchor["href"] | null;
 };
 
 const primaryRole = roles.find((role) => role.primary) ?? roles[0];
@@ -203,11 +205,15 @@ export const rolesView = {
   section: sections.roles,
   chips: [primaryRole, ...roles.filter((role) => role.id !== primaryRole.id)]
     .filter((role) => hasText(role.label))
-    .map<RoleChip>((role) => ({
-      id: role.id,
-      label: role.label,
-      primary: role.primary,
-    })),
+    .map<RoleChip>((role) => {
+      const target = visible(role.experienceIds ?? [])[0];
+      return {
+        id: role.id,
+        label: role.label,
+        primary: role.primary,
+        href: target ? `#${target}` : null,
+      };
+    }),
   primaryBadge: ui.roles.primaryBadge,
 };
 

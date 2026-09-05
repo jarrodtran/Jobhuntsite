@@ -6,24 +6,30 @@ type Props = {
   cta: Cta;
   variant: Variant;
   className?: string;
+  /** Stable id when another component needs to observe this control. */
+  id?: string;
 };
 
 const baseClass =
-  "inline-flex h-11 items-center justify-center rounded-md px-5 text-sm font-semibold";
+  "inline-flex h-11 items-center justify-center rounded-md px-6 text-sm font-semibold";
 
-/** Solid = ink fill. Ghost = no border; band tint on hover. No motion. */
+/**
+ * Solid = ink fill, black on hover: the inevitable button. Ghost = no border,
+ * muted text that goes ink on hover with a 5% ink wash. No motion.
+ */
 const variantClass: Record<Variant, string> = {
   solid: "bg-ink text-bg hover:bg-accent",
-  ghost: "bg-transparent text-ink hover:bg-band",
+  ghost: "bg-transparent text-muted hover:bg-ink/5 hover:text-ink",
 };
 
 /**
  * `data-cta` carries the kind (resume | linkedin | email) and `data-variant`
  * the look, so FE Designer can target either without touching markup.
  */
-export function CtaLink({ cta, variant, className }: Props) {
+export function CtaLink({ cta, variant, className, id }: Props) {
   return (
     <a
+      id={id}
       href={cta.href}
       data-cta={cta.kind}
       data-variant={variant}

@@ -7,10 +7,10 @@ import { ProofBand } from "@/components/sections/ProofBand";
 
 /**
  * Recruiter scan path (FE Designer IA), top to bottom:
- *   Hero (name, title, voice, chips, CTAs, employers)
- *   → Proof band (full-bleed strip of secondary metrics; not a nav section)
+ *   Hero (name, title, voice, $260M figure block, CTAs, employers)
+ *   → Proof strip (secondary metrics between hairlines; not a nav section)
  *   → Experience (primary scan path; accordion rows)
- *   → Fit (one compact row of role chips)
+ *   → Fit (one line of role text links)
  *   → Footer (email + LinkedIn)
  *
  * Order here must match `sectionOrder` in src/lib/selectors.ts, which drives

@@ -7,28 +7,29 @@
  *
  * Structural hooks available in the markup:
  *   [data-section="hero|experience|roles|contact"]  top-level sections
- *   [data-component="site-header|proof-band"]       chrome + full-bleed strip
+ *   [data-component="site-header|proof-band|resume-bar"]
+ *                                                   chrome, hairline proof
+ *                                                   strip, mobile sticky CTA
  *   [data-slot="..."]                               named rows inside a section
- *   [data-lead="true"]                              the money-first hero chip
- *   [data-role="<id>"] [data-primary="true"]        role chips
+ *   [data-lead="true"]                              the $260M hero figure
+ *   [data-role="<id>"] [data-primary="true"]        role links
  *   [data-entry="<id>"] [data-open="true|false"]    experience rows
  *   [data-cta="resume|linkedin|email"]              calls to action
  */
 
 :root {
-  /* Palette: Tailwind stone. bg = stone-50, band = stone-100,
-     hairline = stone-200, muted = stone-600, accent = stone-900. */
-  --bg: #fafaf9;
-  --ink: #0a0a0a;
-  --muted: #57534e;
+  /* Palette: warm paper, near-black ink, one muted, one hairline. No tints,
+     no tinted bands — the only surfaces are paper and white. */
+  --bg: #f7f6f3;
+  --ink: #111111;
+  --muted: #5f5b56;
   --hairline: #e7e5e4;
-  --accent: #1c1917;
+  --accent: #000000;
   --surface: #ffffff;
-  --band: #f5f5f4;
 
-  /* Card treatment shared by hero chips, proof band, and the open experience row */
-  --card-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
-  --card-radius: 0.75rem;
+  /* Card: white, 1px hairline, and a single 1px shadow line. Nothing softer. */
+  --card-shadow: 0 1px 0 rgb(17 17 17 / 0.04);
+  --card-radius: 0.5rem;
 
   /* Experience date rail width at ≥640 (spec: w-28) */
   --rail: 7rem;
@@ -45,7 +46,6 @@
   --color-hairline: var(--hairline);
   --color-accent: var(--accent);
   --color-surface: var(--surface);
-  --color-band: var(--band);
 
   --shadow-card: var(--card-shadow);
   --radius-card: var(--card-radius);
@@ -54,11 +54,16 @@
     var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     sans-serif;
 
+  /* Section label: 11px / 0.14em tracking → `text-label`, `tracking-label`. */
+  --text-label: 11px;
+  --text-label--line-height: 1rem;
+  --tracking-label: 0.14em;
+
   /* Layout: single column, 40rem measure, 8pt rhythm.
-     Section gap 5rem; hero→proof (2.5rem) and proof→Experience (3rem) are
-     tighter and set where those blocks render. */
+     Section gap 5rem; hero→proof strip (2.5rem) and strip→Experience (3rem)
+     are tighter and set where those blocks render. */
   --container-content: 40rem;
-  --container-voice: 64ch;
+  --container-voice: 60ch;
   --spacing-section: 5rem;
 
   /* Motion */

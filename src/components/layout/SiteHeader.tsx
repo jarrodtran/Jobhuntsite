@@ -16,7 +16,7 @@ export function SiteHeader() {
         <a
           href={navView.homeHref}
           data-slot="wordmark"
-          className="text-sm font-medium tracking-tight"
+          className="text-sm font-semibold tracking-tight"
         >
           {navView.wordmark}
         </a>

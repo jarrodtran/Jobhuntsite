@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Bullets } from "@/components/ui/Bullets";
-import { cardClass } from "@/components/ui/card";
+import { bleedCardClass, cardClass } from "@/components/ui/card";
 import type { DateLabel, ExperienceRow } from "@/lib/selectors";
 
 type Props = {
@@ -11,15 +11,16 @@ type Props = {
 };
 
 /**
- * Timeline accordion. One row open at a time at every width; the current role
- * is open on first paint (server-rendered, so it reads correctly before
- * hydration).
+ * Accordion. One row open at a time at every width; the current role is open
+ * on first paint (server-rendered, so it reads correctly before hydration).
+ * A `#<entry-id>` hash — from the Fit links or a shared URL — opens that row.
  *
- * Layout: <640 dates stack above the title; ≥640 a hairline rail runs down the
- * left with a 7rem date column beside it (`--rail` in globals.css). The open
- * row lifts into a white card (same treatment as the hero chips) and bleeds
- * 1rem into the gutter under 640px; closed rows stay flat with a hairline
- * underneath. Motion is 150ms on grid rows (height), opacity, and the chevron.
+ * Closed rows are a list: dates, title, company, scope, a hairline under each,
+ * no padding beyond the column. The open row is the product panel: white card,
+ * 1.25rem padding, the 7rem date column (`--rail`) as its left rail and the
+ * bullets aligned to the title column. Under 640px the panel runs edge to edge
+ * and dates stack above the title. Motion is 150ms on grid rows (height),
+ * opacity, and the chevron.
  *
  * Hooks: `data-entry="<id>"`, `data-open`, `data-slot` on dates, title,
  * company, scope, panel, bullets.
@@ -29,8 +30,18 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
     () => rows.find((row) => row.defaultOpen)?.id ?? null,
   );
 
+  useEffect(() => {
+    const openFromHash = () => {
+      const id = decodeURIComponent(window.location.hash.slice(1));
+      if (id && rows.some((row) => row.id === id)) setOpenId(id);
+    };
+    openFromHash();
+    window.addEventListener("hashchange", openFromHash);
+    return () => window.removeEventListener("hashchange", openFromHash);
+  }, [rows]);
+
   return (
-    <ol className="mt-3 sm:border-l sm:border-hairline">
+    <ol className="mt-3">
       {rows.map((row) => {
         const open = openId === row.id;
         const headingId = `${row.id}-heading`;
@@ -45,7 +56,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
             className={[
               "scroll-mt-8",
               open
-                ? `-mx-4 my-3 sm:mx-0 ${cardClass}`
+                ? `${cardClass} ${bleedCardClass} my-2 first:mt-0`
                 : "border-b border-hairline",
             ].join(" ")}
           >
@@ -57,8 +68,8 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                   aria-controls={panelId}
                   onClick={() => setOpenId(open ? null : row.id)}
                   className={[
-                    "group grid w-full grid-cols-[1fr_auto] gap-x-4 gap-y-1 py-4 text-left sm:grid-cols-[var(--rail)_1fr_auto]",
-                    open ? "px-4" : "sm:px-4",
+                    "group grid w-full grid-cols-[1fr_auto] gap-x-4 gap-y-0.5 text-left sm:grid-cols-[var(--rail)_1fr_auto]",
+                    open ? "p-5" : "py-3.5",
                   ].join(" ")}
                 >
                   <span
@@ -74,7 +85,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                     <span className="flex flex-wrap items-baseline gap-x-2">
                       <span
                         data-slot="title"
-                        className="font-semibold leading-6 text-ink"
+                        className="font-semibold leading-6 tracking-tight text-ink"
                       >
                         {row.title}
                       </span>
@@ -86,7 +97,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                     {row.scopeLine ? (
                       <span
                         data-slot="scope"
-                        className="mt-1 block text-sm leading-snug text-muted"
+                        className="mt-0.5 block text-sm leading-snug text-muted"
                       >
                         {row.scopeLine}
                       </span>
@@ -108,7 +119,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                 }}
               >
                 <div className="overflow-hidden">
-                  <div className="px-4 pb-5 sm:pl-[calc(var(--rail)+2rem)]">
+                  <div className="px-5 pb-5 sm:pl-[calc(1.25rem+var(--rail)+1rem)]">
                     <Bullets items={row.bullets} />
                   </div>
                 </div>

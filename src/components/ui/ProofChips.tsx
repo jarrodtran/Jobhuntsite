@@ -1,4 +1,4 @@
-import { cardClass, flatCardClass } from "@/components/ui/card";
+import { bleedCardClass, cardClass } from "@/components/ui/card";
 import type { ProofChip } from "@/lib/schema";
 
 type Props = {
@@ -8,15 +8,18 @@ type Props = {
 };
 
 /**
- * Featured chip + pair. The first chip (money leads) is the punch: text-3xl
- * value, ink border, soft shadow. The rest sit at half weight: text-xl,
- * hairline, same radius, no shadow.
+ * The hero figure block: one white panel, hairline-ruled into a lead figure and
+ * a secondary pair. The first chip is the page — text-5xl bold tabular — with
+ * its label set as an 11px caps rule under it. The pair sit at text-2xl
+ * semibold, each in its own hairline cell. No chips, no second card.
  *
- * ≥640: two columns — featured chip tall on the left (spans both rows), pair
- * stacked on the right. <640: featured chip full width, pair in a row under.
+ * ≥640: lead on the left spanning both rows; pair stacked in a 13rem column on
+ * the right behind a vertical hairline. <640: the panel runs edge to edge (only
+ * top/bottom rules remain), lead full width, and each of the pair becomes a
+ * ruled memo row — figure left, caps label right on the same baseline.
  *
- * Hooks: `data-slot="proof-chips"` on the list, `data-lead="true"` on the
- * featured chip, `data-slot="metric"` and `data-slot="chip-label"` inside.
+ * Hooks: `data-slot="proof-chips"` on the list, `data-lead="true"` on the lead
+ * figure, `data-slot="metric"` and `data-slot="chip-label"` inside each cell.
  */
 export function ProofChips({ chips, label, className }: Props) {
   if (chips.length === 0) return null;
@@ -25,7 +28,12 @@ export function ProofChips({ chips, label, className }: Props) {
     <ul
       data-slot="proof-chips"
       aria-label={label}
-      className={["grid grid-cols-2 gap-3 sm:auto-rows-fr", className]
+      className={[
+        cardClass,
+        bleedCardClass,
+        "grid sm:grid-cols-[1fr_13rem] sm:grid-rows-2",
+        className,
+      ]
         .filter(Boolean)
         .join(" ")}
     >
@@ -38,16 +46,24 @@ export function ProofChips({ chips, label, className }: Props) {
             data-lead={lead || undefined}
             className={
               lead
-                ? `${cardClass} col-span-2 flex min-w-0 flex-col justify-center gap-y-1 border-[1.5px] border-ink px-5 py-5 sm:col-span-1 sm:row-span-2`
-                : `${flatCardClass} flex min-w-0 flex-col justify-center gap-y-0.5 px-4 py-3`
+                ? "flex min-w-0 flex-col justify-center px-5 py-7 sm:row-span-2 sm:px-6 sm:py-8"
+                : [
+                    "flex min-w-0 items-baseline justify-between gap-x-4 border-t border-hairline px-5 py-3",
+                    "sm:flex-col sm:justify-center sm:border-l sm:py-4",
+                    index === 1 ? "sm:border-t-0" : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")
             }
           >
             {chip.metric ? (
               <span
                 data-slot="metric"
                 className={[
-                  "font-semibold tabular-nums leading-none text-ink",
-                  lead ? "text-3xl tracking-tight" : "text-xl",
+                  "tabular-nums leading-none text-ink",
+                  lead
+                    ? "text-5xl font-bold tracking-tighter"
+                    : "text-2xl font-semibold tracking-tight",
                 ].join(" ")}
               >
                 {chip.metric}
@@ -56,8 +72,8 @@ export function ProofChips({ chips, label, className }: Props) {
             <span
               data-slot="chip-label"
               className={[
-                "leading-tight text-muted",
-                lead ? "mt-1 text-sm" : "text-xs",
+                "text-label font-semibold uppercase tracking-label text-muted",
+                lead ? "mt-3" : "text-right sm:mt-1.5 sm:text-left",
               ].join(" ")}
             >
               {chip.label}

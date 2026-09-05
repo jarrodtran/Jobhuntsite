@@ -2,43 +2,46 @@ import { sectionShellClass } from "@/components/layout/Section";
 import { CtaLink } from "@/components/ui/CtaLink";
 import { EmployerRow } from "@/components/ui/EmployerRow";
 import { ProofChips } from "@/components/ui/ProofChips";
+import { ResumeBar } from "@/components/ui/ResumeBar";
 import { heroView } from "@/lib/selectors";
 
 /**
- * First viewport, dense left-aligned stack in this order and no other:
- * name (text-4xl) → title (text-base muted) → voice (text-sm muted, demoted)
- * → featured $ chip + pair (money leads, ink border) → CTAs flush under the
- * chips (Resume solid ink, LinkedIn ghost) → quiet employer strip. Not a
- * centered marketing hero.
+ * The fold, one punch. Left-aligned stack in this order and no other:
+ * name (text-5xl, tracking-tighter) → title (muted) → voice (text-sm, muted:
+ * a whisper) → the $260M figure block with the secondary pair → Resume
+ * (solid ink) + LinkedIn (ghost) → one muted employer line. Nothing else
+ * competes with the number. Under 640px a fixed Resume bar rides the bottom
+ * edge whenever the hero's own Resume button is off-screen.
  *
  * Hooks: `data-section="hero"`, `data-slot` on each row (name, title, voice,
- * proof-chips, ctas, employers).
+ * proof-chips, ctas, employers); `data-component="resume-bar"`.
  */
 export function Hero() {
   const headingId = `${heroView.section.id}-heading`;
+  const heroResumeId = `${heroView.section.id}-resume`;
 
   return (
     <section
       id={heroView.section.id}
       data-section={heroView.section.id}
       aria-labelledby={headingId}
-      className={`${sectionShellClass} pt-10`}
+      className={`${sectionShellClass} pt-12 sm:pt-16`}
     >
       <hgroup>
         <h1
           id={headingId}
           data-slot="name"
-          className="text-4xl font-semibold tracking-tight"
+          className="text-5xl font-semibold leading-none tracking-tighter"
         >
           {heroView.name}
         </h1>
-        <p data-slot="title" className="mt-2 text-base font-medium text-muted">
+        <p data-slot="title" className="mt-3 text-base text-muted">
           {heroView.title}
         </p>
       </hgroup>
 
       {heroView.voiceLine ? (
-        <p data-slot="voice" className="mt-2 max-w-voice text-sm text-muted">
+        <p data-slot="voice" className="mt-1.5 max-w-voice text-sm text-muted">
           {heroView.voiceLine}
         </p>
       ) : null}
@@ -46,11 +49,12 @@ export function Hero() {
       <ProofChips
         chips={heroView.proofChips}
         label={heroView.proofChipsLabel}
-        className="mt-6"
+        className="mt-8"
       />
 
-      <div data-slot="ctas" className="mt-3 flex flex-col gap-3 sm:flex-row">
+      <div data-slot="ctas" className="mt-4 flex flex-col gap-2 sm:flex-row sm:gap-3">
         <CtaLink
+          id={heroResumeId}
           cta={heroView.primaryCta}
           variant="solid"
           className="w-full sm:w-auto"
@@ -67,6 +71,8 @@ export function Hero() {
         label={heroView.employersLabel}
         className="mt-5"
       />
+
+      <ResumeBar cta={heroView.primaryCta} watchId={heroResumeId} />
     </section>
   );
 }
