@@ -7,20 +7,28 @@
  *
  * Structural hooks available in the markup:
  *   [data-section="hero|experience|roles|contact"]  top-level sections
- *   [data-component="site-header"]                  chrome
+ *   [data-component="site-header|proof-band"]       chrome + full-bleed strip
  *   [data-slot="..."]                               named rows inside a section
+ *   [data-lead="true"]                              the money-first hero chip
  *   [data-role="<id>"] [data-primary="true"]        role chips
  *   [data-entry="<id>"] [data-open="true|false"]    experience rows
  *   [data-cta="resume|linkedin|email"]              calls to action
  */
 
 :root {
-  /* Palette */
+  /* Palette: Tailwind stone. bg = stone-50, band = stone-100,
+     hairline = stone-200, muted = stone-600, accent = stone-900. */
   --bg: #fafaf9;
   --ink: #0a0a0a;
-  --muted: #52525b;
-  --hairline: #e4e4e7;
-  --accent: #18181b;
+  --muted: #57534e;
+  --hairline: #e7e5e4;
+  --accent: #1c1917;
+  --surface: #ffffff;
+  --band: #f5f5f4;
+
+  /* Card treatment shared by hero chips, proof band, and the open experience row */
+  --card-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+  --card-radius: 0.75rem;
 
   /* Experience date rail width at ≥640 (spec: w-28) */
   --rail: 7rem;
@@ -36,15 +44,22 @@
   --color-muted: var(--muted);
   --color-hairline: var(--hairline);
   --color-accent: var(--accent);
+  --color-surface: var(--surface);
+  --color-band: var(--band);
+
+  --shadow-card: var(--card-shadow);
+  --radius-card: var(--card-radius);
 
   --font-sans:
     var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     sans-serif;
 
-  /* Layout: single column, 40rem measure, 8pt rhythm */
+  /* Layout: single column, 40rem measure, 8pt rhythm.
+     Section gap 5rem; hero→proof (2.5rem) and proof→Experience (3rem) are
+     tighter and set where those blocks render. */
   --container-content: 40rem;
-  --container-voice: 42ch;
-  --spacing-section: 4rem;
+  --container-voice: 64ch;
+  --spacing-section: 5rem;
 
   /* Motion */
   --default-transition-duration: var(--motion-duration);

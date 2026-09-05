@@ -3,10 +3,12 @@ import { SiteHeader } from "@/components/layout/SiteHeader";
 import { Experience } from "@/components/sections/Experience";
 import { Fit } from "@/components/sections/Fit";
 import { Hero } from "@/components/sections/Hero";
+import { ProofBand } from "@/components/sections/ProofBand";
 
 /**
  * Recruiter scan path (FE Designer IA), top to bottom:
  *   Hero (name, title, voice, chips, CTAs, employers)
+ *   → Proof band (full-bleed strip of secondary metrics; not a nav section)
  *   → Experience (primary scan path; accordion rows)
  *   → Fit (one compact row of role chips)
  *   → Footer (email + LinkedIn)
@@ -20,6 +22,7 @@ export default function Home() {
       <SiteHeader />
       <main id="main">
         <Hero />
+        <ProofBand />
         <Experience />
         <Fit />
       </main>

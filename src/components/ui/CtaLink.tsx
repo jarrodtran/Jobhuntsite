@@ -1,6 +1,6 @@
 import type { Cta } from "@/lib/selectors";
 
-type Variant = "solid" | "outline";
+type Variant = "solid" | "ghost";
 
 type Props = {
   cta: Cta;
@@ -9,12 +9,12 @@ type Props = {
 };
 
 const baseClass =
-  "inline-flex h-11 items-center justify-center rounded-md border px-5 text-sm font-semibold";
+  "inline-flex h-11 items-center justify-center rounded-md px-5 text-sm font-semibold";
 
-/** Solid = accent fill. Outline = hairline border that turns ink on hover. No motion. */
+/** Solid = ink fill. Ghost = no border; band tint on hover. No motion. */
 const variantClass: Record<Variant, string> = {
-  solid: "border-accent bg-accent text-bg hover:border-ink hover:bg-ink",
-  outline: "border-hairline bg-transparent text-ink hover:border-ink",
+  solid: "bg-ink text-bg hover:bg-accent",
+  ghost: "bg-transparent text-ink hover:bg-band",
 };
 
 /**

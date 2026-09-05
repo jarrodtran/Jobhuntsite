@@ -33,10 +33,18 @@ export type Hero = {
   title: string;
   /** One first-person line. Drives meta description and OG description. */
   voiceLine: string;
+  /** Headline chips. Order is display order; the first chip is the visual lead. */
   proofChips: ProofChip[];
   /** Pedigree row. Order is display order. Hidden when empty. */
   employers: string[];
 };
+
+/**
+ * Secondary proof under the hero (full-bleed strip before Experience). Same
+ * shape as a hero chip; every figure must already appear in `experience`.
+ * Hidden when empty.
+ */
+export type ProofBand = ProofChip[];
 
 export type Role = {
   id: RoleId;
@@ -119,6 +127,10 @@ export type UiStrings = {
   hero: {
     proofChipsLabel: string;
     employersLabel: string;
+  };
+  proofBand: {
+    /** a11y label for the strip; not rendered visually. */
+    label: string;
   };
   roles: {
     primaryBadge: string;
