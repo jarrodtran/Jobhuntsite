@@ -20,7 +20,7 @@ export function Fit() {
             key={chip.id}
             data-role={chip.id}
             data-primary={chip.primary}
-            className="inline-flex items-center gap-x-2 rounded-md border border-hairline px-3 py-2 text-sm text-ink hover:border-ink"
+            className="inline-flex items-center gap-x-2 rounded-md border border-hairline px-2.5 py-1.5 text-sm text-ink hover:border-ink"
           >
             <span>{chip.label}</span>
             {chip.primary ? (

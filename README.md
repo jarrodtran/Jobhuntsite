@@ -43,16 +43,18 @@ src/lib/selectors.ts    Render-ready views: blanks dropped, primary role first,
 src/lib/url.ts          The only module that reads NEXT_PUBLIC_BASE_PATH.
       │
 src/components/         Dumb renderers. Import from @/lib/selectors only.
-  layout/               SiteHeader, Section (shared shell + <h2>)
-  sections/             Hero, Roles, Experience, Contact — the scan path
+  layout/               SiteHeader, Section (shared shell + <h2>), SiteFooter
+  sections/             Hero, Experience (+ ExperienceRows, client), Fit
   ui/                   CtaLink, ProofChips, EmployerRow, Bullets
       │
 src/app/page.tsx        Composes sections in scan-path order.
 src/app/layout.tsx      <title>, OG, Twitter, JSON-LD, robots — all from seoView.
-src/app/globals.css     Design tokens (type scale, spacing, motion) + hooks.
+src/app/globals.css     Design tokens (palette, column, rhythm, motion) + hooks.
 ```
 
-**Recruiter scan path** (top to bottom): Hero (name → title → voice line → proof chips → employers → Resume/LinkedIn/Email) → Where I fit (primary role, then "Also a fit for") → Experience → Contact. `sectionOrder` in `selectors.ts` drives the header nav; `page.tsx` renders in the same order.
+**Recruiter scan path** (top to bottom, per FE Designer spec): Hero (name → title → voice → three proof chips → Resume solid + LinkedIn outline → employer strip) → Experience (primary scan path; accordion rows, current role open) → Where I fit (one compact row of role chips, primary badge on the primary role only) → Footer (email + LinkedIn). `sectionOrder` in `selectors.ts` drives the header nav; `page.tsx` renders in the same order.
+
+**Experience accordion.** `ExperienceRows` is the only client component. Closed row = dates + title + company + scope line; open row = the locked bullets. One row open at a time at every width; the current role (`end` is a word such as "Present") is open on first paint and server-rendered, so the page reads correctly before hydration. Under 640px dates stack above the title; from 640px a 7rem date rail (`--rail`) sits left of the content. Motion is 150ms on `grid-template-rows` (height) and opacity only.
 
 **Ownership.** Copy edits `src/content.ts` and nothing else. Eng owns `src/lib`. FE Designer owns `src/app/globals.css` and the class strings inside `src/components`; the markup exposes stable hooks (`data-section`, `data-slot`, `data-role`, `data-primary`, `data-entry`, `data-cta`) so a visual overhaul does not need to change structure.
 
@@ -67,10 +69,10 @@ All copy lives in [`src/content.ts`](src/content.ts). Types are in [`src/lib/sch
 | `hero.name`, `title`, `voiceLine` | Hero identity and first-person positioning line. Also `<title>`, OG title/description, and JSON-LD `jobTitle` |
 | `hero.proofChips` | Chips under the voice line. `metric` is optional; leave it out when there is no defensible number |
 | `hero.employers` | Pedigree row. Hidden when empty |
-| `roles` | "Where I fit". The one `primary: true` role renders first with a badge; the rest sit under "Also a fit for". `evidence` bullets and `experienceIds` back each role. `audiences` is stored, not rendered |
-| `experience` | Timeline. `id` is the anchor target used by `Role.experienceIds`. Lead with an outcome-led bullet. `location`, `scopeLine`, and `url` are optional |
-| `contact.email`, `linkedin`, `resumePdf` | Contact footer and CTAs |
-| `contact.location`, `github`, `availability`, `clearance` | Optional; omitted by default |
+| `roles` | "Where I fit" chips. The one `primary: true` role renders first with the badge. `summary`, `evidence`, `audiences`, and `experienceIds` are stored and validated but not rendered — proof lives in Experience bullets |
+| `experience` | Accordion rows. `id` is the anchor target and the key `Role.experienceIds` points at. Lead with an outcome-led bullet. `location` and `scopeLine` are optional; `url` is stored, not rendered |
+| `contact.email`, `linkedin` | Footer links. `resumePdf` drives the hero Resume CTA |
+| `contact.location`, `github`, `availability`, `clearance` | Stored, not rendered (footer is email + LinkedIn only) |
 | `site.origin`, `lang`, `ogImage` | Canonical origin, `<html lang>`, and OG image path/dimensions |
 | `sections` | Heading, anchor id, and nav label per section |
 | `ui` | Every non-content string: CTA labels, badge text, a11y labels, date separator |
@@ -81,18 +83,18 @@ Placeholders are written as `TODO_COPY: hint` via the `todo()` helper. Blank or 
 
 ## Styling and extension points
 
-[`src/app/globals.css`](src/app/globals.css) is the visual-overhaul surface. Tokens are exposed as Tailwind utilities:
+[`src/app/globals.css`](src/app/globals.css) is the visual surface. Type uses Tailwind's default scale (name `text-3xl`/`sm:text-4xl` semibold, title `text-lg` medium muted, voice `text-base`, chips `text-sm`/`text-xs`). Everything else is a token:
 
-| Token | Utility | Used for |
+| Token | Utility | Value / used for |
 | --- | --- | --- |
-| `--text-display`, `--text-display-lg` | `text-display`, `sm:text-display-lg` | Hero name |
-| `--text-h2`, `--text-h3` | `text-h2`, `text-h3` | Section and card headings |
-| `--text-body`, `--text-small`, `--text-meta` | body default, `text-small`, `text-meta` | Prose, bullets, meta lines |
-| `--container-content`, `--container-measure` | `max-w-content`, `max-w-measure` | Page column, prose measure |
-| `--spacing-gutter`, `--spacing-section`, `--spacing-block` | `px-gutter`, `mt-section`, `mt-block` | Horizontal gutter, vertical rhythm |
-| `--motion-duration`, `--motion-ease` | default transition, `ease-soft` | Hover/focus transitions; `prefers-reduced-motion` collapses them |
+| `--bg`, `--ink`, `--muted`, `--hairline`, `--accent` | `bg-bg`, `text-ink`, `text-muted`, `border-hairline`, `bg-accent` | `#FAFAF9`, `#0A0A0A`, `#52525B`, `#E4E4E7`, `#18181B` |
+| `--font-inter` → `--font-sans` | body default | Inter with `system-ui` fallback; sans only |
+| `--container-content`, `--container-voice` | `max-w-content`, `max-w-voice` | 40rem page column; ~42ch voice line |
+| `--spacing-section` | `mt-section` | 4rem gap between sections |
+| `--rail` | `sm:grid-cols-[var(--rail)_1fr_auto]`, `sm:pl-[calc(var(--rail)+1rem)]` | 7rem experience date rail |
+| `--motion-duration`, `--motion-ease` | default transition, `ease-soft` | 150ms ease; only the accordion animates (grid rows + opacity). `prefers-reduced-motion` collapses it |
 
-The `link` utility styles inline text links. Markup hooks for targeted styling: `[data-section]`, `[data-component="site-header"]`, `[data-slot]`, `[data-role][data-primary]`, `[data-entry]`, `[data-cta]`.
+Page padding is `px-5 md:px-8` (1.25rem → 2rem at ≥768) on the shared shell in `Section.tsx`. Hover states swap `border-hairline` → `border-ink` with no transition; focus rings are 2px ink, offset 2. The `link` utility styles inline text links. Markup hooks for targeted styling: `[data-section]`, `[data-component="site-header"]`, `[data-slot]`, `[data-role][data-primary]`, `[data-entry][data-open]`, `[data-cta][data-variant]`.
 
 ## Deploy (GitHub Pages)
 

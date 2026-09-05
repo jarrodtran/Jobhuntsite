@@ -13,9 +13,9 @@ export function SiteFooter() {
       id={footerView.section.id}
       data-section={footerView.section.id}
       aria-label={footerView.section.heading}
-      className={`${sectionShellClass} mt-section border-t border-hairline py-8`}
+      className={`${sectionShellClass} mt-section pb-10`}
     >
-      <address className="not-italic">
+      <address className="border-t border-hairline pt-8 not-italic">
         <ul
           data-slot="contact-links"
           className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm"
