@@ -9,7 +9,7 @@ type Props = {
 };
 
 const baseClass =
-  "inline-flex h-10 items-center justify-center rounded-md border px-4 text-sm font-medium";
+  "inline-flex h-11 items-center justify-center rounded-md border px-5 text-sm font-semibold";
 
 /** Solid = accent fill. Outline = hairline border that turns ink on hover. No motion. */
 const variantClass: Record<Variant, string> = {
