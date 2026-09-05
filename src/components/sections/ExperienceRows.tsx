@@ -18,9 +18,11 @@ type Props = {
  * Closed rows are a list: dates, title, company, scope, a hairline under each,
  * no padding beyond the column. The open row is the product panel: white card,
  * 1.25rem padding, the 7rem date column (`--rail`) as its left rail and the
- * bullets aligned to the title column. Under 640px the panel runs edge to edge
- * and dates stack above the title. Motion is 150ms on grid rows (height),
- * opacity, and the chevron.
+ * bullets aligned to the title column. At ≥1024 the panel pads 1.5rem and the
+ * rail widens to 8rem (`--rail` steps in globals.css, so the bullet offset
+ * below follows it). Under 640px the panel runs edge to edge and dates stack
+ * above the title. Motion is 150ms on grid rows (height), opacity, and the
+ * chevron.
  *
  * Hooks: `data-entry="<id>"`, `data-open`, `data-slot` on dates, title,
  * company, scope, panel, bullets.
@@ -69,7 +71,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                   onClick={() => setOpenId(open ? null : row.id)}
                   className={[
                     "group grid w-full grid-cols-[1fr_auto] gap-x-4 gap-y-0.5 text-left sm:grid-cols-[var(--rail)_1fr_auto]",
-                    open ? "p-5" : "py-3.5",
+                    open ? "p-5 lg:p-6" : "py-3.5 lg:py-4",
                   ].join(" ")}
                 >
                   <span
@@ -119,7 +121,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                 }}
               >
                 <div className="overflow-hidden">
-                  <div className="px-5 pb-5 sm:pl-[calc(1.25rem+var(--rail)+1rem)]">
+                  <div className="px-5 pb-5 sm:pl-[calc(1.25rem+var(--rail)+1rem)] lg:px-6 lg:pb-6 lg:pl-[calc(1.5rem+var(--rail)+1rem)]">
                     <Bullets items={row.bullets} />
                   </div>
                 </div>

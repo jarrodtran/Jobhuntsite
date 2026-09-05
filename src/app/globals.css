@@ -31,12 +31,39 @@
   --card-shadow: 0 1px 0 rgb(17 17 17 / 0.04);
   --card-radius: 0.5rem;
 
-  /* Experience date rail width at ≥640 (spec: w-28) */
+  /* Responsive measure (FE Designer spec). One column at every width; the
+     column simply gets wider as the viewport does, never past 56rem.
+       <640   full width (page pad 1.25rem)
+       ≥640   min(44rem, 100%)
+       ≥1024  min(52rem, 100%)
+       ≥1280  still 52rem. The spec allows the hero figure alone to take 56rem
+              (`xl:-mx-8` on the block) if the pair needs air; at text-3xl the
+              pair fits its 15rem column with room, so it stays on measure. */
+  --measure: 100%;
+
+  /* Vertical rhythm: 5rem section gap, 6rem at ≥1024 (8pt grid). */
+  --section-gap: 5rem;
+
+  /* Experience date rail width at ≥640 (w-28); w-32 at ≥1024. */
   --rail: 7rem;
 
   /* Motion: 150ms ease, opacity/height only */
   --motion-duration: 150ms;
   --motion-ease: ease;
+}
+
+@media (min-width: 640px) {
+  :root {
+    --measure: min(44rem, 100%);
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --measure: min(52rem, 100%);
+    --section-gap: 6rem;
+    --rail: 8rem;
+  }
 }
 
 @theme inline {
@@ -59,12 +86,13 @@
   --text-label--line-height: 1rem;
   --tracking-label: 0.14em;
 
-  /* Layout: single column, 40rem measure, 8pt rhythm.
-     Section gap 5rem; hero→proof strip (2.5rem) and strip→Experience (3rem)
-     are tighter and set where those blocks render. */
-  --container-content: 40rem;
+  /* Layout: single column on the responsive measure above (`max-w-content`),
+     8pt rhythm. Section gap is `--section-gap` (5rem → 6rem at ≥1024);
+     hero→proof strip (2.5rem) and strip→Experience (3rem) are tighter and set
+     where those blocks render. */
+  --container-content: var(--measure);
   --container-voice: 60ch;
-  --spacing-section: 5rem;
+  --spacing-section: var(--section-gap);
 
   /* Motion */
   --default-transition-duration: var(--motion-duration);
