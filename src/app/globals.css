@@ -1,23 +1,66 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens (FE Designer spec). This file is the visual surface; components
+ * reference tokens by name (max-w-content, mt-section, ease-soft, text-ink),
+ * so retuning here restyles the site without touching src/components.
+ *
+ * Structural hooks available in the markup:
+ *   [data-section="hero|experience|roles|contact"]  top-level sections
+ *   [data-component="site-header"]                  chrome
+ *   [data-slot="..."]                               named rows inside a section
+ *   [data-role="<id>"] [data-primary="true"]        role chips
+ *   [data-entry="<id>"] [data-open="true|false"]    experience rows
+ *   [data-cta="resume|linkedin|email"]              calls to action
+ */
+
 :root {
-  --background: #fafaf7;
-  --foreground: #1a1916;
-  --muted: #5c574f;
-  --accent: #1f4a3a;
-  --accent-fg: #fafaf7;
-  --rule: #e6e3db;
+  /* Palette */
+  --bg: #fafaf9;
+  --ink: #0a0a0a;
+  --muted: #52525b;
+  --hairline: #e4e4e7;
+  --accent: #18181b;
+
+  /* Experience date rail width at ≥640 (spec: w-28) */
+  --rail: 7rem;
+
+  /* Motion: 150ms ease, opacity/height only */
+  --motion-duration: 150ms;
+  --motion-ease: ease;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-bg: var(--bg);
+  --color-ink: var(--ink);
   --color-muted: var(--muted);
+  --color-hairline: var(--hairline);
   --color-accent: var(--accent);
-  --color-accent-fg: var(--accent-fg);
-  --color-rule: var(--rule);
-  --font-serif: var(--font-fraunces), "Times New Roman", serif;
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --font-sans:
+    var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+
+  /* Layout: single column, 40rem measure, 8pt rhythm */
+  --container-content: 40rem;
+  --container-voice: 42ch;
+  --spacing-section: 4rem;
+
+  /* Motion */
+  --default-transition-duration: var(--motion-duration);
+  --default-transition-timing-function: var(--motion-ease);
+  --ease-soft: var(--motion-ease);
+}
+
+/* Inline text link: hairline underline → ink on hover. No motion. */
+@utility link {
+  text-decoration-line: underline;
+  text-decoration-color: var(--hairline);
+  text-underline-offset: 3px;
+
+  &:hover {
+    text-decoration-color: var(--ink);
+  }
 }
 
 html {
@@ -39,14 +82,15 @@ html {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--bg);
+  color: var(--ink);
   font-family: var(--font-sans);
-  font-size: 1.0625rem;
-  line-height: 1.6;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
+/* Focus rings: 2px ink, offset 2 */
 :focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 3px;
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
 }

@@ -1,90 +1,37 @@
 /**
- * Single source of truth for every word on the site.
+ * Single source of truth for every word on the site. Copy owns this file.
  *
- * Copy owns this file. Components only read from it, so prose changes should
- * never require touching `src/components`.
+ * Components never import this file directly; they read render-ready views
+ * from `src/lib/selectors.ts`, which in turn reads only from here. Prose,
+ * metrics, titles, and ordering changes should never require touching
+ * `src/components`.
+ *
+ * Field shapes live in `src/lib/schema.ts` (Eng-owned). Optional fields such as
+ * `location` may be omitted or left blank; the UI hides blank fields rather
+ * than rendering empty labels.
  *
  * Placeholders are prefixed with `TODO_COPY:` and produced by the `todo()`
- * helper below. While any placeholder remains, the site stays `noindex`
- * (see `contentHasPlaceholders`). Optional fields such as `location` may be
- * omitted or left blank; the UI hides blank fields rather than rendering
- * empty labels.
+ * helper below. While any placeholder remains, the site stays `noindex`.
  *
- * Copy v1 for PR #2 — locked application metrics only.
- * Pending Jarrod lock: hero.title + proofChips numbers.
+ * Locked (do not edit without Jarrod): hero.title, hero.voiceLine,
+ * hero.proofChips, roles, experience, contact.
  */
+
+import type {
+  Contact,
+  ExperienceEntry,
+  Hero,
+  Role,
+  SectionId,
+  SectionMeta,
+  Site,
+  UiStrings,
+} from "@/lib/schema";
 
 export const TODO_COPY = "TODO_COPY";
 
 /** Mark a string as placeholder copy. `hint` tells Copy what belongs here. */
 export const todo = (hint: string): string => `${TODO_COPY}: ${hint}`;
-
-export type Audience =
-  | "big-tech"
-  | "ai-startup"
-  | "defense"
-  | "robotics"
-  | "venture";
-
-export type RoleId = "ai-enablement" | "bizops" | "cos" | "vc";
-
-export type ProofChip = {
-  label: string;
-  metric?: string;
-};
-
-export type Hero = {
-  name: string;
-  title: string;
-  voiceLine: string;
-  proofChips: ProofChip[];
-  employers: string[];
-};
-
-export type Role = {
-  id: RoleId;
-  label: string;
-  primary: boolean;
-  summary: string;
-  evidence: string[];
-  audiences: Audience[];
-  experienceIds?: string[];
-};
-
-export type ExperienceEntry = {
-  id: string;
-  company: string;
-  title: string;
-  start: string;
-  end: string;
-  location?: string;
-  scopeLine?: string;
-  bullets: string[];
-  url?: string;
-};
-
-export type Contact = {
-  email: string;
-  linkedin: string;
-  resumePdf: string;
-  github?: string;
-  location?: string;
-  availability?: string;
-  clearance?: string;
-};
-
-export type NavLink = {
-  label: string;
-  href: `#${string}`;
-};
-
-export type Site = {
-  title: string;
-  description: string;
-  origin: string;
-  basePath: string;
-  nav: NavLink[];
-};
 
 export const hero: Hero = {
   name: "Jarrod Tran",
@@ -101,7 +48,7 @@ export const hero: Hero = {
 export const roles: Role[] = [
   {
     id: "ai-enablement",
-    label: "AI Enablement Strategy and Ops",
+    label: "AI Enablement",
     primary: true,
     summary:
       "I make large manufacturing orgs AI-native: as-is to to-be, ship, then hand off to a sustaining team. Enablement plus custom buildouts, not a pilot graveyard.",
@@ -114,7 +61,7 @@ export const roles: Role[] = [
   },
   {
     id: "bizops",
-    label: "Business Operations",
+    label: "BizOps",
     primary: false,
     summary:
       "I turn capacity, cost, and launch choices into one executable operating cadence so leadership can move without ad-hoc reporting.",
@@ -229,34 +176,45 @@ export const contact: Contact = {
 };
 
 export const site: Site = {
-  title: `${hero.name} — ${hero.title}`,
-  description: hero.voiceLine,
   origin: "https://jarrodtran.github.io",
-  basePath: process.env.NEXT_PUBLIC_BASE_PATH ?? "",
-  nav: [
-    { label: "Roles", href: "#roles" },
-    { label: "Experience", href: "#experience" },
-    { label: "Contact", href: "#contact" },
-  ],
+  lang: "en",
+  // Eng refreshes the asset; dimensions must match the file.
+  ogImage: { path: "/og.png", width: 1200, height: 630 },
 };
 
-export const primaryRole: Role = roles.find((role) => role.primary) ?? roles[0];
+/**
+ * Recruiter scan path, top to bottom (FE Designer IA): Hero → Experience →
+ * Fit → Footer. Object order here is render order and nav order. `navLabel`
+ * is omitted for the hero (the header wordmark links to top).
+ */
+export const sections: Record<SectionId, SectionMeta> = {
+  hero: { id: "hero", heading: hero.name },
+  experience: {
+    id: "experience",
+    heading: "Experience",
+    navLabel: "Experience",
+  },
+  roles: { id: "roles", heading: "Where I fit", navLabel: "Fit" },
+  contact: { id: "contact", heading: "Contact", navLabel: "Contact" },
+};
 
-export const secondaryRoles: Role[] = roles.filter(
-  (role) => role.id !== primaryRole.id,
-);
-
-export const targetingLine: string =
-  secondaryRoles.length > 0
-    ? `Also a fit for: ${secondaryRoles.map((role) => role.label).join(", ")}.`
-    : "";
-
-export const contentHasPlaceholders: boolean = JSON.stringify({
-  hero,
-  roles,
-  experience,
-  contact,
-}).includes(TODO_COPY);
+export const ui: UiStrings = {
+  skipToContent: "Skip to content",
+  cta: {
+    resume: "Resume",
+    linkedin: "LinkedIn",
+  },
+  hero: {
+    proofChipsLabel: "Proof points",
+    employersLabel: "Employers",
+  },
+  roles: {
+    primaryBadge: "Primary target",
+  },
+  experience: {
+    dateRangeSeparator: "–",
+  },
+};
 
 /**
  * Ship gate, independent of TODO_COPY. Flip to true only when Jarrod locks
