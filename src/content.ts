@@ -40,7 +40,7 @@ export const hero: Hero = {
   voiceLine: "I turn ambiguous mandates into operating systems that move.",
   proofChips: [
     { metric: "$260M", label: "annualized cost-down" },
-    { metric: "10k+", label: "Energy Manufacturing AI-native" },
+    { metric: "10k+", label: "AI-native org" },
     { metric: "$2B→$10B", label: "Apple India revenue" },
   ],
   employers: ["Tesla", "Waymo", "Apple", "Amazon"],
@@ -52,9 +52,9 @@ export const hero: Hero = {
  * experience bullets. Order is display order.
  */
 export const proofBand: ProofBand = [
-  { metric: "$156M", label: "incremental annual profit" },
-  { metric: "3.2×", label: "Megapack production scale" },
-  { metric: "20+", label: "AI tools shipped" },
+  { metric: "$156M", label: "annual profit" },
+  { metric: "3.2×", label: "Megapack scale" },
+  { metric: "20+", label: "AI tools" },
 ];
 
 export const roles: Role[] = [

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Bullets } from "@/components/ui/Bullets";
-import { cardClass } from "@/components/ui/ProofChips";
+import { cardClass } from "@/components/ui/card";
 import type { DateLabel, ExperienceRow } from "@/lib/selectors";
 
 type Props = {

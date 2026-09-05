@@ -58,7 +58,7 @@
      Section gap 5rem; hero→proof (2.5rem) and proof→Experience (3rem) are
      tighter and set where those blocks render. */
   --container-content: 40rem;
-  --container-voice: 42ch;
+  --container-voice: 64ch;
   --spacing-section: 5rem;
 
   /* Motion */

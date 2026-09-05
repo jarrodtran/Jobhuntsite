@@ -7,9 +7,9 @@ import { heroView } from "@/lib/selectors";
 /**
  * First viewport, dense left-aligned stack in this order and no other:
  * name (text-4xl) → title (text-base muted) → voice (text-sm muted, demoted)
- * → chip cards (money leads, ink border) → CTAs flush under the chips (Resume
- * solid ink, LinkedIn ghost) → quiet employer strip. Not a centered marketing
- * hero.
+ * → featured $ chip + pair (money leads, ink border) → CTAs flush under the
+ * chips (Resume solid ink, LinkedIn ghost) → quiet employer strip. Not a
+ * centered marketing hero.
  *
  * Hooks: `data-section="hero"`, `data-slot` on each row (name, title, voice,
  * proof-chips, ctas, employers).
@@ -46,7 +46,6 @@ export function Hero() {
       <ProofChips
         chips={heroView.proofChips}
         label={heroView.proofChipsLabel}
-        variant="hero"
         className="mt-6"
       />
 
