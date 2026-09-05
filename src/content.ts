@@ -110,10 +110,10 @@ export const experience: ExperienceEntry[] = [
     scopeLine:
       "Energy Manufacturing — AI enablement for 10k+ employees; global planning; FDE for custom buildouts",
     bullets: [
-      "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees): as-is to to-be to ship to hand-off to a sustaining team.",
-      "Own strategy on what we build, where we build it, and when we launch, plus regulatory and cost mitigation.",
-      "Stand up an FDE team for custom AI buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity).",
       "Sequence a $23M / 50+ initiative portfolio: $260M annualized cost-down, $156M incremental annual profit; Megapack scale 3.2×.",
+      "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees): as-is to to-be to ship to hand-off to a sustaining team.",
+      "Stand up an FDE team for custom AI buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity).",
+      "Own strategy on what we build, where we build it, and when we launch, plus regulatory and cost mitigation.",
     ],
     url: "https://www.tesla.com/megapack",
   },
