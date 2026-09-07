@@ -3,6 +3,9 @@ import createMDX from "@next/mdx";
 
 const nextConfig: NextConfig = {
   pageExtensions: ["ts", "tsx", "mdx"],
+  // Cursor / loopback previews often hit 127.0.0.1 while `next dev`
+  // initializes as localhost — allow both so /_next/* is not blocked.
+  allowedDevOrigins: ["127.0.0.1", "localhost"],
 };
 
 const withMDX = createMDX({
