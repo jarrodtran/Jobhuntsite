@@ -14,7 +14,13 @@ export async function isIndexable(): Promise<boolean> {
   return siteIndexable && (await remainingPlaceholders()).length === 0;
 }
 
+let logged = false;
+
 export async function logRemainingPlaceholders(): Promise<void> {
+  if (logged) {
+    return;
+  }
+  logged = true;
   const leftover = await remainingPlaceholders();
   if (leftover.length === 0) {
     return;
