@@ -64,9 +64,9 @@ Warm paper in light mode, warm charcoal in dark. Newsreader for headings, Inter 
 
 ## Deploy (Vercel)
 
-This app is built for Vercel (App Router route handlers, `next/og`, no `output: "export"`). GitHub Actions only lints and builds; it no longer publishes GitHub Pages.
+This app is built for Vercel (App Router route handlers, `next/og`, no `output: "export"`). [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) lints and builds on every PR. The GitHub Pages deploy job is still in that workflow so the last successful `github.io` publish stays live; it only uploads `out/` if a static export exists, which this app no longer produces.
 
-Until `jarrodtran.com` is serving this app, the last successful Pages deploy at `https://jarrodtran.github.io/Jobhuntsite/` stays up. Do not disable Pages until the custom domain is verified.
+Until `jarrodtran.com` is serving this app, `https://jarrodtran.github.io/Jobhuntsite/` stays up. Do not disable Pages until the custom domain is verified. After cutover, a follow-up PR can drop the Pages job.
 
 ### Cutover
 
