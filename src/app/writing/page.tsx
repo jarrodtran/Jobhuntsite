@@ -15,7 +15,7 @@ export default async function WritingIndex() {
     <main id="main" className="fade-up">
       <h1 className="font-display text-4xl tracking-tight">Writing</h1>
       <div className="mt-8">
-        <PostList posts={posts} />
+        <PostList posts={posts} titleAs="h2" />
       </div>
     </main>
   );

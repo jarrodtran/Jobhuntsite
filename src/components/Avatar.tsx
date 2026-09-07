@@ -7,7 +7,7 @@ export function Avatar() {
       alt=""
       width={88}
       height={88}
-      className="size-[88px] rounded-full ring-1 ring-hairline"
+      className="size-[88px] shrink-0 rounded-full ring-1 ring-hairline"
     />
   );
 }
