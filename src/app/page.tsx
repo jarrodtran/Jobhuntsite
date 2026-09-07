@@ -10,7 +10,7 @@ export default async function Home() {
   const recent = (await getPublishedPosts()).slice(0, 3);
 
   return (
-    <main id="main" className="fade-up">
+    <main id="main" tabIndex={-1} className="fade-up">
       <section className="pt-6 sm:pt-10">
         <Avatar />
         <h1 className="mt-6 font-display text-4xl tracking-tight sm:text-5xl">

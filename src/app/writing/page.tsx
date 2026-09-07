@@ -12,7 +12,7 @@ export default async function WritingIndex() {
   const posts = await getPublishedPosts();
 
   return (
-    <main id="main" className="fade-up">
+    <main id="main" tabIndex={-1} className="fade-up">
       <h1 className="font-display text-4xl tracking-tight">Writing</h1>
       <div className="mt-8">
         <PostList posts={posts} />

@@ -47,7 +47,7 @@ export default async function WritingPost({ params }: PageProps) {
   );
 
   return (
-    <main id="main" className="fade-up">
+    <main id="main" tabIndex={-1} className="fade-up">
       <article>
         <p className="text-sm text-muted">{formatPostDate(post.date)}</p>
         <h1 className="mt-3 font-display text-4xl tracking-tight">
