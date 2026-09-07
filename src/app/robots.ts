@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { origin } from "@/content/site";
+import { absoluteUrl, origin } from "@/content/site";
 import { isIndexable } from "@/lib/indexable";
 
 export default async function robots(): Promise<MetadataRoute.Robots> {
@@ -11,6 +11,7 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
 
   return {
     rules: { userAgent: "*", allow: "/" },
-    sitemap: `${origin}/sitemap.xml`,
+    sitemap: absoluteUrl("/sitemap.xml"),
+    host: new URL(origin).host,
   };
 }
