@@ -1,15 +1,31 @@
 import type { TimelineEntry } from "@/content/site";
 
 export function Timeline({ entries }: { entries: TimelineEntry[] }) {
+  if (entries.length === 0) {
+    return (
+      <p className="max-w-prose leading-7 text-muted">
+        No notes on the timeline yet.
+      </p>
+    );
+  }
+
   return (
-    <ol className="space-y-4">
+    <ol>
       {entries.map((entry, index) => (
         <li
           key={`${entry.year}-${index}`}
-          className="grid grid-cols-[5.5rem_1fr] gap-4 sm:grid-cols-[6rem_1fr]"
+          className="group grid grid-cols-[0.75rem_minmax(0,1fr)] gap-x-4 pb-7 last:pb-0 sm:gap-x-5"
         >
-          <span className="font-display text-muted tabular-nums">{entry.year}</span>
-          <span>{entry.text}</span>
+          <span className="relative flex justify-center" aria-hidden>
+            <span className="absolute top-2 bottom-0 w-px bg-hairline group-last:hidden" />
+            <span className="relative z-10 mt-2 size-1.5 shrink-0 rounded-full bg-muted" />
+          </span>
+          <div className="min-w-0">
+            <p className="break-words font-display text-sm tracking-tight text-muted">
+              {entry.year}
+            </p>
+            <p className="mt-1 max-w-prose leading-7">{entry.text}</p>
+          </div>
         </li>
       ))}
     </ol>
