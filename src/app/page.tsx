@@ -71,7 +71,7 @@ export default async function Home() {
               target="_blank"
             >
               LinkedIn
-              <span aria-hidden className="ml-0.5">
+              <span aria-hidden className="ml-1">
                 ↗
               </span>
               <span className="sr-only"> (opens in a new tab)</span>
