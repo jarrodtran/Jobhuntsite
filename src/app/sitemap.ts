@@ -1,27 +1,31 @@
 import type { MetadataRoute } from "next";
-import { origin } from "@/content/site";
-import { getPublishedPosts } from "@/lib/writing";
+import { absoluteUrl, now } from "@/content/site";
+import { getListablePosts, isIndexable } from "@/lib/indexable";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await getPublishedPosts();
-  const now = new Date();
+  if (!(await isIndexable())) {
+    return [];
+  }
+
+  const posts = await getListablePosts();
+  const latestPost = posts[0]?.date;
 
   return [
     {
-      url: origin,
-      lastModified: now,
+      url: absoluteUrl("/"),
+      lastModified: now.updatedAt,
       changeFrequency: "monthly",
       priority: 1,
     },
     {
-      url: `${origin}/writing`,
-      lastModified: posts[0] ? new Date(posts[0].date) : now,
+      url: absoluteUrl("/writing"),
+      lastModified: latestPost ?? now.updatedAt,
       changeFrequency: "weekly",
       priority: 0.8,
     },
     ...posts.map((post) => ({
-      url: `${origin}/writing/${post.slug}`,
-      lastModified: new Date(post.date),
+      url: absoluteUrl(`/writing/${post.slug}`),
+      lastModified: post.date,
       changeFrequency: "yearly" as const,
       priority: 0.6,
     })),

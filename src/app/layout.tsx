@@ -4,6 +4,7 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Providers } from "@/components/Providers";
 import { intro, origin } from "@/content/site";
+import { publicText } from "@/lib/format";
 import { isIndexable, logRemainingPlaceholders } from "@/lib/indexable";
 import "./globals.css";
 
@@ -23,6 +24,7 @@ const newsreader = Newsreader({
 export async function generateMetadata(): Promise<Metadata> {
   const indexable = await isIndexable();
   await logRemainingPlaceholders();
+  const description = publicText(intro.tagline, intro.name);
 
   return {
     metadataBase: new URL(origin),
@@ -30,7 +32,10 @@ export async function generateMetadata(): Promise<Metadata> {
       default: intro.name,
       template: `%s · ${intro.name}`,
     },
-    description: intro.tagline,
+    description,
+    applicationName: intro.name,
+    authors: [{ name: intro.name, url: origin }],
+    creator: intro.name,
     robots: indexable
       ? { index: true, follow: true }
       : { index: false, follow: false },
@@ -42,15 +47,16 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     openGraph: {
       type: "website",
+      locale: "en_US",
       title: intro.name,
-      description: intro.tagline,
+      description,
       url: "/",
       siteName: intro.name,
     },
     twitter: {
       card: "summary_large_image",
       title: intro.name,
-      description: intro.tagline,
+      description,
     },
     icons: {
       icon: [
