@@ -3,14 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev --turbopack --hostname 0.0.0.0 --port 3000",
+    "dev:webpack": "next dev --hostname 0.0.0.0 --port 3000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --hostname 0.0.0.0 --port 3000",
+    "preview": "pnpm run build && pnpm run start",
     "lint": "eslint"
   },
   "packageManager": "pnpm@10.33.3",
   "engines": {
-    "node": ">=22"
+    "node": ">=22",
+    "pnpm": ">=10"
   },
   "dependencies": {
     "next": "15.5.25",

@@ -1,3 +1,6 @@
+# Lint + build on every PR/push. The Pages deploy job stays until Vercel
+# cutover so the last github.io publish is retained; upload is skipped
+# when this app does not produce out/ (no static export).
 name: CI
 
 on:
@@ -47,6 +50,8 @@ jobs:
         with:
           path: out
 
+  # Keep this job in the file until Vercel cutover. It no-ops unless
+  # build uploaded an out/ artifact (this app does not emit one).
   deploy:
     if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.build.outputs.has_pages_artifact == 'true'
     needs: build

@@ -6,20 +6,38 @@ Content in [`src/content/site.ts`](src/content/site.ts) is placeholder-marked wi
 
 ## Local development
 
-Requires Node 22 and [pnpm](https://pnpm.io/).
+Requires **Node 22+** and [pnpm](https://pnpm.io/) 10+ (pinned via `packageManager` / `engines`). Enable Corepack if `pnpm` is missing: `corepack enable`.
 
 ```bash
 pnpm install
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000) or [http://127.0.0.1:3000](http://127.0.0.1:3000). Dev and production servers bind `0.0.0.0:3000` so Cursor port preview and other proxies can reach them.
 
 ```bash
 pnpm lint
 pnpm build
-pnpm start
+pnpm preview   # production build + next start on 0.0.0.0:3000
 ```
+
+### Preview / port troubleshooting
+
+Turbopack (`pnpm dev`) plus a Cursor port preview sometimes drops the connection (`ERR_CONNECTION_RESET` on the document or `/_next/*`). The production server is more stable:
+
+```bash
+pnpm preview
+```
+
+That is `next build` then `next start --hostname 0.0.0.0 --port 3000`.
+
+Still want hot reload?
+
+- Free port 3000 if a leftover Next process is holding it, then retry `pnpm dev`.
+- Fall back to Webpack: `pnpm dev:webpack`.
+- Use the same host in the browser (`localhost` vs `127.0.0.1`). `allowedDevOrigins` in [`next.config.ts`](next.config.ts) allows both so `/_next/*` is not treated as a cross-origin warn.
+
+Override the port: `pnpm dev -- --port 3001` or `pnpm start -- --port 3001`. Confirm `node -v` is 22+.
 
 ## Editing copy
 
