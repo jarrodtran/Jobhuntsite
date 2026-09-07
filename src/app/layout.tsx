@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Newsreader } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -21,6 +21,13 @@ const newsreader = Newsreader({
   style: ["normal", "italic"],
 });
 
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#111111" },
+  ],
+};
+
 export async function generateMetadata(): Promise<Metadata> {
   const indexable = await isIndexable();
   const description = isPlaceholder(intro.tagline)
@@ -35,10 +42,6 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s · ${intro.name}`,
     },
     description,
-    themeColor: [
-      { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-      { media: "(prefers-color-scheme: dark)", color: "#111111" },
-    ],
     robots: indexable
       ? { index: true, follow: true }
       : { index: false, follow: false },
