@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: CI
 
 on:
   push:
@@ -18,6 +18,8 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      has_pages_artifact: ${{ steps.pages_check.outputs.present }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -28,19 +30,25 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
       - run: pnpm build
-        env:
-          NEXT_PUBLIC_BASE_PATH: /Jobhuntsite
+      - id: pages_check
+        run: |
+          if [ -d out ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "No out/ directory (this app is not a static export). Skipping Pages upload so the last github.io deploy stays live until Vercel cutover."
+          fi
       - uses: actions/configure-pages@v5
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && steps.pages_check.outputs.present == 'true'
         with:
           enablement: true
       - uses: actions/upload-pages-artifact@v3
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && steps.pages_check.outputs.present == 'true'
         with:
           path: out
 
   deploy:
-    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && needs.build.outputs.has_pages_artifact == 'true'
     needs: build
     runs-on: ubuntu-latest
     environment:

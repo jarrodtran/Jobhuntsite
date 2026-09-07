@@ -1,6 +1,11 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { seoView } from "@/lib/selectors";
+import type { Metadata, Viewport } from "next";
+import { Inter, Newsreader } from "next/font/google";
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Header";
+import { Providers } from "@/components/Providers";
+import { intro, origin } from "@/content/site";
+import { isPlaceholder } from "@/lib/format";
+import { isIndexable, logRemainingPlaceholders } from "@/lib/indexable";
 import "./globals.css";
 
 const inter = Inter({
@@ -9,50 +14,63 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-/**
- * All metadata is derived from content: <title> and OG title come from
- * hero.name + hero.title, descriptions from hero.voiceLine. Image URLs are
- * absolute and basePath-prefixed so they resolve under /Jobhuntsite.
- * Indexing is gated by `siteIndexable` and the absence of TODO_COPY.
- */
-export const metadata: Metadata = {
-  metadataBase: seoView.siteUrl,
-  title: seoView.title,
-  description: seoView.description,
-  robots: seoView.indexable
-    ? { index: true, follow: true }
-    : { index: false, follow: false },
-  alternates: {
-    canonical: "./",
-  },
-  openGraph: {
-    type: "website",
-    title: seoView.title,
-    description: seoView.description,
-    url: "./",
-    siteName: seoView.siteName,
-    images: [
-      {
-        url: seoView.ogImage.url,
-        width: seoView.ogImage.width,
-        height: seoView.ogImage.height,
-        alt: seoView.ogImage.alt,
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: seoView.title,
-    description: seoView.description,
-    images: [seoView.ogImage.url],
-  },
-  icons: {
-    icon: [
-      { url: seoView.icons.ico, sizes: "32x32" },
-      { url: seoView.icons.svg, type: "image/svg+xml" },
-    ],
-  },
+const newsreader = Newsreader({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-newsreader",
+  style: ["normal", "italic"],
+});
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#111111" },
+  ],
 };
+
+export async function generateMetadata(): Promise<Metadata> {
+  const indexable = await isIndexable();
+  const description = isPlaceholder(intro.tagline)
+    ? "The personal site of Jarrod Tran."
+    : intro.tagline;
+  await logRemainingPlaceholders();
+
+  return {
+    metadataBase: new URL(origin),
+    title: {
+      default: intro.name,
+      template: `%s · ${intro.name}`,
+    },
+    description,
+    robots: indexable
+      ? { index: true, follow: true }
+      : { index: false, follow: false },
+    alternates: {
+      canonical: "/",
+      types: {
+        "application/rss+xml": "/feed.xml",
+      },
+    },
+    openGraph: {
+      type: "website",
+      title: intro.name,
+      description,
+      url: "/",
+      siteName: intro.name,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: intro.name,
+      description,
+    },
+    icons: {
+      icon: [
+        { url: "/favicon.ico", sizes: "32x32" },
+        { url: "/favicon.svg", type: "image/svg+xml" },
+      ],
+    },
+  };
+}
 
 export default function RootLayout({
   children,
@@ -60,19 +78,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang={seoView.lang} className={inter.variable} id="top">
-      <body className="bg-bg text-ink antialiased">
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:bg-bg focus:px-3 focus:py-2"
-        >
-          {seoView.skipToContent}
-        </a>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(seoView.jsonLd) }}
-        />
-        {children}
+    <html
+      lang="en"
+      className={`${inter.variable} ${newsreader.variable}`}
+      suppressHydrationWarning
+    >
+      <body className="bg-bg text-ink">
+        <Providers>
+          <a
+            href="#main"
+            className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:left-4 focus-visible:top-3 focus-visible:z-50 focus-visible:bg-bg focus-visible:px-3 focus-visible:py-2"
+          >
+            Skip to content
+          </a>
+          <div className="mx-auto w-full max-w-[48rem] px-5 sm:px-8">
+            <Header />
+            {children}
+            <Footer />
+          </div>
+        </Providers>
       </body>
     </html>
   );
