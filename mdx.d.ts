@@ -5,6 +5,7 @@ declare module "*.mdx" {
     title: string;
     date: string;
     summary: string;
+    /** Only `true` hides the post from lists, RSS, sitemap, and the public slug. */
     draft?: boolean;
   };
 
