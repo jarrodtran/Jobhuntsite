@@ -1,14 +1,15 @@
 import type { NextConfig } from "next";
-
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+import createMDX from "@next/mdx";
 
 const nextConfig: NextConfig = {
-  output: "export",
-  trailingSlash: true,
-  images: {
-    unoptimized: true,
-  },
-  ...(basePath ? { basePath } : {}),
+  pageExtensions: ["ts", "tsx", "mdx"],
 };
 
-export default nextConfig;
+const withMDX = createMDX({
+  options: {
+    // String form so Turbopack can serialize plugin options.
+    remarkPlugins: [["remark-gfm"]],
+  },
+});
+
+export default withMDX(nextConfig);

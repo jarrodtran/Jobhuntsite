@@ -1,69 +1,23 @@
 @import "tailwindcss";
 
-/*
- * Design tokens (FE Designer spec). This file is the visual surface; components
- * reference tokens by name (max-w-content, mt-section, ease-soft, text-ink),
- * so retuning here restyles the site without touching src/components.
- *
- * Structural hooks available in the markup:
- *   [data-section="hero|experience|roles|contact"]  top-level sections
- *   [data-component="site-header|proof-band|resume-bar"]
- *                                                   chrome, hairline proof
- *                                                   strip, mobile sticky CTA
- *   [data-slot="..."]                               named rows inside a section
- *   [data-lead="true"]                              the $260M hero figure
- *   [data-role="<id>"] [data-primary="true"]        role links
- *   [data-entry="<id>"] [data-open="true|false"]    experience rows
- *   [data-cta="resume|linkedin|email"]              calls to action
- */
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* Palette: warm paper, near-black ink, one muted, one hairline. No tints,
-     no tinted bands — the only surfaces are paper and white. */
-  --bg: #f7f6f3;
-  --ink: #111111;
-  --muted: #5f5b56;
-  --hairline: #e7e5e4;
-  --accent: #000000;
+  --bg: #fafaf7;
+  --ink: #1a1916;
+  --muted: #5c574f;
+  --hairline: #e6e2d9;
+  --accent: #1f4a3a;
   --surface: #ffffff;
-
-  /* Card: white, 1px hairline, and a single 1px shadow line. Nothing softer. */
-  --card-shadow: 0 1px 0 rgb(17 17 17 / 0.04);
-  --card-radius: 0.5rem;
-
-  /* Responsive measure (FE Designer spec). One column at every width; the
-     column simply gets wider as the viewport does, never past 56rem.
-       <640   full width (page pad 1.25rem)
-       ≥640   min(44rem, 100%)
-       ≥1024  min(52rem, 100%)
-       ≥1280  still 52rem. The spec allows the hero figure alone to take 56rem
-              (`xl:-mx-8` on the block) if the pair needs air; at text-3xl the
-              pair fits its 15rem column with room, so it stays on measure. */
-  --measure: 100%;
-
-  /* Vertical rhythm: 5rem section gap, 6rem at ≥1024 (8pt grid). */
-  --section-gap: 5rem;
-
-  /* Experience date rail width at ≥640 (w-28); w-32 at ≥1024. */
-  --rail: 7rem;
-
-  /* Motion: 150ms ease, opacity/height only */
-  --motion-duration: 150ms;
-  --motion-ease: ease;
 }
 
-@media (min-width: 640px) {
-  :root {
-    --measure: min(44rem, 100%);
-  }
-}
-
-@media (min-width: 1024px) {
-  :root {
-    --measure: min(52rem, 100%);
-    --section-gap: 6rem;
-    --rail: 8rem;
-  }
+.dark {
+  --bg: #161513;
+  --ink: #f2efe8;
+  --muted: #a8a29a;
+  --hairline: #2e2b27;
+  --accent: #9ec9b6;
+  --surface: #1f1d1a;
 }
 
 @theme inline {
@@ -74,40 +28,21 @@
   --color-accent: var(--accent);
   --color-surface: var(--surface);
 
-  --shadow-card: var(--card-shadow);
-  --radius-card: var(--card-radius);
-
   --font-sans:
     var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     sans-serif;
-
-  /* Section label: 11px / 0.14em tracking → `text-label`, `tracking-label`. */
-  --text-label: 11px;
-  --text-label--line-height: 1rem;
-  --tracking-label: 0.14em;
-
-  /* Layout: single column on the responsive measure above (`max-w-content`),
-     8pt rhythm. Section gap is `--section-gap` (5rem → 6rem at ≥1024);
-     hero→proof strip (2.5rem) and strip→Experience (3rem) are tighter and set
-     where those blocks render. */
-  --container-content: var(--measure);
-  --container-voice: 60ch;
-  --spacing-section: var(--section-gap);
-
-  /* Motion */
-  --default-transition-duration: var(--motion-duration);
-  --default-transition-timing-function: var(--motion-ease);
-  --ease-soft: var(--motion-ease);
+  --font-display:
+    var(--font-newsreader), ui-serif, Georgia, "Times New Roman", serif;
 }
 
-/* Inline text link: hairline underline → ink on hover. No motion. */
 @utility link {
+  color: var(--accent);
   text-decoration-line: underline;
-  text-decoration-color: var(--hairline);
+  text-decoration-color: color-mix(in oklab, var(--accent) 35%, transparent);
   text-underline-offset: 3px;
 
   &:hover {
-    text-decoration-color: var(--ink);
+    text-decoration-color: var(--accent);
   }
 }
 
@@ -115,9 +50,41 @@ html {
   scroll-behavior: smooth;
 }
 
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.fade-up {
+  animation: fade-up 500ms ease both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .fade-up {
+    animation: none;
   }
 
   *,
@@ -127,18 +94,4 @@ html {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
-
-body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-sans);
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-/* Focus rings: 2px ink, offset 2 */
-:focus-visible {
-  outline: 2px solid var(--ink);
-  outline-offset: 2px;
 }
