@@ -3,21 +3,31 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --bg: #fafaf7;
-  --ink: #1a1916;
-  --muted: #5c574f;
-  --hairline: #e6e2d9;
+  --bg: #f4f3ee;
+  --ink: #151412;
+  --muted: #534e46;
+  --hairline: #d6d1c6;
   --accent: #1f4a3a;
-  --surface: #ffffff;
+  --surface: #fbfaf6;
+  --mark: #1f4a3a;
+  --mark-ink: #f4f3ee;
+  --wash-a: color-mix(in oklab, var(--accent) 11%, transparent);
+  --wash-b: color-mix(in oklab, #2c2a26 5%, transparent);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  color-scheme: light;
 }
 
 .dark {
-  --bg: #161513;
-  --ink: #f2efe8;
-  --muted: #a8a29a;
-  --hairline: #2e2b27;
-  --accent: #9ec9b6;
-  --surface: #1f1d1a;
+  --bg: #12110f;
+  --ink: #f3f0e7;
+  --muted: #b8b2a6;
+  --hairline: #3d3933;
+  --accent: #8fbea9;
+  --surface: #1c1a17;
+  --wash-a: color-mix(in oklab, #2f4a3d 42%, transparent);
+  --wash-b: color-mix(in oklab, #000 28%, transparent);
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -27,6 +37,8 @@
   --color-hairline: var(--hairline);
   --color-accent: var(--accent);
   --color-surface: var(--surface);
+  --color-mark: var(--mark);
+  --color-mark-ink: var(--mark-ink);
 
   --font-sans:
     var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
@@ -38,8 +50,9 @@
 @utility link {
   color: var(--accent);
   text-decoration-line: underline;
-  text-decoration-color: color-mix(in oklab, var(--accent) 35%, transparent);
-  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in oklab, var(--accent) 34%, transparent);
+  text-underline-offset: 0.22em;
 
   &:hover {
     text-decoration-color: var(--accent);
@@ -47,26 +60,61 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  background-color: var(--bg);
 }
 
 body {
-  background: var(--bg);
+  min-height: 100dvh;
+  background-color: var(--bg);
+  background-image:
+    var(--grain),
+    radial-gradient(90% 55% at 0% -5%, var(--wash-a), transparent 58%),
+    radial-gradient(70% 45% at 110% 108%, var(--wash-b), transparent 54%);
+  background-repeat: repeat, no-repeat, no-repeat;
   color: var(--ink);
   font-family: var(--font-sans);
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: 1.0625rem;
+  font-kerning: normal;
+  letter-spacing: -0.011em;
+  line-height: 1.65;
+  text-rendering: optimizeLegibility;
+}
+
+.font-display {
+  font-optical-sizing: auto;
+  font-kerning: normal;
+  font-weight: 465;
+  letter-spacing: -0.03em;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+#main > section:first-child h1 {
+  letter-spacing: -0.036em;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--accent) 26%, var(--bg));
+  color: var(--ink);
 }
 
 :focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -74,8 +122,18 @@ body {
   }
 }
 
-.fade-up {
-  animation: fade-up 500ms ease both;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .fade-up {
+    animation: fade-up 640ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .link {
+    transition: text-decoration-color 180ms ease;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -93,5 +151,6 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

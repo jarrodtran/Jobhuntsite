@@ -16,8 +16,10 @@ export default function OpenGraphImage() {
           flexDirection: "column",
           justifyContent: "center",
           padding: 80,
-          background: "#fafaf7",
-          color: "#1a1916",
+          background: "#f4f3ee",
+          backgroundImage:
+            "radial-gradient(80% 60% at 0% 0%, rgba(31, 74, 58, 0.1), transparent 58%)",
+          color: "#151412",
         }}
       >
         <div
@@ -27,11 +29,12 @@ export default function OpenGraphImage() {
             height: 88,
             borderRadius: 999,
             background: "#1f4a3a",
-            color: "#fafaf7",
+            color: "#f4f3ee",
             alignItems: "center",
             justifyContent: "center",
             fontSize: 36,
             fontFamily: "Georgia, serif",
+            boxShadow: "inset 0 0 0 1.5px rgba(244, 243, 238, 0.2)",
           }}
         >
           JT
@@ -46,7 +49,7 @@ export default function OpenGraphImage() {
         >
           {intro.greeting}
         </div>
-        <div style={{ marginTop: 16, fontSize: 28, color: "#5c574f" }}>
+        <div style={{ marginTop: 16, fontSize: 28, color: "#534e46" }}>
           jarrodtran.com
         </div>
       </div>

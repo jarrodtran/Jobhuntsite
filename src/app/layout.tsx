@@ -18,6 +18,7 @@ const newsreader = Newsreader({
   display: "swap",
   variable: "--font-newsreader",
   style: ["normal", "italic"],
+  axes: ["opsz"],
 });
 
 export async function generateMetadata(): Promise<Metadata> {
