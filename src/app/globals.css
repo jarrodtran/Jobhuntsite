@@ -5,21 +5,23 @@
 :root {
   color-scheme: light;
   --bg: #ffffff;
-  --ink: #000000;
-  --muted: #525252;
-  --hairline: #e5e5e5;
-  --accent: #1f4a3a;
-  --surface: #f5f5f5;
+  --ink: #101010;
+  --muted: #616161;
+  --hairline: #dddddd;
+  --accent: #173d2f;
+  --accent-soft: #dce8e2;
+  --code-bg: #f4f4f4;
 }
 
 .dark {
   color-scheme: dark;
-  --bg: #161513;
-  --ink: #f2efe8;
-  --muted: #a8a29a;
-  --hairline: #2e2b27;
+  --bg: #111111;
+  --ink: #f5f5f5;
+  --muted: #a3a3a3;
+  --hairline: #303030;
   --accent: #9ec9b6;
-  --surface: #1f1d1a;
+  --accent-soft: #20372e;
+  --code-bg: #1d1d1d;
 }
 
 @theme inline {
@@ -28,7 +30,8 @@
   --color-muted: var(--muted);
   --color-hairline: var(--hairline);
   --color-accent: var(--accent);
-  --color-surface: var(--surface);
+  --color-accent-soft: var(--accent-soft);
+  --color-code-bg: var(--code-bg);
 
   --font-sans:
     var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
@@ -40,8 +43,10 @@
 @utility link {
   color: var(--accent);
   text-decoration-line: underline;
-  text-decoration-color: color-mix(in oklab, var(--accent) 35%, transparent);
-  text-underline-offset: 3px;
+  text-decoration-color: var(--accent-soft);
+  text-decoration-color: color-mix(in oklab, var(--accent) 30%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.24em;
 
   &:hover {
     text-decoration-color: var(--accent);
@@ -49,26 +54,130 @@
 }
 
 html {
-  scroll-behavior: smooth;
+  min-height: 100%;
+  background: var(--bg);
 }
 
 body {
-  background: var(--bg);
+  min-height: 100dvh;
+  background-color: var(--bg);
   color: var(--ink);
   font-family: var(--font-sans);
   font-size: 1rem;
-  line-height: 1.6;
+  font-kerning: normal;
+  line-height: 1.7;
+  text-rendering: optimizeLegibility;
+}
+
+.font-display {
+  font-optical-sizing: auto;
+  font-kerning: normal;
+  font-weight: 480;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+.mdx-pre code {
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
 }
 
 :focus-visible {
   outline: 2px solid var(--accent);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
-@keyframes fade-up {
+/*
+ * The record: at tablet widths, labels sit in a measured margin and every
+ * section meets one continuous rule. Below that, the rail collapses cleanly
+ * into an eyebrow above the content.
+ */
+.record-flow {
+  position: relative;
+}
+
+.record-section {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.record-label {
+  margin-bottom: 0.75rem;
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  line-height: 1rem;
+  text-transform: uppercase;
+}
+
+.record-body {
+  min-width: 0;
+}
+
+.record-serif {
+  font-family: var(--font-display);
+  font-size: clamp(1.125rem, 2.2vw, 1.25rem);
+  letter-spacing: -0.012em;
+  line-height: 1.65;
+}
+
+@media (min-width: 768px) {
+  .record-flow::before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 8rem;
+    width: 1px;
+    background: var(--hairline);
+    content: "";
+  }
+
+  .record-section {
+    grid-template-columns: 7rem minmax(0, 34rem);
+    column-gap: 2rem;
+  }
+
+  .record-section::before {
+    position: absolute;
+    top: 0.48rem;
+    left: 7.5rem;
+    z-index: 1;
+    width: 1rem;
+    height: 1px;
+    background: var(--accent);
+    content: "";
+  }
+
+  .record-label {
+    margin: 0;
+    padding-top: 0.05rem;
+    text-align: right;
+  }
+}
+
+@keyframes hero-in {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
@@ -76,8 +185,24 @@ body {
   }
 }
 
-.fade-up {
-  animation: fade-up 500ms ease both;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  .hero-enter {
+    animation: hero-in 320ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  }
+
+  .link {
+    transition:
+      text-decoration-color 150ms ease,
+      text-underline-offset 150ms ease;
+  }
+
+  .link:hover {
+    text-underline-offset: 0.3em;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -85,15 +210,7 @@ body {
     scroll-behavior: auto;
   }
 
-  .fade-up {
+  .hero-enter {
     animation: none;
-  }
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
   }
 }

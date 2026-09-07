@@ -4,6 +4,7 @@ import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Providers } from "@/components/Providers";
 import { intro, origin } from "@/content/site";
+import { isPlaceholder } from "@/lib/format";
 import { isIndexable, logRemainingPlaceholders } from "@/lib/indexable";
 import "./globals.css";
 
@@ -22,6 +23,9 @@ const newsreader = Newsreader({
 
 export async function generateMetadata(): Promise<Metadata> {
   const indexable = await isIndexable();
+  const description = isPlaceholder(intro.tagline)
+    ? "The personal site of Jarrod Tran."
+    : intro.tagline;
   await logRemainingPlaceholders();
 
   return {
@@ -30,7 +34,11 @@ export async function generateMetadata(): Promise<Metadata> {
       default: intro.name,
       template: `%s · ${intro.name}`,
     },
-    description: intro.tagline,
+    description,
+    themeColor: [
+      { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+      { media: "(prefers-color-scheme: dark)", color: "#111111" },
+    ],
     robots: indexable
       ? { index: true, follow: true }
       : { index: false, follow: false },
@@ -43,14 +51,14 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       type: "website",
       title: intro.name,
-      description: intro.tagline,
+      description,
       url: "/",
       siteName: intro.name,
     },
     twitter: {
       card: "summary_large_image",
       title: intro.name,
-      description: intro.tagline,
+      description,
     },
     icons: {
       icon: [
@@ -72,15 +80,15 @@ export default function RootLayout({
       className={`${inter.variable} ${newsreader.variable}`}
       suppressHydrationWarning
     >
-      <body className="bg-bg text-ink antialiased">
+      <body className="bg-bg text-ink">
         <Providers>
           <a
             href="#main"
-            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:bg-bg focus:px-3 focus:py-2"
+            className="sr-only focus-visible:not-sr-only focus-visible:fixed focus-visible:left-4 focus-visible:top-3 focus-visible:z-50 focus-visible:bg-bg focus-visible:px-3 focus-visible:py-2"
           >
             Skip to content
           </a>
-          <div className="mx-auto w-full max-w-[42rem] px-5 sm:px-6">
+          <div className="mx-auto w-full max-w-[48rem] px-5 sm:px-8">
             <Header />
             {children}
             <Footer />

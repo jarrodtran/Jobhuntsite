@@ -34,7 +34,7 @@ All homepage copy lives in [`src/content/site.ts`](src/content/site.ts).
 | `links.email`, `linkedin`, `github` | Footer. A value that still contains `TODO_COPY` is omitted |
 | `siteIndexable` | Flip to `true` when copy is locked and you want search engines in |
 
-Replace [`public/avatar.svg`](public/avatar.svg) with a photo (keep it square). [`public/resume.pdf`](public/resume.pdf) is reachable at `/resume.pdf` but is not linked anywhere.
+No placeholder avatar is rendered: a generic initials disc made the site feel less personal, not more. When a real photo is available, add it deliberately to the opening composition. [`public/resume.pdf`](public/resume.pdf) is reachable at `/resume.pdf` but is not linked anywhere.
 
 ## Writing
 
@@ -60,7 +60,7 @@ Body in MDX. GitHub-flavored markdown (tables, strikethrough) works.
 
 ## Design
 
-White background with black text in light mode (default); charcoal dark mode via the header toggle. Newsreader for headings, Inter for body, 42rem column. Accent color matches the existing JT favicon (`#1f4a3a`).
+The visual concept is **the record, not the résumé**: white background, near-black text, an editorial Newsreader voice, and one measured margin rail with green ticks. There are no dashboard cards or placeholder portraits. Light is the default; a cool charcoal dark mode remains available. `TODO_COPY` sections are omitted until their copy is real, so a shared preview never reads as an unfinished template.
 
 ## Deploy (Vercel)
 

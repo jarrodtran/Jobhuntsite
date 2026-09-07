@@ -12,7 +12,7 @@ export function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return <span className="inline-block size-9" aria-hidden />;
+    return <span className="inline-block size-11 shrink-0" aria-hidden />;
   }
 
   const dark = resolvedTheme === "dark";
@@ -20,9 +20,11 @@ export function ThemeToggle() {
   return (
     <button
       type="button"
-      aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
+      aria-label="Dark theme"
+      aria-pressed={dark}
+      title={dark ? "Use light theme" : "Use dark theme"}
       onClick={() => setTheme(dark ? "light" : "dark")}
-      className="inline-flex size-9 items-center justify-center rounded-full text-muted hover:bg-surface hover:text-ink"
+      className="inline-flex size-11 shrink-0 items-center justify-center text-muted hover:text-ink"
     >
       {dark ? <SunIcon /> : <MoonIcon />}
     </button>

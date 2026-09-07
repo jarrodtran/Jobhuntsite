@@ -13,41 +13,63 @@ export default function OpenGraphImage() {
           width: "100%",
           height: "100%",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          padding: 80,
-          background: "#fafaf7",
-          color: "#1a1916",
+          alignItems: "center",
+          padding: "72px 88px",
+          background: "#ffffff",
+          color: "#101010",
         }}
       >
         <div
           style={{
             display: "flex",
-            width: 88,
-            height: 88,
-            borderRadius: 999,
-            background: "#1f4a3a",
-            color: "#fafaf7",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: 36,
-            fontFamily: "Georgia, serif",
+            width: 190,
+            height: 390,
+            paddingTop: 10,
+            justifyContent: "flex-end",
+            borderRight: "2px solid #dddddd",
+            color: "#616161",
+            fontSize: 20,
+            fontFamily: "Arial, sans-serif",
+            letterSpacing: 3,
+            textTransform: "uppercase",
           }}
         >
-          JT
+          <span style={{ marginRight: 28 }}>Personal record</span>
         </div>
         <div
           style={{
-            marginTop: 36,
-            fontSize: 64,
-            fontFamily: "Georgia, serif",
-            letterSpacing: -1,
+            display: "flex",
+            position: "relative",
+            flexDirection: "column",
+            justifyContent: "center",
+            width: 780,
+            height: 390,
+            paddingLeft: 54,
           }}
         >
-          {intro.greeting}
-        </div>
-        <div style={{ marginTop: 16, fontSize: 28, color: "#5c574f" }}>
-          jarrodtran.com
+          <div
+            style={{
+              position: "absolute",
+              top: 18,
+              left: -14,
+              width: 28,
+              height: 2,
+              background: "#173d2f",
+            }}
+          />
+          <div
+            style={{
+              fontSize: 76,
+              fontFamily: "Georgia, serif",
+              letterSpacing: -3,
+              lineHeight: 1,
+            }}
+          >
+            {intro.greeting}
+          </div>
+          <div style={{ marginTop: 32, fontSize: 24, color: "#616161" }}>
+            jarrodtran.com
+          </div>
         </div>
       </div>
     ),

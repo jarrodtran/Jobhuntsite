@@ -1,20 +1,20 @@
 import type { MDXComponents } from "mdx/types";
 
 const prose = {
-  h1: "mt-10 font-display text-3xl tracking-tight text-ink first:mt-0",
-  h2: "mt-8 font-display text-2xl tracking-tight text-ink first:mt-0",
-  h3: "mt-6 font-display text-xl tracking-tight text-ink first:mt-0",
-  p: "mt-4 text-base leading-7 text-ink first:mt-0",
+  h1: "mt-12 font-display text-4xl leading-tight tracking-[-0.03em] text-ink first:mt-0",
+  h2: "mt-12 font-display text-3xl leading-tight tracking-[-0.03em] text-ink first:mt-0",
+  h3: "mt-9 font-display text-2xl leading-tight tracking-[-0.02em] text-ink first:mt-0",
+  p: "record-serif mt-6 text-ink first:mt-0",
   a: "link",
-  ul: "mt-4 list-disc space-y-2 pl-5 leading-7",
-  ol: "mt-4 list-decimal space-y-2 pl-5 leading-7",
+  ul: "record-serif mt-6 list-disc space-y-2 pl-5",
+  ol: "record-serif mt-6 list-decimal space-y-2 pl-5",
   li: "pl-1",
   blockquote:
-    "mt-4 border-l-2 border-accent pl-4 text-muted italic leading-7",
-  code: "rounded bg-surface px-1 py-0.5 text-[0.9em] font-medium",
-  pre: "mt-4 overflow-x-auto rounded-lg bg-surface p-4 text-sm leading-6 ring-1 ring-hairline",
-  hr: "my-8 border-hairline",
-  table: "mt-4 w-full text-left text-sm",
+    "record-serif mt-8 border-l border-accent pl-5 text-muted italic",
+  code: "rounded-sm bg-code-bg px-1.5 py-0.5 font-sans text-[0.84em]",
+  pre: "mdx-pre mt-8 overflow-x-auto border border-hairline bg-code-bg p-5 font-mono text-sm leading-6",
+  hr: "my-12 border-hairline",
+  table: "mt-8 w-full text-left text-sm",
   th: "border-b border-hairline py-2 pr-4 font-medium",
   td: "border-b border-hairline py-2 pr-4",
 } as const;
@@ -36,6 +36,10 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     blockquote: ({ children }) => (
       <blockquote className={prose.blockquote}>{children}</blockquote>
     ),
+    strong: ({ children }) => (
+      <strong className="font-semibold text-ink">{children}</strong>
+    ),
+    em: ({ children }) => <em className="font-display italic">{children}</em>,
     code: ({ children }) => <code className={prose.code}>{children}</code>,
     pre: ({ children }) => <pre className={prose.pre}>{children}</pre>,
     hr: () => <hr className={prose.hr} />,

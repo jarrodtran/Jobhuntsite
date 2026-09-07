@@ -2,23 +2,36 @@ import Link from "next/link";
 import { formatPostDate } from "@/lib/format";
 import type { Post } from "@/lib/writing";
 
-export function PostList({ posts }: { posts: Post[] }) {
+export function PostList({
+  posts,
+  titleAs: Title = "h3",
+}: {
+  posts: Post[];
+  titleAs?: "h2" | "h3";
+}) {
   if (posts.length === 0) {
     return (
-      <p className="text-muted">Nothing published yet — first post soon.</p>
+      <p className="record-serif max-w-[30rem] text-muted">
+        No essays yet. This is where longer notes will live.
+      </p>
     );
   }
 
   return (
-    <ul className="divide-y divide-hairline">
+    <ul className="space-y-8">
       {posts.map((post) => (
-        <li key={post.slug} className="py-4 first:pt-0 last:pb-0">
+        <li key={post.slug}>
           <Link href={`/writing/${post.slug}`} className="group block">
-            <p className="text-sm text-muted">{formatPostDate(post.date)}</p>
-            <p className="mt-1 font-display text-lg tracking-tight text-ink group-hover:text-accent">
+            <time
+              dateTime={post.date}
+              className="text-xs font-semibold uppercase tracking-[0.14em] text-muted"
+            >
+              {formatPostDate(post.date)}
+            </time>
+            <Title className="mt-2 font-display text-2xl leading-tight tracking-[-0.025em] text-ink decoration-accent-soft underline-offset-4 group-hover:underline">
               {post.title}
-            </p>
-            <p className="mt-1 text-muted">{post.summary}</p>
+            </Title>
+            <p className="mt-2 max-w-[32rem] text-muted">{post.summary}</p>
           </Link>
         </li>
       ))}
