@@ -60,7 +60,7 @@ Body in MDX. GitHub-flavored markdown (tables, strikethrough) works.
 
 ## Design
 
-Warm paper in light mode, warm charcoal in dark. Newsreader for headings, Inter for body, 42rem column. Theme follows the OS by default; the header toggle persists. Accent color matches the existing JT favicon (`#1f4a3a`).
+White background with black text in light mode (default); charcoal dark mode via the header toggle. Newsreader for headings, Inter for body, 42rem column. Accent color matches the existing JT favicon (`#1f4a3a`).
 
 ## Deploy (Vercel)
 
