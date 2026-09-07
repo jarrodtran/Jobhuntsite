@@ -3,6 +3,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
+  color-scheme: light;
   --bg: #fafaf7;
   --ink: #1a1916;
   --muted: #5c574f;
@@ -12,6 +13,7 @@
 }
 
 .dark {
+  color-scheme: dark;
   --bg: #161513;
   --ink: #f2efe8;
   --muted: #a8a29a;

@@ -3,6 +3,7 @@ import { Inter, Newsreader } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Providers } from "@/components/Providers";
+import { SkipLink } from "@/components/SkipLink";
 import { intro, origin } from "@/content/site";
 import { isIndexable, logRemainingPlaceholders } from "@/lib/indexable";
 import "./globals.css";
@@ -74,12 +75,7 @@ export default function RootLayout({
     >
       <body className="bg-bg text-ink antialiased">
         <Providers>
-          <a
-            href="#main"
-            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:bg-bg focus:px-3 focus:py-2"
-          >
-            Skip to content
-          </a>
+          <SkipLink />
           <div className="mx-auto w-full max-w-[42rem] px-5 sm:px-6">
             <Header />
             {children}
