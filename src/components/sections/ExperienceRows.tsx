@@ -21,7 +21,7 @@ type Props = {
  * on first paint (server-rendered, so it reads correctly before hydration).
  * A `#<entry-id>` hash — from the Fit links or a shared URL — opens that row.
  *
- * Closed rows are a list: dates, title · company on one line, scope
+ * Closed rows are a list: dates, title · company as wrapping inline text, scope
  * `line-clamp-1`, a hairline under each, denser `py-2.5` / `min-h-11` so the
  * row is a 44px hit target without extra chrome. Hover washes the closed row
  * white and turns the hairline ink (150ms, no scale; snapped under reduced
@@ -105,7 +105,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                   </span>
                   <Chevron open={open} />
                   <span className="col-span-2 min-w-0 sm:col-span-1 sm:col-start-2 sm:row-start-1">
-                    <span className="flex min-w-0 items-baseline">
+                    <span>
                       <span
                         data-slot="title"
                         className="font-semibold leading-6 tracking-tight text-ink"
@@ -117,7 +117,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                       </span>
                       <span
                         data-slot="company"
-                        className="truncate text-sm text-muted"
+                        className="text-sm text-muted"
                       >
                         {row.company}
                         {row.location ? ` · ${row.location}` : null}
