@@ -79,7 +79,7 @@
   --radius-card: var(--card-radius);
 
   --font-sans:
-    var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     sans-serif;
 
   /* Section label: 11px / 0.14em tracking → `text-label`, `tracking-label`. */
@@ -114,6 +114,7 @@
 
 html {
   scroll-behavior: smooth;
+  font-family: var(--font-sans);
 }
 
 @media (prefers-reduced-motion: reduce) {

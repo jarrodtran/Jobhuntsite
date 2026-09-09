@@ -86,7 +86,7 @@ Placeholders are written as `TODO_COPY: hint` via the `todo()` helper. Blank or 
 
 ## Styling and extension points
 
-[`src/app/globals.css`](src/app/globals.css) is the visual surface. Type is Inter on Tailwind's default scale with two weights that matter (semibold/bold) and muted for everything else: name `text-5xl` semibold `tracking-tighter`; title `text-base` muted; voice `text-sm` muted; lead figure `text-5xl` bold tabular `tracking-tighter`; pair `text-2xl` semibold; proof strip `text-lg` semibold; experience titles semibold; every label (section headings, figure labels, the Fit badge) is `text-label` 11px semibold uppercase `tracking-label`. Everything else is a token:
+[`src/app/globals.css`](src/app/globals.css) is the visual surface. Type is Geist Sans on Tailwind's default scale with two weights that matter (semibold/bold) and muted for everything else: name `text-5xl` semibold `tracking-tighter`; title `text-base` muted; voice `text-sm` muted; lead figure `text-5xl` bold tabular `tracking-tighter`; pair `text-2xl` semibold; proof strip `text-lg` semibold; experience titles semibold; every label (section headings, figure labels, the Fit badge) is `text-label` 11px semibold uppercase `tracking-label`. Everything else is a token:
 
 | Token | Utility | Value / used for |
 | --- | --- | --- |
@@ -94,7 +94,7 @@ Placeholders are written as `TODO_COPY: hint` via the `todo()` helper. Blank or 
 | `--surface` | `bg-surface` | White. The only surface besides paper: the `$260M` block and the open experience panel |
 | `--card-shadow`, `--card-radius` | `shadow-card`, `rounded-card` | `0 1px 0 rgb(17 17 17 / 0.04)`; 0.5rem. Shared via `cardClass` / `bleedCardClass` (edge-to-edge under 640px) in `src/components/ui/card.ts` |
 | `--text-label`, `--tracking-label` | `text-label`, `tracking-label` | 11px / 1rem line height; 0.14em |
-| `--font-inter` → `--font-sans` | body default | Inter with `system-ui` fallback; sans only |
+| `--font-geist-sans` → `--font-sans` | body default | Geist Sans with `system-ui` fallback; sans only |
 | `--measure` → `--container-content`, `--container-voice` | `max-w-content`, `max-w-voice` | Responsive page column: full width <640, `min(44rem, 100%)` ≥640, `min(52rem, 100%)` ≥1024 (never past 56rem); 60ch voice line (one line at desktop) |
 | `--section-gap` → `--spacing-section` | `mt-section` | 5rem gap between sections, 6rem ≥1024. Hero→proof strip is 2.5rem (`mt-10`, 3rem ≥1024) and strip→Experience 3rem (`Section spacing="tight"`, 4rem ≥1024) |
 | `--rail` | `sm:grid-cols-[var(--rail)_1fr_auto]`, `sm:pl-[calc(1.25rem+var(--rail)+1rem)]` | 7rem experience date column, 8rem ≥1024; inside the open panel it is the left rail the bullets clear |
