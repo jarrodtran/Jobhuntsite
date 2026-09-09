@@ -1,13 +1,13 @@
 import { site } from "@/content";
 
 /**
- * GitHub Pages serves the site under `/Jobhuntsite`; a custom domain serves it
- * at `/`. `NEXT_PUBLIC_BASE_PATH` is the single switch (see next.config.ts).
- * This is the only module that reads it.
+ * Production (jarrodtran.com apex) serves at `/`. The project-pages path
+ * `/Jobhuntsite` is still available via NEXT_PUBLIC_BASE_PATH for local
+ * previews. This is the only module that reads the env var.
  */
 export const basePath: string = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
-/** Canonical URL of the homepage, with trailing slash, e.g. https://host/Jobhuntsite/ */
+/** Canonical URL of the homepage, with trailing slash. */
 export const siteUrl: URL = new URL(`${site.origin}${basePath}/`);
 
 /**
