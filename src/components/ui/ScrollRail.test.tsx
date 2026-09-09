@@ -108,5 +108,23 @@ describe("ScrollRail", () => {
       "focus-visible:outline-ink",
     );
   });
+
+  it("pads the top with the iOS safe-area inset and keeps the inner rail h-12", () => {
+    renderRail();
+    const rail = document.querySelector("[data-component='scroll-rail']");
+    const inner = rail?.querySelector(":scope > div");
+
+    expect(rail?.className).toContain("env(safe-area-inset-top)");
+    expect(inner).toHaveClass("h-12");
+  });
+
+  it("presses the solid Resume to opacity 0.9", () => {
+    renderRail();
+    const resume = document.querySelector(
+      "[data-component='scroll-rail'] [data-cta='resume']",
+    );
+
+    expect(resume).toHaveClass("active:opacity-90");
+  });
 });
 

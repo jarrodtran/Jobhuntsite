@@ -40,7 +40,7 @@ export function ScrollRail({ cta, watchId, wordmark, homeHref }: Props) {
       data-component="scroll-rail"
       aria-hidden={!visible}
       className={[
-        "fixed inset-x-0 top-0 z-50 hidden border-b border-hairline bg-bg sm:block",
+        "fixed inset-x-0 top-0 z-50 hidden border-b border-hairline bg-bg pt-[env(safe-area-inset-top)] sm:block",
         withReducedMotionSnap("transition-transform duration-150 ease-soft"),
         visible ? "translate-y-0" : "-translate-y-full",
       ].join(" ")}
@@ -61,7 +61,7 @@ export function ScrollRail({ cta, watchId, wordmark, homeHref }: Props) {
           data-cta={cta.kind}
           data-variant="solid"
           tabIndex={visible ? undefined : -1}
-          className={`inline-flex h-8 min-w-24 items-center justify-center rounded-md bg-ink px-4 text-sm font-semibold text-bg hover:bg-accent ${FOCUS_VISIBLE_CLASS}`}
+          className={`inline-flex h-8 min-w-24 items-center justify-center rounded-md bg-ink px-4 text-sm font-semibold text-bg hover:bg-accent active:opacity-90 ${FOCUS_VISIBLE_CLASS}`}
           {...(cta.external ? { rel: "noopener" } : {})}
           {...(cta.download ? { download: true, type: "application/pdf" } : {})}
         >

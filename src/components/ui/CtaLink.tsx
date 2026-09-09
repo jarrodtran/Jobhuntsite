@@ -13,12 +13,14 @@ type Props = {
 
 const baseClass = [
   "inline-flex h-11 items-center justify-center rounded-md border px-6 text-sm font-semibold",
+  "active:opacity-90",
   FOCUS_VISIBLE_CLASS,
 ].join(" ");
 
 /**
  * Solid = ink fill, black on hover: the inevitable button. Ghost = hairline
- * border that goes ink on hover, muted text to ink. No scale, no motion.
+ * border that goes ink on hover, muted text to ink. Press is opacity 0.9.
+ * No scale, no motion.
  */
 const variantClass: Record<Variant, string> = {
   solid: "border-ink bg-ink text-bg hover:border-accent hover:bg-accent",

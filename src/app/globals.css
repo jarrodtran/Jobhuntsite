@@ -143,3 +143,9 @@ body {
   outline: 2px solid var(--ink);
   outline-offset: 2px;
 }
+
+/* Selection: ink on a paper tint (hairline wash over --bg). */
+::selection {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 8%, var(--bg));
+}

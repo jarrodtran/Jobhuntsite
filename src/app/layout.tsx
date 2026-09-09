@@ -1,7 +1,10 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import { viewportChrome } from "@/lib/chrome";
 import { seoView } from "@/lib/selectors";
 import "./globals.css";
+
+export const viewport: Viewport = viewportChrome;
 
 const inter = Inter({
   subsets: ["latin"],
