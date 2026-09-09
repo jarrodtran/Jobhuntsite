@@ -3,12 +3,12 @@ import { proofBandView } from "@/lib/selectors";
 
 /**
  * Proof strip: three secondary metrics ruled by hairlines — no tint, no cards,
- * left-aligned like a table in a memo. Values text-lg semibold tabular with
+ * left-aligned like a table in a memo. Values text-base semibold tabular with
  * 11px caps labels: deliberately a full step under the hero figure so it
  * supports $260M instead of restating it.
  *
  * ≥640: one row, top and bottom rules, vertical rules between cells. ≥1024
- * the values step to text-xl and the cells take a little more air; still a
+ * the values stay text-base and the cells take a little more air; still a
  * full step under the hero figure. <640: three ruled rows, figure left and
  * label right on the same baseline (the same memo-row grammar as the hero
  * pair). Sits 2.5rem under the hero (3rem at ≥1024); Experience follows 3rem
@@ -42,7 +42,7 @@ export function ProofBand() {
             {chip.metric ? (
               <span
                 data-slot="metric"
-                className="text-lg font-semibold tabular-nums leading-tight tracking-tight text-ink lg:text-xl"
+                className="text-base font-semibold tabular-nums leading-tight tracking-tight text-ink"
               >
                 {chip.metric}
               </span>

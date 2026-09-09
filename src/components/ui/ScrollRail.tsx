@@ -1,6 +1,8 @@
 "use client";
 
 import { sectionShellClass } from "@/components/layout/Section";
+import { FOCUS_VISIBLE_CLASS } from "@/lib/focus";
+import { withReducedMotionSnap } from "@/lib/motion";
 import type { Cta } from "@/lib/selectors";
 import { shouldShowScrollRail } from "@/lib/stickyCta";
 import { useHeroCtaVisibility } from "@/lib/useHeroCtaVisibility";
@@ -18,9 +20,11 @@ const RAIL_HEIGHT_PX = 48;
 
 /**
  * Desktop only (≥640): a fixed h-12 top bar with the name wordmark and a solid
- * Resume. Same IntersectionObserver rule as the mobile sticky — it shows only
- * while the hero's own Resume button is off-screen, so the two never coexist.
- * Server-rendered hidden; the observer reveals it after hydration.
+ * Resume. Solid paper (`bg-bg` / #F7F6F3), 1px hairline, z-50 so it sits over
+ * scrolled content. Same IntersectionObserver rule as the mobile sticky — it
+ * shows only while the hero's own Resume button is off-screen, so the two
+ * never coexist. Translate snaps under reduced motion. Server-rendered
+ * hidden; the observer reveals it after hydration.
  *
  * Hooks: `data-component="scroll-rail"`, `data-cta="resume"`, `data-variant="solid"`.
  */
@@ -36,7 +40,8 @@ export function ScrollRail({ cta, watchId, wordmark, homeHref }: Props) {
       data-component="scroll-rail"
       aria-hidden={!visible}
       className={[
-        "fixed inset-x-0 top-0 z-40 hidden border-b border-hairline bg-bg transition-transform duration-150 ease-soft sm:block",
+        "fixed inset-x-0 top-0 z-50 hidden border-b border-hairline bg-bg sm:block",
+        withReducedMotionSnap("transition-transform duration-150 ease-soft"),
         visible ? "translate-y-0" : "-translate-y-full",
       ].join(" ")}
     >
@@ -56,7 +61,7 @@ export function ScrollRail({ cta, watchId, wordmark, homeHref }: Props) {
           data-cta={cta.kind}
           data-variant="solid"
           tabIndex={visible ? undefined : -1}
-          className="inline-flex h-8 min-w-24 items-center justify-center rounded-md bg-ink px-4 text-sm font-semibold text-bg hover:bg-accent"
+          className={`inline-flex h-8 min-w-24 items-center justify-center rounded-md bg-ink px-4 text-sm font-semibold text-bg hover:bg-accent ${FOCUS_VISIBLE_CLASS}`}
           {...(cta.external ? { rel: "noopener" } : {})}
           {...(cta.download ? { download: true, type: "application/pdf" } : {})}
         >

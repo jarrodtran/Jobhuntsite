@@ -62,6 +62,44 @@ describe("ExperienceRows accordion", () => {
     expect(closed).toHaveClass("min-h-11", "py-2.5");
   });
 
+  it("sets closed-row title semibold ink, company muted with a mid-dot, scope clamped", () => {
+    renderRows();
+    const closed = screen.getByRole("button", { name: /Role B/ });
+    const title = closed.querySelector("[data-slot='title']");
+    const company = closed.querySelector("[data-slot='company']");
+    const scope = closed.querySelector("[data-slot='scope']");
+    const line = title?.parentElement;
+
+    expect(title).toHaveClass("font-semibold", "text-ink");
+    expect(company).toHaveClass("text-muted");
+    expect(company).toHaveTextContent("Co B");
+    expect(line).toHaveTextContent("Role B");
+    expect(line).toHaveTextContent("·");
+    expect(line).toHaveTextContent("Co B");
+    expect(scope).toHaveClass("line-clamp-1", "text-muted");
+  });
+
+  it("exposes a 2px ink focus-visible ring on accordion buttons", () => {
+    renderRows();
+    const closed = screen.getByRole("button", { name: /Role B/ });
+
+    expect(closed).toHaveClass(
+      "focus-visible:outline-2",
+      "focus-visible:outline-offset-2",
+      "focus-visible:outline-ink",
+    );
+  });
+
+  it("snaps accordion height and chevron under reduced motion", () => {
+    renderRows();
+    const closed = screen.getByRole("button", { name: /Role B/ });
+    const panel = document.getElementById("row-b-panel");
+    const chevron = closed.querySelector("svg");
+
+    expect(panel).toHaveClass("motion-reduce:transition-none");
+    expect(chevron).toHaveClass("motion-reduce:transition-none");
+  });
+
   it("opens a closed row on click and collapses the previous one", async () => {
     const user = userEvent.setup();
     renderRows();
