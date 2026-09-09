@@ -28,3 +28,21 @@ describe("browser chrome", () => {
     expect(css).toMatch(/::selection\s*\{[^}]*background:\s*var\(--hairline\)/s);
   });
 });
+
+describe("site typeface", () => {
+  it("binds Geist Sans site-wide through --font-sans, not Inter", () => {
+    const layout = readFileSync(path.join(srcDir, "app/layout.tsx"), "utf8");
+    expect(layout).toContain('from "geist/font/sans"');
+    expect(layout).toContain("GeistSans.variable");
+    expect(layout).not.toMatch(/\bInter\b/);
+    expect(layout).not.toContain("next/font/google");
+
+    const css = readFileSync(path.join(srcDir, "app/globals.css"), "utf8");
+    expect(css).toMatch(
+      /--font-sans:\s*var\(--font-geist-sans\),\s*ui-sans-serif,\s*system-ui,\s*-apple-system,\s*"Segoe UI",\s*sans-serif/,
+    );
+    expect(css).toMatch(/html\s*\{[^}]*font-family:\s*var\(--font-sans\)/s);
+    expect(css).toMatch(/body\s*\{[^}]*font-family:\s*var\(--font-sans\)/s);
+    expect(css).not.toContain("--font-inter");
+  });
+});

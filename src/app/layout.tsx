@@ -1,16 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
 import { viewportChrome } from "@/lib/chrome";
 import { seoView } from "@/lib/selectors";
 import "./globals.css";
 
 export const viewport: Viewport = viewportChrome;
-
-const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-inter",
-});
 
 /**
  * All metadata is derived from content: <title> and OG title come from
@@ -63,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang={seoView.lang} className={inter.variable} id="top">
+    <html lang={seoView.lang} className={GeistSans.variable} id="top">
       <body className="bg-bg text-ink antialiased">
         <a
           href="#main"
