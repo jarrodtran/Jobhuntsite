@@ -15,7 +15,7 @@ import { heroView, navView } from "@/lib/selectors";
  * edge whenever the hero's own Resume button is off-screen. At ≥640 a thin
  * top rail (wordmark + solid Resume) uses the same observer rule.
  *
- * ≥1024 the stack stays a stack (no two-column split) and grows into the 52rem
+ * ≥1024 the stack stays a stack (no two-column split) and grows into the 56rem
  * measure by type and air instead: $260M steps to text-6xl, the pair to
  * text-3xl, the top pad to 5rem. The name holds at text-5xl so the figure
  * still owns the fold.
