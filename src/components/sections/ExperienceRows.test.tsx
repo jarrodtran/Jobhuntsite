@@ -79,6 +79,44 @@ describe("ExperienceRows accordion", () => {
     expect(scope).toHaveClass("line-clamp-1", "text-muted");
   });
 
+  it("keeps a long closed-row title intact and the company name untruncated", () => {
+    render(
+      <ExperienceRows
+        dateRangeSeparator="–"
+        rows={[
+          {
+            id: "apple-india",
+            company: "Apple",
+            title: "Strategic Operations Program Manager",
+            start: { label: "Jun 2021", dateTime: "2021-06" },
+            end: { label: "Jun 2022", dateTime: "2022-06" },
+            dateRange: "Jun 2021–Jun 2022",
+            location: null,
+            scopeLine: "iPhone India launch",
+            bullets: ["Ship the ramp"],
+            defaultOpen: false,
+          },
+        ]}
+      />,
+    );
+
+    const closed = screen.getByRole("button", {
+      name: /Strategic Operations Program Manager/,
+    });
+    const title = closed.querySelector("[data-slot='title']");
+    const company = closed.querySelector("[data-slot='company']");
+    const line = title?.parentElement;
+
+    expect(closed).toHaveAttribute("aria-expanded", "false");
+    expect(title).toHaveTextContent("Strategic Operations Program Manager");
+    expect(company).toHaveTextContent("Apple");
+    expect(company).not.toHaveClass("truncate");
+    expect(line).not.toHaveClass("flex");
+    expect(line).toHaveTextContent("Strategic Operations Program Manager");
+    expect(line).toHaveTextContent("·");
+    expect(line).toHaveTextContent("Apple");
+  });
+
   it("exposes a 2px ink focus-visible ring on accordion buttons", () => {
     renderRows();
     const closed = screen.getByRole("button", { name: /Role B/ });
