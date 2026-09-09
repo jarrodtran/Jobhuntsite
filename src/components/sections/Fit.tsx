@@ -1,4 +1,5 @@
 import { Section } from "@/components/layout/Section";
+import { FOCUS_VISIBLE_CLASS } from "@/lib/focus";
 import { rolesView } from "@/lib/selectors";
 
 /**
@@ -23,6 +24,7 @@ export function Fit() {
         {rolesView.chips.map((chip) => {
           const linkClass = [
             "link",
+            FOCUS_VISIBLE_CLASS,
             chip.primary ? "font-semibold text-ink" : "text-muted hover:text-ink",
           ].join(" ");
 

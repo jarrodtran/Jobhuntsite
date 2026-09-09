@@ -7,6 +7,8 @@ import {
   experienceIdFromHash,
   nextOpenExperienceId,
 } from "@/lib/experienceAccordion";
+import { FOCUS_VISIBLE_CLASS } from "@/lib/focus";
+import { withReducedMotionSnap } from "@/lib/motion";
 import type { DateLabel, ExperienceRow } from "@/lib/selectors";
 
 type Props = {
@@ -19,15 +21,16 @@ type Props = {
  * on first paint (server-rendered, so it reads correctly before hydration).
  * A `#<entry-id>` hash — from the Fit links or a shared URL — opens that row.
  *
- * Closed rows are a list: dates, title, company, scope, a hairline under each,
- * denser `py-2.5` / `min-h-11` so the row is a 44px hit target without extra
- * chrome. The open row is the product panel: white card, 1.25rem padding, the
- * 7rem date column (`--rail`) as its left rail and the bullets aligned to the
- * title column. At ≥1024 the panel pads 1.5rem and the rail widens to 8rem
- * (`--rail` steps in globals.css, so the bullet offset below follows it).
- * Under 640px the panel runs edge to edge and dates stack above the title.
- * Motion is 150ms on grid rows (height), opacity, and the chevron. The header
- * is a real `<button>` (`aria-expanded`, Enter/Space).
+ * Closed rows are a list: dates, title · company on one line, scope
+ * `line-clamp-1`, a hairline under each, denser `py-2.5` / `min-h-11` so the
+ * row is a 44px hit target without extra chrome. The open row is the product
+ * panel: white card, 1.25rem padding, the 7rem date column (`--rail`) as its
+ * left rail and the bullets aligned to the title column. At ≥1024 the panel
+ * pads 1.5rem and the rail widens to 8rem (`--rail` steps in globals.css, so
+ * the bullet offset below follows it). Under 640px the panel runs edge to
+ * edge and dates stack above the title. Motion is 150ms on grid rows
+ * (height), opacity, and the chevron — snapped under reduced motion. The
+ * header is a real `<button>` (`aria-expanded`, Enter/Space).
  *
  * Hooks: `data-entry="<id>"`, `data-open`, `data-slot` on dates, title,
  * company, scope, panel, bullets.
@@ -81,6 +84,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                   }
                   className={[
                     "group grid w-full grid-cols-[1fr_auto] gap-x-4 gap-y-0.5 text-left sm:grid-cols-[var(--rail)_1fr_auto]",
+                    FOCUS_VISIBLE_CLASS,
                     open ? "p-5 lg:p-6" : "min-h-11 py-2.5 lg:py-3",
                   ].join(" ")}
                 >
@@ -94,14 +98,20 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                   </span>
                   <Chevron open={open} />
                   <span className="col-span-2 min-w-0 sm:col-span-1 sm:col-start-2 sm:row-start-1">
-                    <span className="flex flex-wrap items-baseline gap-x-2">
+                    <span className="flex min-w-0 items-baseline">
                       <span
                         data-slot="title"
                         className="font-semibold leading-6 tracking-tight text-ink"
                       >
                         {row.title}
                       </span>
-                      <span data-slot="company" className="text-sm text-muted">
+                      <span aria-hidden="true" className="px-1.5 text-muted">
+                        ·
+                      </span>
+                      <span
+                        data-slot="company"
+                        className="truncate text-sm text-muted"
+                      >
                         {row.company}
                         {row.location ? ` · ${row.location}` : null}
                       </span>
@@ -109,7 +119,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                     {row.scopeLine ? (
                       <span
                         data-slot="scope"
-                        className="mt-0.5 block text-sm leading-snug text-muted"
+                        className="mt-0.5 block line-clamp-1 text-sm leading-snug text-muted"
                       >
                         {row.scopeLine}
                       </span>
@@ -124,7 +134,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                 aria-labelledby={headingId}
                 aria-hidden={!open}
                 data-slot="panel"
-                className="grid transition-[grid-template-rows,opacity] duration-150 ease-soft"
+                className={`grid ${withReducedMotionSnap("transition-[grid-template-rows,opacity] duration-150 ease-soft")}`}
                 style={{
                   gridTemplateRows: open ? "1fr" : "0fr",
                   opacity: open ? 1 : 0,
@@ -144,7 +154,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
   );
 }
 
-/** Muted chevron; rotates 180° over 150ms when the row opens. Decorative only. */
+/** Muted chevron; rotates 180° over 150ms when the row opens (snaps if reduced motion). Decorative only. */
 function Chevron({ open }: { open: boolean }) {
   return (
     <svg
@@ -158,7 +168,7 @@ function Chevron({ open }: { open: boolean }) {
       strokeLinecap="round"
       strokeLinejoin="round"
       className={[
-        "self-center text-muted transition-transform duration-150 ease-soft group-hover:text-ink sm:col-start-3 sm:row-start-1",
+        `self-center text-muted ${withReducedMotionSnap("transition-transform duration-150 ease-soft")} group-hover:text-ink sm:col-start-3 sm:row-start-1`,
         open ? "rotate-180" : "",
       ]
         .filter(Boolean)

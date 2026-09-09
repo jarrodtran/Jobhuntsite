@@ -80,4 +80,33 @@ describe("ScrollRail", () => {
       rail.querySelector('[data-cta="resume"][data-variant="solid"]'),
     ).toHaveTextContent("Resume");
   });
+
+  it("uses solid paper chrome: bg-bg, 1px hairline, z-50", () => {
+    renderRail();
+    const rail = document.querySelector("[data-component='scroll-rail']");
+
+    expect(rail).toHaveClass("bg-bg", "border-b", "border-hairline", "z-50");
+    expect(rail).not.toHaveClass("z-40");
+  });
+
+  it("snaps translate under reduced motion instead of a 150ms slide", () => {
+    renderRail();
+    const rail = document.querySelector("[data-component='scroll-rail']");
+
+    expect(rail).toHaveClass("motion-reduce:transition-none");
+  });
+
+  it("exposes a 2px ink focus-visible ring on the rail Resume", () => {
+    renderRail();
+    const resume = document.querySelector(
+      "[data-component='scroll-rail'] [data-cta='resume']",
+    );
+
+    expect(resume).toHaveClass(
+      "focus-visible:outline-2",
+      "focus-visible:outline-offset-2",
+      "focus-visible:outline-ink",
+    );
+  });
 });
+

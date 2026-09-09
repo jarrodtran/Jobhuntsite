@@ -1,3 +1,4 @@
+import { FOCUS_VISIBLE_CLASS } from "@/lib/focus";
 import type { Cta } from "@/lib/selectors";
 
 type Variant = "solid" | "ghost";
@@ -10,8 +11,10 @@ type Props = {
   id?: string;
 };
 
-const baseClass =
-  "inline-flex h-11 items-center justify-center rounded-md border px-6 text-sm font-semibold";
+const baseClass = [
+  "inline-flex h-11 items-center justify-center rounded-md border px-6 text-sm font-semibold",
+  FOCUS_VISIBLE_CLASS,
+].join(" ");
 
 /**
  * Solid = ink fill, black on hover: the inevitable button. Ghost = hairline
