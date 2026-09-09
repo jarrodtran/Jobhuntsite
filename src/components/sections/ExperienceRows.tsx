@@ -105,23 +105,18 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                   </span>
                   <Chevron open={open} />
                   <span className="col-span-2 min-w-0 sm:col-span-1 sm:col-start-2 sm:row-start-1">
-                    <span>
-                      <span
-                        data-slot="title"
-                        className="font-semibold leading-6 tracking-tight text-ink"
-                      >
-                        {row.title}
-                      </span>
-                      <span aria-hidden="true" className="px-1.5 text-muted">
-                        ·
-                      </span>
-                      <span
-                        data-slot="company"
-                        className="text-sm text-muted"
-                      >
-                        {row.company}
-                        {row.location ? ` · ${row.location}` : null}
-                      </span>
+                    <span
+                      data-slot="title"
+                      className="font-semibold leading-6 tracking-tight text-ink"
+                    >
+                      {row.title}
+                    </span>
+                    <span aria-hidden="true" className="px-1.5 text-muted">
+                      ·
+                    </span>
+                    <span data-slot="company" className="text-sm text-muted">
+                      {row.company}
+                      {row.location ? ` · ${row.location}` : null}
                     </span>
                     {row.scopeLine ? (
                       <span
