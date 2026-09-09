@@ -64,13 +64,13 @@ export function Hero() {
 
       <div
         data-slot="ctas"
-        className="mt-4 flex flex-col gap-2 sm:flex-row sm:gap-3 lg:mt-5"
+        className="mt-4 flex flex-col gap-3 sm:flex-row sm:gap-4 lg:mt-5"
       >
         <CtaLink
           id={heroResumeId}
           cta={heroView.primaryCta}
           variant="solid"
-          className="w-full sm:w-auto"
+          className="w-full sm:min-w-36 sm:w-auto"
         />
         <CtaLink
           cta={heroView.secondaryCta}

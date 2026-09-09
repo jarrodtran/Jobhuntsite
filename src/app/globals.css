@@ -7,9 +7,10 @@
  *
  * Structural hooks available in the markup:
  *   [data-section="hero|experience|roles|contact"]  top-level sections
- *   [data-component="site-header|proof-band|resume-bar"]
+ *   [data-component="site-header|proof-band|resume-bar|scroll-rail"]
  *                                                   chrome, hairline proof
- *                                                   strip, mobile sticky CTA
+ *                                                   strip, mobile sticky CTA,
+ *                                                   desktop top rail
  *   [data-slot="..."]                               named rows inside a section
  *   [data-lead="true"]                              the $260M hero figure
  *   [data-role="<id>"] [data-primary="true"]        role links

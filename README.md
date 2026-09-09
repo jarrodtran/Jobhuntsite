@@ -17,6 +17,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ```bash
 pnpm lint
+pnpm test
 pnpm build
 ```
 
@@ -45,17 +46,17 @@ src/lib/url.ts          The only module that reads NEXT_PUBLIC_BASE_PATH.
 src/components/         Dumb renderers. Import from @/lib/selectors only.
   layout/               SiteHeader, Section (shared shell + <h2>), SiteFooter
   sections/             Hero, ProofBand, Experience (+ ExperienceRows, client), Fit
-  ui/                   CtaLink, ProofChips, ResumeBar (client), EmployerRow, Bullets,
-                        card (shared classes)
+  ui/                   CtaLink, ProofChips, ResumeBar (client), ScrollRail (client),
+                        EmployerRow, Bullets, card (shared classes)
       │
 src/app/page.tsx        Composes sections in scan-path order.
 src/app/layout.tsx      <title>, OG, Twitter, JSON-LD, robots — all from seoView.
 src/app/globals.css     Design tokens (palette, column, rhythm, motion) + hooks.
 ```
 
-**Recruiter scan path** (top to bottom, per FE Designer spec): Hero (name → title → voice whisper → the `$260M` figure block with the secondary pair → Resume solid + LinkedIn ghost → one muted employer line) → Proof strip (three secondary metrics between hairline rules; not a nav section) → Experience (primary scan path; list-like rows, current role open as the product panel) → Where I fit (one line of text links to the backing experience rows, primary first) → Footer (email + LinkedIn). `sectionOrder` in `selectors.ts` drives the header nav; `page.tsx` renders in the same order. Under 640px a fixed h-12 Resume bar (`ResumeBar`) rides the bottom edge only while the hero's own Resume button is off-screen (below the fold on a short phone, or scrolled away), so the two never coexist.
+**Recruiter scan path** (top to bottom, per FE Designer spec): Hero (name → title → voice whisper → the `$260M` figure block with the secondary pair → Resume solid + LinkedIn ghost → one muted employer line) → Proof strip (three secondary metrics between hairline rules; not a nav section) → Experience (primary scan path; list-like rows, current role open as the product panel) → Where I fit (one line of text links to the backing experience rows, primary first) → Footer (email + LinkedIn). `sectionOrder` in `selectors.ts` drives the header nav; `page.tsx` renders in the same order. Sticky chrome uses one rule (`shouldShowScrollRail`): show only while the hero Resume (`#hero-resume`) is off-screen, so it never coexists with the in-hero button. Under 640px that chrome is a bottom `ResumeBar`; at ≥640 it is a thin top `ScrollRail` (wordmark + solid Resume).
 
-**Experience accordion.** `ExperienceRows` and `ResumeBar` are the only client components. Closed row = dates + title + company + scope line with a hairline underneath, no padding beyond the column; open row = the product panel: white card, 1.25rem padding, the 7rem date column (`--rail`) as its left rail, bullets aligned to the title column. One row open at a time at every width; the current role (`end` is a word such as "Present") is open on first paint and server-rendered, so the page reads correctly before hydration. A `#<experience-id>` hash (the Fit links, or a shared URL) opens that row. Under 640px dates stack above the title and the panel runs edge to edge. Motion is 150ms on `grid-template-rows` (height), opacity, and the chevron rotation.
+**Experience accordion.** `ExperienceRows`, `ResumeBar`, and `ScrollRail` are the only client components. Closed row = dates + title + company + scope line with a hairline underneath, denser `py-2.5` / `min-h-11` hit target; open row = the product panel: white card, 1.25rem padding, the 7rem date column (`--rail`) as its left rail, bullets aligned to the title column. One row open at a time at every width; the current role (`end` is a word such as "Present") is open on first paint and server-rendered, so the page reads correctly before hydration. A `#<experience-id>` hash (the Fit links, or a shared URL) opens that row. Headers are real `<button>`s (`aria-expanded`, Enter/Space). Under 640px dates stack above the title and the panel runs edge to edge. Motion is 150ms on `grid-template-rows` (height), opacity, and the chevron rotation.
 
 **Ownership.** Copy edits `src/content.ts` and nothing else. Eng owns `src/lib`. FE Designer owns `src/app/globals.css` and the class strings inside `src/components`; the markup exposes stable hooks (`data-section`, `data-slot`, `data-role`, `data-primary`, `data-entry`, `data-cta`) so a visual overhaul does not need to change structure.
 
@@ -97,9 +98,9 @@ Placeholders are written as `TODO_COPY: hint` via the `todo()` helper. Blank or 
 | `--measure` → `--container-content`, `--container-voice` | `max-w-content`, `max-w-voice` | Responsive page column: full width <640, `min(44rem, 100%)` ≥640, `min(52rem, 100%)` ≥1024 (never past 56rem); 60ch voice line (one line at desktop) |
 | `--section-gap` → `--spacing-section` | `mt-section` | 5rem gap between sections, 6rem ≥1024. Hero→proof strip is 2.5rem (`mt-10`, 3rem ≥1024) and strip→Experience 3rem (`Section spacing="tight"`, 4rem ≥1024) |
 | `--rail` | `sm:grid-cols-[var(--rail)_1fr_auto]`, `sm:pl-[calc(1.25rem+var(--rail)+1rem)]` | 7rem experience date column, 8rem ≥1024; inside the open panel it is the left rail the bullets clear |
-| `--motion-duration`, `--motion-ease` | default transition, `ease-soft` | 150ms ease; only the accordion (grid rows, opacity, chevron) and the mobile Resume bar (translate) animate. `prefers-reduced-motion` collapses it |
+| `--motion-duration`, `--motion-ease` | default transition, `ease-soft` | 150ms ease; only the accordion (grid rows, opacity, chevron), the mobile Resume bar, and the desktop scroll rail (translate) animate. `prefers-reduced-motion` collapses it |
 
-Page padding is `px-5 md:px-8` (1.25rem → 2rem at ≥768) on the shared shell in `Section.tsx`. The layout is one column at every width; it grows into the monitor by measure and type, not by adding columns. At ≥1024 the hero stays stacked and steps up instead: `$260M` `text-6xl`, the pair `text-3xl` in a 15rem column, title `text-lg`, voice `text-base`; proof strip values `text-xl`; open experience panel `p-6` on the 8rem rail; Fit links `text-lg`. Hovers are flat colour swaps with no transition; focus rings are 2px ink, offset 2. The `link` utility styles inline text links. Markup hooks for targeted styling: `[data-section]`, `[data-component="site-header" | "proof-band" | "resume-bar"]`, `[data-slot]`, `[data-lead]`, `[data-role][data-primary]`, `[data-entry][data-open]`, `[data-cta][data-variant]`.
+Page padding is `px-5 md:px-8` (1.25rem → 2rem at ≥768) on the shared shell in `Section.tsx`. The layout is one column at every width; it grows into the monitor by measure and type, not by adding columns. At ≥1024 the hero stays stacked and steps up instead: `$260M` `text-6xl`, the pair `text-3xl` in a 15rem column, title `text-lg`, voice `text-base`; proof strip values `text-xl`; open experience panel `p-6` on the 8rem rail; Fit links `text-lg`. Hovers are flat colour swaps with no scale: ghost CTAs take hairline → ink; focus rings are 2px ink, offset 2. The `link` utility styles inline text links. Markup hooks for targeted styling: `[data-section]`, `[data-component="site-header" | "proof-band" | "resume-bar" | "scroll-rail"]`, `[data-slot]`, `[data-lead]`, `[data-role][data-primary]`, `[data-entry][data-open]`, `[data-cta][data-variant]`.
 
 ## Deploy (GitHub Pages)
 

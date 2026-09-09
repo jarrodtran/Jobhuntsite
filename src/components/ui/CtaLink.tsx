@@ -11,15 +11,15 @@ type Props = {
 };
 
 const baseClass =
-  "inline-flex h-11 items-center justify-center rounded-md px-6 text-sm font-semibold";
+  "inline-flex h-11 items-center justify-center rounded-md border px-6 text-sm font-semibold";
 
 /**
- * Solid = ink fill, black on hover: the inevitable button. Ghost = no border,
- * muted text that goes ink on hover with a 5% ink wash. No motion.
+ * Solid = ink fill, black on hover: the inevitable button. Ghost = hairline
+ * border that goes ink on hover, muted text to ink. No scale, no motion.
  */
 const variantClass: Record<Variant, string> = {
-  solid: "bg-ink text-bg hover:bg-accent",
-  ghost: "bg-transparent text-muted hover:bg-ink/5 hover:text-ink",
+  solid: "border-ink bg-ink text-bg hover:border-accent hover:bg-accent",
+  ghost: "border-hairline bg-transparent text-muted hover:border-ink hover:text-ink",
 };
 
 /**
