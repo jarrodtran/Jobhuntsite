@@ -3,6 +3,10 @@
 import { useEffect, useState } from "react";
 import { Bullets } from "@/components/ui/Bullets";
 import { bleedCardClass, cardClass } from "@/components/ui/card";
+import {
+  experienceIdFromHash,
+  nextOpenExperienceId,
+} from "@/lib/experienceAccordion";
 import type { DateLabel, ExperienceRow } from "@/lib/selectors";
 
 type Props = {
@@ -16,13 +20,14 @@ type Props = {
  * A `#<entry-id>` hash — from the Fit links or a shared URL — opens that row.
  *
  * Closed rows are a list: dates, title, company, scope, a hairline under each,
- * no padding beyond the column. The open row is the product panel: white card,
- * 1.25rem padding, the 7rem date column (`--rail`) as its left rail and the
- * bullets aligned to the title column. At ≥1024 the panel pads 1.5rem and the
- * rail widens to 8rem (`--rail` steps in globals.css, so the bullet offset
- * below follows it). Under 640px the panel runs edge to edge and dates stack
- * above the title. Motion is 150ms on grid rows (height), opacity, and the
- * chevron.
+ * denser `py-2.5` / `min-h-11` so the row is a 44px hit target without extra
+ * chrome. The open row is the product panel: white card, 1.25rem padding, the
+ * 7rem date column (`--rail`) as its left rail and the bullets aligned to the
+ * title column. At ≥1024 the panel pads 1.5rem and the rail widens to 8rem
+ * (`--rail` steps in globals.css, so the bullet offset below follows it).
+ * Under 640px the panel runs edge to edge and dates stack above the title.
+ * Motion is 150ms on grid rows (height), opacity, and the chevron. The header
+ * is a real `<button>` (`aria-expanded`, Enter/Space).
  *
  * Hooks: `data-entry="<id>"`, `data-open`, `data-slot` on dates, title,
  * company, scope, panel, bullets.
@@ -34,8 +39,11 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
 
   useEffect(() => {
     const openFromHash = () => {
-      const id = decodeURIComponent(window.location.hash.slice(1));
-      if (id && rows.some((row) => row.id === id)) setOpenId(id);
+      const id = experienceIdFromHash(
+        window.location.hash,
+        rows.map((row) => row.id),
+      );
+      if (id) setOpenId(id);
     };
     openFromHash();
     window.addEventListener("hashchange", openFromHash);
@@ -68,10 +76,12 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                   type="button"
                   aria-expanded={open}
                   aria-controls={panelId}
-                  onClick={() => setOpenId(open ? null : row.id)}
+                  onClick={() =>
+                    setOpenId((current) => nextOpenExperienceId(current, row.id))
+                  }
                   className={[
                     "group grid w-full grid-cols-[1fr_auto] gap-x-4 gap-y-0.5 text-left sm:grid-cols-[var(--rail)_1fr_auto]",
-                    open ? "p-5 lg:p-6" : "py-3.5 lg:py-4",
+                    open ? "p-5 lg:p-6" : "min-h-11 py-2.5 lg:py-3",
                   ].join(" ")}
                 >
                   <span
@@ -148,7 +158,7 @@ function Chevron({ open }: { open: boolean }) {
       strokeLinecap="round"
       strokeLinejoin="round"
       className={[
-        "mt-1 self-start text-muted transition-transform duration-150 ease-soft group-hover:text-ink sm:col-start-3 sm:row-start-1",
+        "self-center text-muted transition-transform duration-150 ease-soft group-hover:text-ink sm:col-start-3 sm:row-start-1",
         open ? "rotate-180" : "",
       ]
         .filter(Boolean)

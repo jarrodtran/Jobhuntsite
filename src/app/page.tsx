@@ -7,7 +7,8 @@ import { ProofBand } from "@/components/sections/ProofBand";
 
 /**
  * Recruiter scan path (FE Designer IA), top to bottom:
- *   Hero (name, title, voice, $260M figure block, CTAs, employers)
+ *   Hero (name, title, voice, $260M figure block, CTAs, employers;
+ *        mobile ResumeBar + desktop ScrollRail after the hero CTA leaves view)
  *   → Proof strip (secondary metrics between hairlines; not a nav section)
  *   → Experience (primary scan path; accordion rows)
  *   → Fit (one line of role text links)

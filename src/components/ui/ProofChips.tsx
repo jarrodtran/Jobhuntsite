@@ -13,7 +13,8 @@ type Props = {
  * its label set as an 11px caps rule under it. The pair sit at text-2xl
  * semibold, each in its own hairline cell. No chips, no second card.
  *
- * ≥640: lead on the left spanning both rows; pair stacked in a 13rem column on
+ * ≥640: lead on the left spanning both rows, first-baseline aligned with the
+ * pair so `$260M` shares a line with `10k+`; pair stacked in a 13rem column on
  * the right behind a vertical hairline. ≥1024: same grid on the 52rem measure,
  * lead text-6xl, pair text-3xl in a 15rem column, cell padding up one step.
  * <640: the panel runs edge to edge (only top/bottom rules remain), lead full
@@ -33,7 +34,7 @@ export function ProofChips({ chips, label, className }: Props) {
       className={[
         cardClass,
         bleedCardClass,
-        "grid sm:grid-cols-[1fr_13rem] sm:grid-rows-2 lg:grid-cols-[1fr_15rem]",
+        "grid sm:grid-cols-[1fr_13rem] sm:grid-rows-2 sm:items-baseline lg:grid-cols-[1fr_15rem]",
         className,
       ]
         .filter(Boolean)
@@ -48,7 +49,7 @@ export function ProofChips({ chips, label, className }: Props) {
             data-lead={lead || undefined}
             className={
               lead
-                ? "flex min-w-0 flex-col justify-center px-5 py-7 sm:row-span-2 sm:px-6 sm:py-8 lg:px-8 lg:py-10"
+                ? "flex min-w-0 flex-col justify-center px-5 py-7 sm:row-span-2 sm:justify-start sm:px-6 sm:py-8 lg:px-8 lg:py-10"
                 : [
                     "flex min-w-0 items-baseline justify-between gap-x-4 border-t border-hairline px-5 py-3",
                     "sm:flex-col sm:justify-center sm:border-l sm:py-4",
