@@ -11,11 +11,11 @@ const cta: Cta = {
   download: true,
 };
 
-let ioCallback: IntersectionObserverCallback | undefined;
+const ioById = new Map<string, IntersectionObserverCallback>();
 
-function fireIntersection(isIntersecting: boolean) {
+function fireIntersection(id: string, isIntersecting: boolean) {
   act(() => {
-    ioCallback?.(
+    ioById.get(id)?.(
       [{ isIntersecting } as IntersectionObserverEntry],
       {} as IntersectionObserver,
     );
@@ -28,6 +28,7 @@ function renderBar() {
       <a id="hero-resume" href="/resume.pdf">
         In-hero Resume
       </a>
+      <footer id="contact">Contact</footer>
       <ResumeBar watchId="hero-resume" cta={cta} />
     </>,
   );
@@ -35,14 +36,17 @@ function renderBar() {
 
 describe("ResumeBar chrome", () => {
   beforeEach(() => {
-    ioCallback = undefined;
+    ioById.clear();
     vi.stubGlobal(
       "IntersectionObserver",
       class {
+        #callback: IntersectionObserverCallback;
         constructor(callback: IntersectionObserverCallback) {
-          ioCallback = callback;
+          this.#callback = callback;
         }
-        observe() {}
+        observe(target: Element) {
+          if (target.id) ioById.set(target.id, this.#callback);
+        }
         unobserve() {}
         disconnect() {}
       },
@@ -56,12 +60,24 @@ describe("ResumeBar chrome", () => {
 
   it("pads the bottom with the iOS safe-area inset and keeps the control h-12", () => {
     renderBar();
-    fireIntersection(false);
+    fireIntersection("hero-resume", false);
 
     const bar = document.querySelector("[data-component='resume-bar']");
     const control = bar?.querySelector("[data-cta='resume']");
 
     expect(bar?.className).toContain("env(safe-area-inset-bottom)");
     expect(control).toHaveClass("h-12");
+  });
+
+  it("hides the bar when #contact intersects and the hero CTA is off-screen", () => {
+    renderBar();
+    fireIntersection("hero-resume", false);
+    fireIntersection("contact", false);
+
+    const bar = document.querySelector("[data-component='resume-bar']");
+    expect(bar?.className).toContain("translate-y-0");
+
+    fireIntersection("contact", true);
+    expect(bar?.className).toContain("translate-y-full");
   });
 });
