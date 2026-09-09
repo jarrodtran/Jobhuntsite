@@ -21,15 +21,15 @@
 :root {
   /* Palette: warm paper, near-black ink, one muted, one hairline. No tints,
      no tinted bands — the only surfaces are paper and white. */
-  --bg: #f7f6f3;
-  --ink: #111111;
-  --muted: #5f5b56;
-  --hairline: #e7e5e4;
+  --bg: #f4f4f5;
+  --ink: #0a0a0a;
+  --muted: #52525b;
+  --hairline: #e4e4e7;
   --accent: #000000;
   --surface: #ffffff;
 
   /* Card: white, 1px hairline, and a single 1px shadow line. Nothing softer. */
-  --card-shadow: 0 1px 0 rgb(17 17 17 / 0.04);
+  --card-shadow: 0 1px 0 rgb(10 10 10 / 0.04);
   --card-radius: 0.5rem;
 
   /* Responsive measure (FE Designer spec). One column at every width; the
