@@ -3,7 +3,8 @@ import { CtaLink } from "@/components/ui/CtaLink";
 import { EmployerRow } from "@/components/ui/EmployerRow";
 import { ProofChips } from "@/components/ui/ProofChips";
 import { ResumeBar } from "@/components/ui/ResumeBar";
-import { heroView } from "@/lib/selectors";
+import { ScrollRail } from "@/components/ui/ScrollRail";
+import { heroView, navView } from "@/lib/selectors";
 
 /**
  * The fold, one punch. Left-aligned stack in this order and no other:
@@ -11,7 +12,8 @@ import { heroView } from "@/lib/selectors";
  * a whisper) → the $260M figure block with the secondary pair → Resume
  * (solid ink) + LinkedIn (ghost) → one muted employer line. Nothing else
  * competes with the number. Under 640px a fixed Resume bar rides the bottom
- * edge whenever the hero's own Resume button is off-screen.
+ * edge whenever the hero's own Resume button is off-screen. At ≥640 a thin
+ * top rail (wordmark + solid Resume) uses the same observer rule.
  *
  * ≥1024 the stack stays a stack (no two-column split) and grows into the 52rem
  * measure by type and air instead: $260M steps to text-6xl, the pair to
@@ -19,7 +21,7 @@ import { heroView } from "@/lib/selectors";
  * still owns the fold.
  *
  * Hooks: `data-section="hero"`, `data-slot` on each row (name, title, voice,
- * proof-chips, ctas, employers); `data-component="resume-bar"`.
+ * proof-chips, ctas, employers); `data-component="resume-bar|scroll-rail"`.
  */
 export function Hero() {
   const headingId = `${heroView.section.id}-heading`;
@@ -84,6 +86,12 @@ export function Hero() {
       />
 
       <ResumeBar cta={heroView.primaryCta} watchId={heroResumeId} />
+      <ScrollRail
+        cta={heroView.primaryCta}
+        watchId={heroResumeId}
+        wordmark={navView.wordmark}
+        homeHref={navView.homeHref}
+      />
     </section>
   );
 }
