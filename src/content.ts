@@ -117,12 +117,13 @@ export const experience: ExperienceEntry[] = [
     id: "tesla-ai",
     company: "Tesla",
     title: "Manager, AI & Factory Strategy",
-    start: "2023",
+    start: "Aug 2023",
     end: "Present",
     scopeLine:
       "Energy Manufacturing — AI enablement for 10k+ employees; global planning; FDE for custom buildouts",
     bullets: [
       "Sequence a $23M / 50+ initiative portfolio: $260M annualized cost-down, $156M incremental annual profit; Megapack scale 3.2×.",
+      "Mitigated $550M in projected tariff exposure by redesigning build plans and establishing FTZ / bonded-warehouse / product-changeover infrastructure.",
       "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees): as-is to to-be to ship to hand-off to a sustaining team.",
       "Stand up an FDE team for custom AI buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity).",
       "Own strategy on what we build, where we build it, and when we launch, plus regulatory and cost mitigation.",
@@ -133,8 +134,8 @@ export const experience: ExperienceEntry[] = [
     id: "waymo",
     company: "Waymo",
     title: "Strategy & Operations Manager",
-    start: "2022",
-    end: "2023",
+    start: "Oct 2022",
+    end: "May 2023",
     scopeLine:
       "Engineering operations — annual planning, OKRs, resource plans, and leadership cadence",
     bullets: [
@@ -146,8 +147,8 @@ export const experience: ExperienceEntry[] = [
     id: "apple-india",
     company: "Apple",
     title: "Strategic Operations Program Manager",
-    start: "2021",
-    end: "2022",
+    start: "Jun 2021",
+    end: "Jun 2022",
     scopeLine:
       "iPhone India launch — site, supplier, line, regulation, and demand readiness",
     bullets: [
@@ -159,21 +160,23 @@ export const experience: ExperienceEntry[] = [
     id: "tesla-4680",
     company: "Tesla",
     title: "Program Manager, Special Projects",
-    start: "2018",
-    end: "2021",
+    start: "Jun 2018",
+    end: "Jun 2021",
     scopeLine:
       "4680 / Project Roadrunner — stage gates and launch readiness for an emerging cell platform",
     bullets: [
       "Advance Project Roadrunner from early battery-cell pilot toward a production-ready platform.",
       "Install stage gates, readiness reviews, supplier coordination, and cross-functional launch ownership across engineering, production, and supply chain.",
+      "Sustained Model 3 / Model Y rates through demand surges and supply disruptions.",
+      "Designed and launched a $3.5M/month Warehouse on Wheels logistics platform protecting battery and drivetrain flow.",
     ],
   },
   {
     id: "amazon",
     company: "Amazon",
     title: "Operations Area Manager",
-    start: "2017",
-    end: "2018",
+    start: "Mar 2017",
+    end: "Apr 2018",
     scopeLine: "High-volume fulfillment — frontline ops leadership",
     bullets: [
       "Led a team of 100+ associates in a high-volume fulfillment center.",
@@ -236,4 +239,4 @@ export const ui: UiStrings = {
  * metrics/title AND the real resume.pdf is in public/. Robots stays
  * `noindex, nofollow` until both this is true and no placeholders remain.
  */
-export const siteIndexable = false;
+export const siteIndexable = true;
