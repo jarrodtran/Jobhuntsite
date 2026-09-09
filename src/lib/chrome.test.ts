@@ -12,6 +12,10 @@ describe("browser chrome", () => {
     expect(viewportChrome.themeColor).toBe("#F7F6F3");
   });
 
+  it("covers the viewport so safe-area insets apply", () => {
+    expect(viewportChrome.viewportFit).toBe("cover");
+  });
+
   it("wires theme-color through the Next viewport export in the root layout", () => {
     const layout = readFileSync(path.join(srcDir, "app/layout.tsx"), "utf8");
     expect(layout).toContain("viewportChrome");
@@ -21,6 +25,6 @@ describe("browser chrome", () => {
   it("selects ink on a paper tint", () => {
     const css = readFileSync(path.join(srcDir, "app/globals.css"), "utf8");
     expect(css).toMatch(/::selection\s*\{[^}]*color:\s*var\(--ink\)/s);
-    expect(css).toMatch(/::selection\s*\{[^}]*background:/s);
+    expect(css).toMatch(/::selection\s*\{[^}]*background:\s*var\(--hairline\)/s);
   });
 });

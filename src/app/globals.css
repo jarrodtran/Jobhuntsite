@@ -144,8 +144,9 @@ body {
   outline-offset: 2px;
 }
 
-/* Selection: ink on a paper tint (hairline wash over --bg). */
+/* Selection: ink on a paper tint. Hairline is the visible paper adjacent
+   to --bg — avoid color-mix so the compiled fallback is never ink-on-ink. */
 ::selection {
   color: var(--ink);
-  background: color-mix(in srgb, var(--ink) 8%, var(--bg));
+  background: var(--hairline);
 }

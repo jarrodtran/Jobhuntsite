@@ -78,8 +78,8 @@
 
 ### Task 5: Verification
 
-- [ ] `pnpm lint`
-- [ ] `pnpm exec tsc --noEmit`
-- [ ] `pnpm test`
-- [ ] `NEXT_PUBLIC_BASE_PATH=/Jobhuntsite pnpm build`
-- [ ] Confirm `siteIndexable=false`, `--measure` ≤52rem at ≥1024, `content.ts` hash unchanged
+- [x] `pnpm lint`
+- [x] `pnpm exec tsc --noEmit`
+- [x] `pnpm test`
+- [x] `NEXT_PUBLIC_BASE_PATH=/Jobhuntsite pnpm build`
+- [x] Confirm `siteIndexable=false`, `--measure` ≤52rem at ≥1024, `content.ts` hash unchanged
