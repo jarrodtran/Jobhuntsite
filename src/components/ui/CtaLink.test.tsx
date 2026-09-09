@@ -26,4 +26,20 @@ describe("CtaLink focus", () => {
       "focus-visible:outline-ink",
     );
   });
+
+  it("presses solid and ghost to opacity 0.9 without dropping the focus ring", () => {
+    const { container, rerender } = render(
+      <CtaLink cta={cta} variant="solid" />,
+    );
+    const solid = container.querySelector("[data-variant='solid']");
+
+    expect(solid).toHaveClass("active:opacity-90");
+    expect(solid).toHaveClass("focus-visible:outline-ink");
+
+    rerender(<CtaLink cta={cta} variant="ghost" />);
+    const ghost = container.querySelector("[data-variant='ghost']");
+
+    expect(ghost).toHaveClass("active:opacity-90");
+    expect(ghost).toHaveClass("focus-visible:outline-ink");
+  });
 });

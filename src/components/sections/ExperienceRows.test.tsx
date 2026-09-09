@@ -90,6 +90,25 @@ describe("ExperienceRows accordion", () => {
     );
   });
 
+  it("washes a closed row white and turns the hairline ink on hover, 150ms, no scale", () => {
+    renderRows();
+    const closed = document.querySelector("[data-entry='row-b']");
+
+    expect(closed).toHaveClass("hover:bg-white", "hover:border-ink");
+    expect(closed).toHaveClass("duration-150");
+    expect(closed).toHaveClass("motion-reduce:transition-none");
+    expect(closed?.className).not.toMatch(/scale/);
+  });
+
+  it("uses tabular-nums on the open panel bullet list", () => {
+    renderRows();
+    const bullets = document.querySelector(
+      "[data-open='true'] [data-slot='bullets']",
+    );
+
+    expect(bullets).toHaveClass("tabular-nums");
+  });
+
   it("snaps accordion height and chevron under reduced motion", () => {
     renderRows();
     const closed = screen.getByRole("button", { name: /Role B/ });
