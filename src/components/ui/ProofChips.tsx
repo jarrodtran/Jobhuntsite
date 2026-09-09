@@ -15,8 +15,8 @@ type Props = {
  *
  * ≥640: lead on the left spanning both rows, first-baseline aligned with the
  * pair so `$260M` shares a line with `10k+`; pair stacked in a 13rem column on
- * the right behind a vertical hairline. ≥1024: same grid on the 52rem measure,
- * lead text-6xl, pair text-3xl in a 15rem column, cell padding up one step.
+ * the right behind a vertical hairline. ≥1024: same grid on the 56rem measure,
+ * lead text-6xl, pair text-3xl in a 16rem column, cell padding up one step.
  * <640: the panel runs edge to edge (only top/bottom rules remain), lead full
  * width, and each of the pair becomes a ruled memo row — figure left, caps
  * label right on the same baseline.
@@ -34,7 +34,7 @@ export function ProofChips({ chips, label, className }: Props) {
       className={[
         cardClass,
         bleedCardClass,
-        "grid sm:grid-cols-[1fr_13rem] sm:grid-rows-2 sm:items-baseline lg:grid-cols-[1fr_15rem]",
+        "grid sm:grid-cols-[1fr_13rem] sm:grid-rows-2 sm:items-baseline lg:grid-cols-[1fr_16rem]",
         className,
       ]
         .filter(Boolean)
