@@ -59,7 +59,12 @@ describe("ExperienceRows accordion", () => {
   it("gives closed rows a denser 44px hit target", () => {
     renderRows();
     const closed = screen.getByRole("button", { name: /Role B/ });
-    expect(closed).toHaveClass("min-h-11", "py-2.5");
+    const open = screen.getByRole("button", { name: /Role A/ });
+
+    expect(closed).toHaveClass("min-h-11", "py-2");
+    expect(closed).not.toHaveClass("py-2.5");
+    expect(open).toHaveClass("p-5", "lg:p-6");
+    expect(open).not.toHaveClass("py-2");
   });
 
   it("sets closed-row title semibold ink, company muted with a mid-dot, scope clamped", () => {

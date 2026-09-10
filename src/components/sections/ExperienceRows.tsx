@@ -22,7 +22,7 @@ type Props = {
  * A `#<entry-id>` hash — from the Fit links or a shared URL — opens that row.
  *
  * Closed rows are a list: dates, title · company as wrapping inline text, scope
- * `line-clamp-1`, a hairline under each, denser `py-2.5` / `min-h-11` so the
+ * `line-clamp-1`, a hairline under each, denser `py-2` / `min-h-11` so the
  * row is a 44px hit target without extra chrome. Hover washes the closed row
  * white and turns the hairline ink (150ms, no scale; snapped under reduced
  * motion). The open row is the product panel: white card, 1.25rem padding, the
@@ -92,7 +92,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                   className={[
                     "group grid w-full grid-cols-[1fr_auto] gap-x-4 gap-y-0.5 text-left sm:grid-cols-[var(--rail)_1fr_auto]",
                     FOCUS_VISIBLE_CLASS,
-                    open ? "p-5 lg:p-6" : "min-h-11 py-2.5 lg:py-3",
+                    open ? "p-5 lg:p-6" : "min-h-11 py-2 lg:py-3",
                   ].join(" ")}
                 >
                   <span
