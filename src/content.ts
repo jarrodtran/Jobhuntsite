@@ -191,7 +191,7 @@ export const contact: Contact = {
 };
 
 export const site: Site = {
-  origin: "https://jarrodtran.github.io",
+  origin: "https://jarrodtran.com",
   lang: "en",
   // Eng refreshes the asset; dimensions must match the file.
   ogImage: { path: "/og.png", width: 1200, height: 630 },
