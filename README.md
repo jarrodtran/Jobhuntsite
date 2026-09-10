@@ -21,7 +21,7 @@ pnpm test
 pnpm build
 ```
 
-`pnpm build` writes a static site to `out/`. To preview the GitHub Pages path locally:
+`pnpm build` writes a static site to `out/` at the apex (`/`), matching production on [jarrodtran.com](https://jarrodtran.com). To preview the old project-pages path locally:
 
 ```bash
 NEXT_PUBLIC_BASE_PATH=/Jobhuntsite pnpm build
@@ -104,21 +104,13 @@ Page padding is `px-5 md:px-8` (1.25rem → 2rem at ≥768) on the shared shell 
 
 ## Deploy (GitHub Pages)
 
-The workflow in [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) builds with `NEXT_PUBLIC_BASE_PATH=/Jobhuntsite` and deploys `out/` on pushes to `main`. Pull requests lint and build only.
+The workflow in [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) builds with an empty `NEXT_PUBLIC_BASE_PATH` (apex `/`) and deploys `out/` on pushes to `main`. Pull requests lint and build only. `public/CNAME` ships `jarrodtran.com` into `out/` so GitHub Pages keeps the custom domain.
 
 The workflow enables Pages (source: GitHub Actions) on first deploy. GitHub Pages on a **private** repo still needs GitHub Pro or Team; this repo is public, so the site can go live.
 
-Site URL after a successful deploy: `https://jarrodtran.github.io/Jobhuntsite/`.
+Site URL after a successful deploy: `https://jarrodtran.com`. The GitHub project-pages URL (`https://jarrodtran.github.io/Jobhuntsite/`) is the previous path; production no longer uses that prefix.
 
-### Custom domain
-
-A custom domain (recommended for a job hunt) drops the `/Jobhuntsite` prefix:
-
-1. Add `public/CNAME` containing the domain.
-2. In the workflow, set `NEXT_PUBLIC_BASE_PATH` to empty (`NEXT_PUBLIC_BASE_PATH: ""` or remove the env var).
-3. Point DNS at GitHub Pages and set the custom domain in repo Settings → Pages.
-
-[`src/lib/url.ts`](src/lib/url.ts) is the only module that reads `NEXT_PUBLIC_BASE_PATH`. `asset()` prefixes public-folder paths (`resume.pdf`, `og.png`) for raw `<a href>` and metadata; `siteUrl` is the canonical homepage URL. Do not use `asset()` with `next/link`.
+[`src/lib/url.ts`](src/lib/url.ts) is the only module that reads `NEXT_PUBLIC_BASE_PATH`. `asset()` prefixes public-folder paths (`resume.pdf`, `og.png`) for raw `<a href>` and metadata; `siteUrl` is the canonical homepage URL. Do not use `asset()` with `next/link`. Copy still owns `site.origin` in `src/content.ts` (currently the github.io host) and will flip it after DNS is live.
 
 ## What this shell is not (Phase 2+)
 
