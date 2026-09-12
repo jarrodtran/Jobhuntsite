@@ -2,36 +2,44 @@ import { cleanup, render } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { Fit } from "@/components/sections/Fit";
 
-describe("Fit links focus", () => {
+describe("Fit thesis", () => {
   afterEach(() => {
     cleanup();
   });
 
-  it("sets the primary Fit link in semibold ink and leaves siblings muted", () => {
+  it("renders the primary thesis and one adjacent StratOps lane", () => {
     const { container } = render(<Fit />);
-    const list = container.querySelector("[data-slot='role-chips']");
-    const primaryItem = container.querySelector("[data-primary='true']");
-    const primaryLink = primaryItem?.querySelector("a");
-    const siblingLinks = container.querySelectorAll("[data-primary='false'] a");
+    const thesis = container.querySelector("[data-slot='thesis']");
+    const adjacent = container.querySelector("[data-slot='adjacent']");
 
-    expect(list).toHaveClass("flex", "flex-wrap");
-    expect(list?.className).not.toMatch(/rounded-card|bg-surface|shadow-card/);
-    expect(primaryLink).toHaveTextContent("AI Enablement");
-    expect(primaryLink).toHaveClass("font-semibold", "text-ink");
-    expect(primaryLink).not.toHaveClass("text-muted");
-    expect(primaryItem?.querySelector("[data-slot='badge']")).toHaveTextContent(
-      "Primary target",
+    expect(thesis).toHaveTextContent(
+      "I run AI adoption in large manufacturing orgs: as-is to to-be, ship, then hand off to a sustaining team. Enablement plus custom buildouts.",
     );
-    expect(siblingLinks.length).toBeGreaterThan(0);
-    for (const link of siblingLinks) {
-      expect(link).toHaveClass("text-muted");
-      expect(link).not.toHaveClass("font-semibold");
-    }
+    expect(adjacent).toHaveTextContent("Strategy & Operations");
+    expect(container.querySelector("[data-slot='badge']")).toBeNull();
+    expect(container.textContent).not.toMatch(/VC Platform/);
+    expect(container.textContent).not.toMatch(/Chief of Staff/);
+    expect(container.textContent).not.toMatch(/Primary target/);
+  });
+
+  it("links each lane into the experience rows that back it", () => {
+    const { container } = render(<Fit />);
+    const thesisLink = container.querySelector(
+      "[data-slot='thesis'] [data-slot='fit-links'] a",
+    );
+    const adjacentHrefs = [
+      ...container.querySelectorAll(
+        "[data-slot='adjacent'] [data-slot='fit-links'] a",
+      ),
+    ].map((link) => link.getAttribute("href"));
+
+    expect(thesisLink).toHaveAttribute("href", "#tesla-ai");
+    expect(adjacentHrefs).toEqual(["#tesla-ai", "#waymo", "#apple-india"]);
   });
 
   it("exposes a 2px ink focus-visible ring on each Fit link", () => {
     const { container } = render(<Fit />);
-    const links = container.querySelectorAll("[data-slot='role-chips'] a");
+    const links = container.querySelectorAll("[data-slot='fit-links'] a");
 
     expect(links.length).toBeGreaterThan(0);
     for (const link of links) {

@@ -3,7 +3,7 @@
 import { sectionShellClass } from "@/components/layout/Section";
 import { FOCUS_VISIBLE_CLASS } from "@/lib/focus";
 import { withReducedMotionSnap } from "@/lib/motion";
-import type { Cta } from "@/lib/selectors";
+import { ctaAnchorProps, type Cta } from "@/lib/selectors";
 import { shouldShowScrollRail } from "@/lib/stickyCta";
 import { useHeroCtaVisibility } from "@/lib/useHeroCtaVisibility";
 
@@ -57,13 +57,11 @@ export function ScrollRail({ cta, watchId, wordmark, homeHref }: Props) {
           {wordmark}
         </a>
         <a
-          href={cta.href}
           data-cta={cta.kind}
           data-variant="solid"
           tabIndex={visible ? undefined : -1}
           className={`inline-flex h-8 min-w-24 items-center justify-center rounded-md bg-ink px-4 text-sm font-semibold text-bg hover:bg-accent active:opacity-90 ${FOCUS_VISIBLE_CLASS}`}
-          {...(cta.external ? { rel: "noopener" } : {})}
-          {...(cta.download ? { download: true, type: "application/pdf" } : {})}
+          {...ctaAnchorProps(cta)}
         >
           {cta.label}
         </a>

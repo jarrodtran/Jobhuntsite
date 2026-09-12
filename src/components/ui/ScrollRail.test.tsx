@@ -8,7 +8,8 @@ const cta: Cta = {
   label: "Resume",
   href: "/resume.pdf",
   external: false,
-  download: true,
+  download: false,
+  newTab: true,
 };
 
 let ioCallback: IntersectionObserverCallback | undefined;

@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 import {
+  contact,
   experience,
   hero,
   proofBand,
+  roles,
   siteIndexable,
 } from "@/content";
-import { contentHasPlaceholders, seoView } from "@/lib/selectors";
+import { contentHasPlaceholders, heroView, seoView } from "@/lib/selectors";
 
 const byId = (id: string) => {
   const entry = experience.find((row) => row.id === id);
@@ -22,18 +24,40 @@ describe("Copy enrich lock", () => {
     expect(seoView.indexable).toBe(true);
   });
 
-  it("keeps the locked hero title and proof surfaces", () => {
+  it("keeps the Tesla title and files StratOps on the fold", () => {
     expect(hero.title).toBe("Manager, AI & Factory Strategy");
+    expect(hero.searchTitle).toBe(
+      "Strategy & Operations, Technical Program Manager",
+    );
+    expect(hero.mappingLine).toMatch(/Strategy & Operations/);
+    expect(hero.mappingLine).toMatch(/Technical Program Manager/);
+    expect(hero.mappingLine).toMatch(/Tesla Energy/);
+    expect(hero.mappingLine).not.toMatch(/Targeting/);
+    expect(hero.voiceLine).toBe("");
     expect(hero.proofChips).toEqual([
-      { metric: "$260M", label: "annualized cost-down" },
-      { metric: "10k+", label: "AI-native org" },
-      { metric: "$2B→$10B", label: "Apple India revenue" },
+      { metric: "10k+", label: "employees, AI enablement" },
+      { metric: "$260M", label: "led NPI cost-down" },
+      { metric: "20+", label: "AI tools shipped" },
     ]);
-    expect(proofBand).toEqual([
-      { metric: "$156M", label: "annual profit" },
-      { metric: "3.2×", label: "Megapack scale" },
-      { metric: "20+", label: "AI tools" },
-    ]);
+    expect(proofBand).toEqual([]);
+    expect(contact.location).toBe("Houston");
+  });
+
+  it("puts Tesla, AI adoption, and Strategy & Operations in the snippet", () => {
+    expect(seoView.title).toBe(
+      "Jarrod Tran — Strategy & Operations, Technical Program Manager",
+    );
+    expect(seoView.description).toBe(hero.mappingLine);
+    expect(seoView.description).toMatch(/Tesla/);
+    expect(seoView.description).toMatch(/AI adoption/);
+    expect(seoView.description).toMatch(/Strategy & Operations/);
+    expect(seoView.description).toMatch(/Technical Program Manager/);
+  });
+
+  it("opens the resume in a new tab instead of downloading it", () => {
+    expect(heroView.primaryCta.download).toBe(false);
+    expect(heroView.primaryCta.newTab).toBe(true);
+    expect(heroView.primaryCta.href).toBe("/resume.pdf");
   });
 
   it("uses month-precision dates", () => {
@@ -59,14 +83,16 @@ describe("Copy enrich lock", () => {
     });
   });
 
-  it("locks tesla-ai bullets money-first with $550M as #2", () => {
+  it("leads tesla-ai with enablement, a forward-deployed team, then attributed cost-down", () => {
     expect(byId("tesla-ai").bullets).toEqual([
-      "Sequence a $23M / 50+ initiative portfolio: $260M annualized cost-down, $156M incremental annual profit; Megapack scale 3.2×.",
-      "Mitigated $550M in projected tariff exposure by redesigning build plans and establishing FTZ / bonded-warehouse / product-changeover infrastructure.",
       "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees): as-is to to-be to ship to hand-off to a sustaining team.",
-      "Stand up an FDE team for custom AI buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity).",
+      "Stand up a forward-deployed applied AI team for custom buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity). Hiring manager for that team.",
+      "Lead a 12-month NPI cost-down across materials, labor, and supplier contracts: $260M annualized cost-down, $156M incremental annual profit, on a $23M / 50+ initiative book. Megapack scale 3.2×.",
+      "Mitigated $550M in projected tariff exposure by redesigning build plans and establishing FTZ / bonded-warehouse / product-changeover infrastructure.",
       "Own strategy on what we build, where we build it, and when we launch, plus regulatory and cost mitigation.",
     ]);
+    expect(byId("tesla-ai").scopeLine).toMatch(/forward-deployed/);
+    expect(byId("tesla-ai").scopeLine).toMatch(/hiring manager/i);
   });
 
   it("keeps tesla-4680 stage gates and adds logistics bullets", () => {
@@ -78,15 +104,32 @@ describe("Copy enrich lock", () => {
     ]);
   });
 
-  it("holds banned figures and cities out of copy", () => {
+  it("renders Fit as an AI thesis plus one StratOps lane", () => {
+    expect(roles.map((role) => role.id)).toEqual(["ai-enablement", "bizops"]);
+    expect(roles.some((role) => role.primary)).toBe(true);
+    expect(roles.find((role) => role.primary)?.summary).toMatch(
+      /as-is to to-be, ship, then hand off/,
+    );
+    expect(roles.find((role) => role.primary)?.summary).not.toMatch(
+      /pilot graveyard/,
+    );
+    expect(contact.education).toMatch(/University at Buffalo/);
+  });
+
+  it("holds banned figures out of copy and keeps cities off experience rows", () => {
     const copy = JSON.stringify({
       hero,
       proofBand,
       experience,
+      roles,
     });
     expect(copy).not.toMatch(/GWh|56%|26%/);
     expect(experience.every((row) => !row.location)).toBe(true);
     expect(hero.proofChips.some((chip) => chip.metric === "$550M")).toBe(false);
     expect(proofBand.some((chip) => chip.metric === "$550M")).toBe(false);
+    expect(copy).not.toMatch(/AI-native org/);
+    expect(copy).not.toMatch(/\bFDE\b/);
+    expect(copy).not.toMatch(/Targeting/);
+    expect(copy).not.toMatch(/pilot graveyard/);
   });
 });

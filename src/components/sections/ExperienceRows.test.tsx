@@ -67,7 +67,7 @@ describe("ExperienceRows accordion", () => {
     expect(open).not.toHaveClass("py-2");
   });
 
-  it("sets closed-row title semibold ink, company muted with a mid-dot, scope clamped", () => {
+  it("sets closed-row title and company in semibold ink, with a mid-dot, scope clamped", () => {
     renderRows();
     const closed = screen.getByRole("button", { name: /Role B/ });
     const title = closed.querySelector("[data-slot='title']");
@@ -76,7 +76,7 @@ describe("ExperienceRows accordion", () => {
     const line = title?.parentElement;
 
     expect(title).toHaveClass("font-semibold", "text-ink");
-    expect(company).toHaveClass("text-muted");
+    expect(company).toHaveClass("font-semibold", "text-ink");
     expect(company).toHaveTextContent("Co B");
     expect(line).toHaveTextContent("Role B");
     expect(line).toHaveTextContent("·");

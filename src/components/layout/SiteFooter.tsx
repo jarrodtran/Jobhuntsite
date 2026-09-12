@@ -1,8 +1,8 @@
 import { sectionShellClass } from "@/components/layout/Section";
-import { footerView } from "@/lib/selectors";
+import { ctaAnchorProps, footerView } from "@/lib/selectors";
 
 /**
- * Email + LinkedIn only. No location, availability, or resume duplicate.
+ * Email, LinkedIn, and city. Resume stays in the hero and sticky chrome.
  * <address> makes the contact info machine-identifiable; the footer is the
  * `#contact` anchor the header nav points at.
  * Hooks: `data-section="contact"`, `data-slot="contact-links"`.
@@ -23,15 +23,17 @@ export function SiteFooter() {
           {footerView.links.map((cta) => (
             <li key={cta.kind}>
               <a
-                href={cta.href}
                 data-cta={cta.kind}
                 className="link text-ink"
-                {...(cta.external ? { rel: "noopener" } : {})}
+                {...ctaAnchorProps(cta)}
               >
                 {cta.label}
               </a>
             </li>
           ))}
+          {footerView.location ? (
+            <li data-slot="location">{footerView.location}</li>
+          ) : null}
         </ul>
       </address>
     </footer>

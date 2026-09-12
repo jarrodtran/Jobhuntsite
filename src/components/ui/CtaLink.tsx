@@ -1,5 +1,5 @@
 import { FOCUS_VISIBLE_CLASS } from "@/lib/focus";
-import type { Cta } from "@/lib/selectors";
+import { ctaAnchorProps, type Cta } from "@/lib/selectors";
 
 type Variant = "solid" | "ghost";
 
@@ -35,14 +35,12 @@ export function CtaLink({ cta, variant, className, id }: Props) {
   return (
     <a
       id={id}
-      href={cta.href}
       data-cta={cta.kind}
       data-variant={variant}
       className={[baseClass, variantClass[variant], className]
         .filter(Boolean)
         .join(" ")}
-      {...(cta.external ? { rel: "noopener" } : {})}
-      {...(cta.download ? { download: true, type: "application/pdf" } : {})}
+      {...ctaAnchorProps(cta)}
     >
       {cta.label}
     </a>

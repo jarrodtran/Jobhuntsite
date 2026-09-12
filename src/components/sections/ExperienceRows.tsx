@@ -114,7 +114,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                     <span aria-hidden="true" className="px-1.5 text-muted">
                       ·
                     </span>
-                    <span data-slot="company" className="text-sm text-muted">
+                    <span data-slot="company" className="text-sm font-semibold text-ink">
                       {row.company}
                       {row.location ? ` · ${row.location}` : null}
                     </span>
