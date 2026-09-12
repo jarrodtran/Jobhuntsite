@@ -8,7 +8,8 @@ const cta: Cta = {
   label: "Resume",
   href: "/resume.pdf",
   external: false,
-  download: true,
+  download: false,
+  newTab: true,
 };
 
 describe("CtaLink focus", () => {
@@ -41,5 +42,15 @@ describe("CtaLink focus", () => {
 
     expect(ghost).toHaveClass("active:opacity-90");
     expect(ghost).toHaveClass("focus-visible:outline-ink");
+  });
+
+  it("opens the resume PDF in a new tab without a download attribute", () => {
+    const { container } = render(<CtaLink cta={cta} variant="solid" />);
+    const link = container.querySelector("[data-cta='resume']");
+
+    expect(link).toHaveAttribute("href", "/resume.pdf");
+    expect(link).toHaveAttribute("target", "_blank");
+    expect(link).toHaveAttribute("rel", "noopener");
+    expect(link).not.toHaveAttribute("download");
   });
 });

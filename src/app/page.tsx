@@ -6,16 +6,8 @@ import { Hero } from "@/components/sections/Hero";
 import { ProofBand } from "@/components/sections/ProofBand";
 
 /**
- * Recruiter scan path (FE Designer IA), top to bottom:
- *   Hero (name, title, voice, $260M figure block, CTAs, employers;
- *        mobile ResumeBar + desktop ScrollRail after the hero CTA leaves view)
- *   → Proof strip (secondary metrics between hairlines; not a nav section)
- *   → Experience (primary scan path; accordion rows)
- *   → Fit (one line of role text links)
- *   → Footer (email + LinkedIn)
- *
- * Order here must match `sectionOrder` in src/lib/selectors.ts, which drives
- * the header nav.
+ * Recruiter scan path: Hero → Experience → Fit → Footer.
+ * Order here must match `sectionOrder` in src/lib/selectors.ts.
  */
 export default function Home() {
   return (

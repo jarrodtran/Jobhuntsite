@@ -1,6 +1,6 @@
 "use client";
 
-import { footerView, type Cta } from "@/lib/selectors";
+import { ctaAnchorProps, footerView, type Cta } from "@/lib/selectors";
 import { shouldShowResumeBar } from "@/lib/stickyCta";
 import { useHeroCtaVisibility } from "@/lib/useHeroCtaVisibility";
 
@@ -42,13 +42,11 @@ export function ResumeBar({ cta, watchId }: Props) {
       ].join(" ")}
     >
       <a
-        href={cta.href}
         data-cta={cta.kind}
         data-variant="bar"
         tabIndex={visible ? undefined : -1}
         className="flex h-12 items-center justify-center text-sm font-semibold text-bg"
-        {...(cta.external ? { rel: "noopener" } : {})}
-        {...(cta.download ? { download: true, type: "application/pdf" } : {})}
+        {...ctaAnchorProps(cta)}
       >
         {cta.label}
       </a>

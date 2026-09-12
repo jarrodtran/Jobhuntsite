@@ -3,13 +3,8 @@ import { ExperienceRows } from "@/components/sections/ExperienceRows";
 import { experienceView, proofBandView } from "@/lib/selectors";
 
 /**
- * Primary scan path. Reverse-chronological rows; each row is closed by default
- * except the current role. Closed = dates + title + company + scope line.
- * Open = the locked bullets. `ExperienceRows` is the only client component on
- * the page; everything else is static.
- *
- * Sits 3rem under the proof strip; falls back to the normal section gap when
- * Copy has emptied `proofBand`.
+ * Reverse-chronological rows. Current role open on first paint. Closed rows
+ * show dates, title, company, and scope. Education is one line under the list.
  */
 export function Experience() {
   return (
@@ -21,6 +16,11 @@ export function Experience() {
         rows={experienceView.rows}
         dateRangeSeparator={experienceView.dateRangeSeparator}
       />
+      {experienceView.education ? (
+        <p data-slot="education" className="mt-6 text-sm text-muted">
+          {experienceView.education}
+        </p>
+      ) : null}
     </Section>
   );
 }

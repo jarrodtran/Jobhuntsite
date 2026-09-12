@@ -90,9 +90,23 @@ export type Cta = {
   href: string;
   /** Opens off-site; components add rel="noopener". */
   external: boolean;
-  /** Browser should save the target instead of navigating (Resume PDF). */
+  /** When true, the browser saves the file instead of navigating. */
   download: boolean;
+  /** Open in a new browsing context. Resume uses this so the PDF is skimmable. */
+  newTab: boolean;
 };
+
+/** Shared <a> attributes so Resume, the bar, and the rail open the same way. */
+export function ctaAnchorProps(cta: Cta) {
+  return {
+    href: cta.href,
+    ...(cta.external || cta.newTab ? { rel: "noopener" as const } : {}),
+    ...(cta.newTab ? { target: "_blank" as const } : {}),
+    ...(cta.download
+      ? { download: true as const, type: "application/pdf" as const }
+      : {}),
+  };
+}
 
 export type Anchor = {
   href: `#${string}`;
@@ -104,7 +118,8 @@ const resumeCta: Cta = {
   label: ui.cta.resume,
   href: asset(contact.resumePdf),
   external: false,
-  download: true,
+  download: false,
+  newTab: true,
 };
 
 const linkedinCta: Cta = {
@@ -113,6 +128,7 @@ const linkedinCta: Cta = {
   href: contact.linkedin,
   external: true,
   download: false,
+  newTab: false,
 };
 
 /** Email address as its own label so the footer reads as a real address line. */
@@ -122,6 +138,7 @@ const emailCta: Cta = {
   href: mailto(contact.email),
   external: false,
   download: false,
+  newTab: false,
 };
 
 // ---------------------------------------------------------------------------
@@ -168,7 +185,9 @@ export const heroView = {
   section: sections.hero,
   name: hero.name,
   title: hero.title,
+  mappingLine: hasText(hero.mappingLine) ? hero.mappingLine : null,
   voiceLine: hasText(hero.voiceLine) ? hero.voiceLine : null,
+  location: hasText(contact.location) ? contact.location : null,
   proofChips: visibleChips(hero.proofChips),
   proofChipsLabel: ui.hero.proofChipsLabel,
   employers: visible(hero.employers),
@@ -188,33 +207,47 @@ export const proofBandView = {
 };
 
 // ---------------------------------------------------------------------------
-// Roles ("Where I fit") — one line of text links, primary first
+// Roles ("Where I fit") — primary thesis, one adjacent lane, experience links
 // ---------------------------------------------------------------------------
 
-export type RoleChip = {
-  id: Role["id"];
+export type FitLink = {
+  href: Anchor["href"];
   label: string;
-  primary: boolean;
-  /** Anchor of the first backing experience entry, or null when none is listed. */
-  href: Anchor["href"] | null;
 };
 
+export type FitLane = {
+  id: Role["id"];
+  label: string;
+  summary: string;
+  links: FitLink[];
+};
+
+function experienceLinks(ids: ReadonlyArray<string> | undefined): FitLink[] {
+  const byId = new Map(experience.map((entry) => [entry.id, entry]));
+  return visible(ids ?? []).flatMap((id) => {
+    const entry = byId.get(id);
+    if (!entry) return [];
+    return [{ href: `#${id}` as const, label: entry.company }];
+  });
+}
+
+function toFitLane(role: Role): FitLane | null {
+  if (!hasText(role.summary)) return null;
+  return {
+    id: role.id,
+    label: role.label,
+    summary: role.summary,
+    links: experienceLinks(role.experienceIds),
+  };
+}
+
 const primaryRole = roles.find((role) => role.primary) ?? roles[0];
+const adjacentRole = roles.find((role) => role.id !== primaryRole.id);
 
 export const rolesView = {
   section: sections.roles,
-  chips: [primaryRole, ...roles.filter((role) => role.id !== primaryRole.id)]
-    .filter((role) => hasText(role.label))
-    .map<RoleChip>((role) => {
-      const target = visible(role.experienceIds ?? [])[0];
-      return {
-        id: role.id,
-        label: role.label,
-        primary: role.primary,
-        href: target ? `#${target}` : null,
-      };
-    }),
-  primaryBadge: ui.roles.primaryBadge,
+  thesis: toFitLane(primaryRole),
+  adjacent: adjacentRole ? toFitLane(adjacentRole) : null,
 };
 
 // ---------------------------------------------------------------------------
@@ -266,6 +299,7 @@ const defaultOpenId: string | null =
 export const experienceView = {
   section: sections.experience,
   dateRangeSeparator: ui.experience.dateRangeSeparator,
+  education: hasText(contact.education) ? contact.education : null,
   rows: experience.map<ExperienceRow>((entry) => ({
     id: entry.id,
     company: entry.company,
@@ -281,11 +315,12 @@ export const experienceView = {
 };
 
 // ---------------------------------------------------------------------------
-// Footer — email + LinkedIn only
+// Footer
 // ---------------------------------------------------------------------------
 
 export const footerView = {
   section: sections.contact,
+  location: hasText(contact.location) ? contact.location : null,
   links: [emailCta, linkedinCta] satisfies Cta[],
 };
 
@@ -303,12 +338,15 @@ export const contentHasPlaceholders: boolean = JSON.stringify({
 }).includes(TODO_COPY);
 
 const seoTitle = `${hero.name} — ${hero.title}`;
+const seoDescription = hasText(hero.mappingLine)
+  ? hero.mappingLine
+  : hero.voiceLine;
 
 export const seoView = {
   lang: site.lang,
   siteUrl,
   title: seoTitle,
-  description: hero.voiceLine,
+  description: seoDescription,
   siteName: hero.name,
   /** Indexable only when the ship gate is open AND no TODO_COPY remains. */
   indexable: siteIndexable && !contentHasPlaceholders,
@@ -330,6 +368,14 @@ export const seoView = {
     email: mailto(contact.email),
     url: siteUrl.href,
     sameAs: visible([contact.linkedin, contact.github]),
+    ...(hasText(contact.location)
+      ? {
+          homeLocation: {
+            "@type": "Place",
+            name: contact.location,
+          },
+        }
+      : {}),
   },
   skipToContent: ui.skipToContent,
 };

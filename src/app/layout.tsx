@@ -7,10 +7,9 @@ import "./globals.css";
 export const viewport: Viewport = viewportChrome;
 
 /**
- * All metadata is derived from content: <title> and OG title come from
- * hero.name + hero.title, descriptions from hero.voiceLine. Image URLs are
- * absolute and basePath-prefixed so they resolve at the configured root.
- * Indexing is gated by `siteIndexable` and the absence of TODO_COPY.
+ * Title and OG title from hero.name + hero.title. Description from
+ * mappingLine, falling back to voiceLine. Indexing requires siteIndexable
+ * and no TODO_COPY.
  */
 export const metadata: Metadata = {
   metadataBase: seoView.siteUrl,

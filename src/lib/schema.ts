@@ -15,7 +15,7 @@ export type Audience =
   | "robotics"
   | "venture";
 
-export type RoleId = "ai-enablement" | "bizops" | "cos" | "vc";
+export type RoleId = "ai-enablement" | "bizops";
 
 /** Section anchors. Also the `data-section` hook FE Designer can style against. */
 export type SectionId = "hero" | "roles" | "experience" | "contact";
@@ -31,7 +31,12 @@ export type Hero = {
   name: string;
   /** Drives the <h1> subtitle, <title>, OG title, and JSON-LD jobTitle. */
   title: string;
-  /** One first-person line. Drives meta description and OG description. */
+  /**
+   * Recruiter filing line under the Tesla title. Also the meta / OG
+   * description so search snippets carry StratOps and TPM language.
+   */
+  mappingLine?: string;
+  /** One first-person line. Hidden when blank. */
   voiceLine: string;
   /** Headline chips. Order is display order; the first chip is the visual lead. */
   proofChips: ProofChip[];
@@ -48,17 +53,17 @@ export type ProofBand = ProofChip[];
 
 export type Role = {
   id: RoleId;
-  /** Rendered as a text link in "Where I fit". */
+  /** Lane name. Primary thesis uses this only as context; adjacent renders it. */
   label: string;
-  /** Exactly one role must be primary; it renders first and gets the badge. */
+  /** Exactly one role must be primary. Fit renders its summary as the thesis. */
   primary: boolean;
-  /** Stored, not rendered. Proof lives in Experience bullets (FE Designer spec). */
+  /** Primary: the Fit thesis. Adjacent: the second paragraph. */
   summary: string;
-  /** Stored, not rendered. */
+  /** Stored, not rendered. Proof lives in Experience bullets. */
   evidence: string[];
   /** Stored for future per-audience ordering. Not rendered. */
   audiences: Audience[];
-  /** `ExperienceEntry.id`s that back this role. Validated at build; the first is the Fit link target. */
+  /** Backing rows. Validated at build. Fit renders each as a text link. */
   experienceIds?: string[];
 };
 
@@ -84,9 +89,12 @@ export type Contact = {
   linkedin: string;
   /** Public-folder path, e.g. "/resume.pdf". Prefixed with basePath at render. */
   resumePdf: string;
-  /** Stored, not rendered. Footer is email + LinkedIn only. */
+  /** Stored, not rendered. */
   github?: string;
+  /** City. Hero and footer render it when set. */
   location?: string;
+  /** One line under Experience. Hidden when blank. */
+  education?: string;
   availability?: string;
   clearance?: string;
 };
@@ -131,9 +139,6 @@ export type UiStrings = {
   proofBand: {
     /** a11y label for the strip; not rendered visually. */
     label: string;
-  };
-  roles: {
-    primaryBadge: string;
   };
   experience: {
     /** Separator between start and end inside a date range. */
