@@ -29,14 +29,16 @@ export type ProofChip = {
 
 export type Hero = {
   name: string;
-  /** Drives the <h1> subtitle, <title>, OG title, and JSON-LD jobTitle. */
+  /** Tesla (or current) job name. On-page subtitle and JSON-LD jobTitle. */
   title: string;
   /**
-   * Recruiter filing line under the Tesla title. Also the meta / OG
-   * description so search snippets carry StratOps and TPM language.
+   * Tab and OG title after the name. Recruiter filing language, not the
+   * Tesla-internal title.
    */
+  searchTitle?: string;
+  /** One filing sentence under the Tesla title. Also the meta / OG description. */
   mappingLine?: string;
-  /** One first-person line. Hidden when blank. */
+  /** Extra first-person line. Hidden when blank. */
   voiceLine: string;
   /** Headline chips. Order is display order; the first chip is the visual lead. */
   proofChips: ProofChip[];

@@ -13,8 +13,8 @@
  * Placeholders are prefixed with `TODO_COPY:` and produced by the `todo()`
  * helper below. While any placeholder remains, the site stays `noindex`.
  *
- * Locked (do not edit without Jarrod): hero.title, hero.mappingLine,
- * hero.voiceLine, hero.proofChips, roles, experience, contact.
+ * Locked (do not edit without Jarrod): hero.title, hero.searchTitle,
+ * hero.mappingLine, hero.proofChips, roles, experience, contact.
  */
 
 import type {
@@ -37,10 +37,10 @@ export const todo = (hint: string): string => `${TODO_COPY}: ${hint}`;
 export const hero: Hero = {
   name: "Jarrod Tran",
   title: "Manager, AI & Factory Strategy",
+  searchTitle: "Strategy & Operations, Technical Program Manager",
   mappingLine:
-    "Tesla Energy. AI enablement and factory strategy. Targeting Strategy & Operations, TPM for hardware and AI deployment, and AI transformation leads.",
-  voiceLine:
-    "I run AI adoption at manufacturing scale, plus planning cadence and launch stage gates.",
+    "Strategy & Operations and Technical Program Manager. Currently running AI adoption at Tesla Energy manufacturing scale.",
+  voiceLine: "",
   proofChips: [
     { metric: "10k+", label: "employees, AI enablement" },
     { metric: "$260M", label: "led NPI cost-down" },
@@ -61,10 +61,10 @@ export const roles: Role[] = [
     label: "AI Enablement",
     primary: true,
     summary:
-      "I make large manufacturing orgs AI-native: as-is to to-be, ship, then hand off to a sustaining team. Enablement plus custom buildouts, not a pilot graveyard.",
+      "I run AI adoption in large manufacturing orgs: as-is to to-be, ship, then hand off to a sustaining team. Enablement plus custom buildouts.",
     evidence: [
       "AI enablement across Tesla Energy Manufacturing for 10,000 employees, with successor hand-off.",
-      "FDE team for custom AI buildouts: 20+ tools, 1,000+ active users, ~$1.6M productivity.",
+      "Forward-deployed applied AI team for custom buildouts: 20+ tools, 1,000+ active users, ~$1.6M productivity.",
     ],
     audiences: ["ai-startup", "big-tech", "defense", "robotics"],
     experienceIds: ["tesla-ai"],
@@ -92,10 +92,10 @@ export const experience: ExperienceEntry[] = [
     start: "Aug 2023",
     end: "Present",
     scopeLine:
-      "Energy Manufacturing. AI enablement for 10k employees. Lead an FDE team; hiring PM and IE.",
+      "Energy Manufacturing. AI enablement for 10k employees. Lead a forward-deployed applied AI team as hiring manager.",
     bullets: [
       "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees): as-is to to-be to ship to hand-off to a sustaining team.",
-      "Stand up an FDE team for custom AI buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity). Hiring manager for that team, including an AI PM and an industrial engineer.",
+      "Stand up a forward-deployed applied AI team for custom buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity). Hiring manager for that team.",
       "Lead a 12-month NPI cost-down across materials, labor, and supplier contracts: $260M annualized cost-down, $156M incremental annual profit, on a $23M / 50+ initiative book. Megapack scale 3.2×.",
       "Mitigated $550M in projected tariff exposure by redesigning build plans and establishing FTZ / bonded-warehouse / product-changeover infrastructure.",
       "Own strategy on what we build, where we build it, and when we launch, plus regulatory and cost mitigation.",
@@ -109,7 +109,7 @@ export const experience: ExperienceEntry[] = [
     start: "Oct 2022",
     end: "May 2023",
     scopeLine:
-      "Stood up Eng Ops cadence, then returned to Tesla. Annual planning, OKRs, resource plans.",
+      "Installed Eng Ops cadence across hardware, software, fleet, product, and legal, then returned to Tesla.",
     bullets: [
       "Translate org priorities into an executable operating system across hardware, software, fleet, product, and legal.",
       "Build annual planning, OKRs, resource plans, business reviews, and decision milestones so bottlenecks surface without ad-hoc reporting.",
@@ -135,7 +135,7 @@ export const experience: ExperienceEntry[] = [
     start: "Jun 2018",
     end: "Jun 2021",
     scopeLine:
-      "4680 / Project Roadrunner to production-ready. Stage gates and launch readiness.",
+      "Took 4680 / Roadrunner from cell pilot to production-ready. Warehouse on Wheels at $3.5M/month.",
     bullets: [
       "Advance Project Roadrunner from early battery-cell pilot toward a production-ready platform.",
       "Install stage gates, readiness reviews, supplier coordination, and cross-functional launch ownership across engineering, production, and supply chain.",

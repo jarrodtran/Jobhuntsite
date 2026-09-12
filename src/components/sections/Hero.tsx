@@ -7,11 +7,11 @@ import { ScrollRail } from "@/components/ui/ScrollRail";
 import { heroView, navView } from "@/lib/selectors";
 
 /**
- * The fold: name, Tesla title, mapping line, voice, Houston, proof, CTAs,
+ * The fold: name, Tesla title, one filing sentence, proof, CTAs with Houston,
  * employers. Sticky Resume chrome follows the hero CTA out of view.
  *
  * Hooks: `data-section="hero"`, `data-slot` on each row (name, title, mapping,
- * voice, location, proof-chips, ctas, employers); `data-component="resume-bar|scroll-rail"`.
+ * voice, proof-chips, ctas, location, employers); `data-component="resume-bar|scroll-rail"`.
  */
 export function Hero() {
   const headingId = `${heroView.section.id}-heading`;
@@ -55,12 +55,6 @@ export function Hero() {
         </p>
       ) : null}
 
-      {heroView.location ? (
-        <p data-slot="location" className="mt-1.5 text-sm text-muted">
-          {heroView.location}
-        </p>
-      ) : null}
-
       <ProofChips
         chips={heroView.proofChips}
         label={heroView.proofChipsLabel}
@@ -69,7 +63,7 @@ export function Hero() {
 
       <div
         data-slot="ctas"
-        className="mt-4 flex flex-col gap-3 sm:flex-row sm:gap-4 lg:mt-5"
+        className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 lg:mt-5"
       >
         <CtaLink
           id={heroResumeId}
@@ -82,6 +76,14 @@ export function Hero() {
           variant="ghost"
           className="w-full sm:w-auto"
         />
+        {heroView.location ? (
+          <p
+            data-slot="location"
+            className="flex h-11 items-center text-sm text-muted"
+          >
+            {heroView.location}
+          </p>
+        ) : null}
       </div>
 
       <EmployerRow

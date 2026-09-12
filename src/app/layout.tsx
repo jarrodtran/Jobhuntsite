@@ -7,9 +7,9 @@ import "./globals.css";
 export const viewport: Viewport = viewportChrome;
 
 /**
- * Title and OG title from hero.name + hero.title. Description from
- * mappingLine, falling back to voiceLine. Indexing requires siteIndexable
- * and no TODO_COPY.
+ * Title and OG title from hero.name + searchTitle (Tesla title on the page).
+ * Description from mappingLine, falling back to voiceLine. Indexing requires
+ * siteIndexable and no TODO_COPY.
  */
 export const metadata: Metadata = {
   metadataBase: seoView.siteUrl,

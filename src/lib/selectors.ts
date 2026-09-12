@@ -337,7 +337,9 @@ export const contentHasPlaceholders: boolean = JSON.stringify({
   ui,
 }).includes(TODO_COPY);
 
-const seoTitle = `${hero.name} — ${hero.title}`;
+const seoTitle = `${hero.name} — ${
+  hasText(hero.searchTitle) ? hero.searchTitle : hero.title
+}`;
 const seoDescription = hasText(hero.mappingLine)
   ? hero.mappingLine
   : hero.voiceLine;

@@ -13,7 +13,7 @@ describe("Fit thesis", () => {
     const adjacent = container.querySelector("[data-slot='adjacent']");
 
     expect(thesis).toHaveTextContent(
-      "I make large manufacturing orgs AI-native: as-is to to-be, ship, then hand off to a sustaining team. Enablement plus custom buildouts, not a pilot graveyard.",
+      "I run AI adoption in large manufacturing orgs: as-is to to-be, ship, then hand off to a sustaining team. Enablement plus custom buildouts.",
     );
     expect(adjacent).toHaveTextContent("Strategy & Operations");
     expect(container.querySelector("[data-slot='badge']")).toBeNull();
