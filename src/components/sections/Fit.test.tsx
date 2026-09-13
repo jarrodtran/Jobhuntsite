@@ -25,7 +25,13 @@ describe("Fit thesis", () => {
       "I run AI enablement across Tesla Energy for 10,000 employees, then hand the program to a sustaining team. A forward-deployed applied AI team does the custom buildouts.",
     );
     expect(adjacent).toHaveTextContent("Strategy & Operations");
+    expect(adjacent).toHaveTextContent(
+      "I work on hardware and new product introduction",
+    );
     expect(adjacent).toHaveTextContent("I led the factory cost-down at Tesla Energy");
+    expect(adjacent).toHaveTextContent(
+      "Before that I did the iPhone India launch at Apple",
+    );
     expect(adjacent).toHaveTextContent("4680");
     expect(adjacent).toHaveTextContent(
       "At Waymo I set up annual planning, OKRs, and business reviews for engineering operations.",

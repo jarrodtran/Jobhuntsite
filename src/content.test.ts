@@ -43,6 +43,8 @@ describe("Copy enrich lock", () => {
     expect(hero.mappingLine).toMatch(
       /across Tesla Energy manufacturing \(10k employees\)/,
     );
+    expect(hero.mappingLine).toMatch(/I run AI adoption/);
+    expect(hero.mappingLine).not.toMatch(/Running AI adoption/);
     expect(hero.mappingLine).not.toMatch(/manufacturing scale/);
     expect(hero.mappingLine).not.toMatch(/Targeting/);
     expect(hero.voiceLine).toBe("");
@@ -140,11 +142,11 @@ describe("Copy enrich lock", () => {
 
   it("leads tesla-ai with enablement, a forward-deployed team, then attributed cost-down", () => {
     expect(byId("tesla-ai").bullets).toEqual([
-      "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees): assess, build, ship, then hand off to a sustaining team.",
-      "Stand up a forward-deployed applied AI team for custom buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity). Hiring manager for that team.",
+      "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees). Assess, build, ship, then hand off to a sustaining team.",
+      "Built a forward-deployed applied AI team for custom buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity). Hiring manager for that team.",
       "Lead a 12-month NPI cost-down across materials, labor, and supplier contracts: $260M annualized cost-down, $156M incremental annual profit, on a $23M / 50+ initiative book. Megapack scale 3.2×.",
       "Mitigated $550M in projected tariff exposure by redesigning build plans and establishing FTZ / bonded-warehouse / product-changeover infrastructure.",
-      "Own strategy on what we build, where we build it, and when we launch, plus regulatory and cost mitigation.",
+      "Own what we build, where we build it, and when we launch, plus regulatory and cost mitigation.",
     ]);
     expect(byId("tesla-ai").bullets[1]).toMatch(/Hiring manager for that team/);
   });
@@ -168,12 +170,26 @@ describe("Copy enrich lock", () => {
     expect(byId("waymo").bullets.at(-1)).toBe(
       "Returned to Tesla in Aug 2023 to lead AI and factory strategy for Energy Manufacturing.",
     );
+    expect(byId("waymo").bullets[0]).not.toMatch(/executable operating system/);
+    expect(byId("waymo").scopeLine).not.toMatch(/cadence/);
+    expect(byId("apple-india").bullets[0]).not.toMatch(/zero-to-one|exacting/);
+    expect(byId("apple-india").bullets[0]).toMatch(
+      /site, supplier, line, and demand plan/,
+    );
+    expect(byId("apple-india").bullets[0]).not.toMatch(
+      /^Set up iPhone manufacturing/,
+    );
+    expect(byId("apple-india").scopeLine).toMatch(/iPhone India/);
+    expect(byId("waymo").scopeLine).toMatch(
+      /Engineering Operations planning and review system/,
+    );
+    expect(byId("waymo").scopeLine).toMatch(/Returned to Tesla/);
   });
 
   it("keeps tesla-4680 stage gates and adds logistics bullets", () => {
     expect(byId("tesla-4680").bullets).toEqual([
-      "Advance Project Roadrunner from early battery-cell pilot toward a production-ready platform.",
-      "Install stage gates, readiness reviews, supplier coordination, and cross-functional launch ownership across engineering, production, and supply chain.",
+      "Advanced Project Roadrunner from an early battery-cell pilot to a production-ready platform.",
+      "Put in stage gates, readiness reviews, and supplier coordination, with launch owned across engineering, production, and supply chain.",
       "Sustained Model 3 / Model Y rates through demand surges and supply disruptions.",
       "Designed and launched a $3.5M/month Warehouse on Wheels logistics platform protecting battery and drivetrain flow.",
     ]);
@@ -197,8 +213,16 @@ describe("Copy enrich lock", () => {
     ]);
     expect(fitLead).toMatch(/Manager, AI & Factory Strategy/);
     expect(fitLead).toMatch(/Technical Program Manager/);
+    expect(fitLead).toMatch(/I do Strategy & Operations/);
+    expect(fitLead).not.toMatch(/That means/);
     expect(fitLead).not.toMatch(/Houston/);
     expect(fitLead).not.toMatch(/reloc/i);
+    expect(roles.find((role) => role.id === "bizops")?.summary).toMatch(
+      /I work on hardware and new product introduction/,
+    );
+    expect(roles.find((role) => role.id === "bizops")?.summary).toMatch(
+      /Before that I did the iPhone India launch at Apple/,
+    );
     expect(roles.find((role) => role.id === "bizops")?.summary).toMatch(
       /At Waymo I set up annual planning, OKRs, and business reviews/,
     );
@@ -226,6 +250,10 @@ describe("Copy enrich lock", () => {
     expect(copy).not.toMatch(/Targeting/);
     expect(copy).not.toMatch(/pilot graveyard/);
     expect(copy).not.toMatch(/as-is to to-be/);
+    expect(copy).not.toMatch(/That means/);
+    expect(copy).not.toMatch(/executable operating system/);
+    expect(copy).not.toMatch(/zero-to-one/);
+    expect(copy).not.toMatch(/exacting/);
     expect(copy).not.toMatch(/VC Platform|Chief of Staff|Director/);
     const fitCopy = JSON.stringify({ fitLead, roles });
     expect(fitCopy).not.toMatch(/Enablement plus custom buildouts/);
