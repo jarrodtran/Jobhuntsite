@@ -68,7 +68,7 @@ export const roles: Role[] = [
     label: "AI adoption",
     primary: true,
     summary:
-      "I run AI enablement across Tesla Energy Manufacturing for 10,000 employees, then hand the program to a sustaining team. A forward-deployed applied AI team does the custom buildouts.",
+      "I run AI enablement across Tesla Energy for 10,000 employees, then hand the program to a sustaining team. A forward-deployed applied AI team does the custom buildouts.",
     evidence: [
       "AI enablement across Tesla Energy Manufacturing for 10,000 employees, with successor hand-off.",
       "Forward-deployed applied AI team for custom buildouts: 20+ tools, 1,000+ active users, ~$1.6M productivity.",
@@ -81,7 +81,7 @@ export const roles: Role[] = [
     label: "Strategy & Operations",
     primary: false,
     summary:
-      "Hardware and new product introduction. I led the factory cost-down at Tesla Energy Manufacturing. Apple's iPhone India launch, 4680, and Waymo are the same kind of program.",
+      "Hardware and new product introduction. I led the factory cost-down at Tesla Energy. Apple's iPhone India launch and 4680 are the hardware programs; Waymo is the operating cadence.",
     evidence: [
       "Sequenced a $23M / 50+ initiative portfolio: $260M annualized cost-down, $156M incremental annual profit; Megapack scale 3.2×.",
       "Built Waymo engineering-ops cadence: annual planning, OKRs, resource plans, and decision milestones.",

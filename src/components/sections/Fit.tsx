@@ -16,16 +16,16 @@ export function Fit() {
 
   return (
     <Section meta={rolesView.section}>
-      <div className="mt-5 flex flex-col gap-10 lg:mt-6 lg:flex-row lg:items-start lg:gap-16">
+      <div className="mt-5 lg:mt-6">
         {rolesView.intro ? (
           <p
             data-slot="intro"
-            className="min-w-0 flex-1 text-base leading-relaxed text-ink lg:text-lg"
+            className="max-w-voice text-base leading-relaxed text-ink lg:text-lg"
           >
             {rolesView.intro}
           </p>
         ) : null}
-        <div className="flex min-w-0 flex-1 flex-col gap-8">
+        <div className="mt-8 flex flex-col gap-8 lg:mt-10 lg:flex-row lg:gap-16">
           <FitLaneBlock lane={rolesView.thesis} slot="thesis" />
           {rolesView.adjacent ? (
             <FitLaneBlock lane={rolesView.adjacent} slot="adjacent" />

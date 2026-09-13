@@ -22,10 +22,10 @@ describe("Fit thesis", () => {
 
     expect(thesis).toHaveTextContent("AI adoption");
     expect(thesis).toHaveTextContent(
-      "I run AI enablement across Tesla Energy Manufacturing for 10,000 employees, then hand the program to a sustaining team. A forward-deployed applied AI team does the custom buildouts.",
+      "I run AI enablement across Tesla Energy for 10,000 employees, then hand the program to a sustaining team. A forward-deployed applied AI team does the custom buildouts.",
     );
     expect(adjacent).toHaveTextContent("Strategy & Operations");
-    expect(adjacent).toHaveTextContent("I led the factory cost-down at Tesla Energy Manufacturing");
+    expect(adjacent).toHaveTextContent("I led the factory cost-down at Tesla Energy");
     expect(adjacent).toHaveTextContent("4680");
     expect(adjacent).toHaveTextContent("Waymo");
 
@@ -64,7 +64,7 @@ describe("Fit thesis", () => {
     ]);
     expect(
       container.querySelector("[data-slot='thesis'] [data-slot='fit-links'] a"),
-    ).toHaveTextContent("Tesla Energy Manufacturing");
+    ).toHaveTextContent("Tesla Energy");
   });
 
   it("exposes a 2px ink focus-visible ring on each Fit link", () => {

@@ -225,7 +225,7 @@ export type FitLane = {
 
 /** Fit prose uses these strings as the underlined jump targets. */
 function fitLinkLabel(entry: ExperienceEntry): string {
-  if (entry.id === "tesla-ai") return "Tesla Energy Manufacturing";
+  if (entry.id === "tesla-ai") return "Tesla Energy";
   if (entry.id === "tesla-4680") return "4680";
   return entry.company;
 }
