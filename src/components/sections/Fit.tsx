@@ -14,7 +14,7 @@ export function Fit() {
 
   return (
     <Section meta={rolesView.section}>
-      <div className="mt-3 flex flex-col gap-4 text-base lg:mt-4 lg:text-lg">
+      <div className="mt-4 flex flex-col gap-5 text-base leading-relaxed lg:mt-5 lg:text-lg">
         <FitParagraph lane={rolesView.thesis} slot="thesis" />
         {rolesView.adjacent ? (
           <FitParagraph lane={rolesView.adjacent} slot="adjacent" />

@@ -8,7 +8,9 @@ import { heroView, navView } from "@/lib/selectors";
 
 /**
  * The fold: name, Tesla title, one filing sentence, proof, CTAs with Houston,
- * employers. Sticky Resume chrome follows the hero CTA out of view.
+ * employers. At ≥1024 the identity column sits beside a quiet fact rail so the
+ * name — not a metric card — owns the page. Sticky Resume chrome follows the
+ * hero CTA out of view.
  *
  * Hooks: `data-section="hero"`, `data-slot` on each row (name, title, mapping,
  * voice, proof-chips, ctas, location, employers); `data-component="resume-bar|scroll-rail"`.
@@ -22,75 +24,78 @@ export function Hero() {
       id={heroView.section.id}
       data-section={heroView.section.id}
       aria-labelledby={headingId}
-      className={`${sectionShellClass} pt-12 sm:pt-16 lg:pt-20`}
+      className={`${sectionShellClass} pt-16 sm:pt-20 lg:pt-24`}
     >
-      <hgroup>
-        <h1
-          id={headingId}
-          data-slot="name"
-          className="text-5xl font-semibold leading-none tracking-tighter"
-        >
-          {heroView.name}
-        </h1>
-        <p data-slot="title" className="mt-3 text-base text-muted lg:text-lg">
-          {heroView.title}
-        </p>
-      </hgroup>
+      <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between lg:gap-16">
+        <div className="min-w-0 flex-1">
+          <hgroup>
+            <h1
+              id={headingId}
+              data-slot="name"
+              className="font-display text-6xl font-normal leading-[0.92] tracking-tight lg:text-7xl"
+            >
+              {heroView.name}
+            </h1>
+            <p
+              data-slot="title"
+              className="mt-4 text-base text-muted lg:text-lg"
+            >
+              {heroView.title}
+            </p>
+          </hgroup>
 
-      {heroView.mappingLine ? (
-        <p
-          data-slot="mapping"
-          className="mt-3 max-w-voice text-base text-ink lg:text-lg"
-        >
-          {heroView.mappingLine}
-        </p>
-      ) : null}
+          {heroView.mappingLine ? (
+            <p
+              data-slot="mapping"
+              className="mt-4 max-w-voice text-base leading-relaxed text-ink lg:text-lg"
+            >
+              {heroView.mappingLine}
+            </p>
+          ) : null}
 
-      {heroView.voiceLine ? (
-        <p
-          data-slot="voice"
-          className="mt-1.5 max-w-voice text-sm text-muted lg:text-base"
-        >
-          {heroView.voiceLine}
-        </p>
-      ) : null}
+          {heroView.voiceLine ? (
+            <p
+              data-slot="voice"
+              className="mt-1.5 max-w-voice text-sm leading-relaxed text-muted lg:text-base"
+            >
+              {heroView.voiceLine}
+            </p>
+          ) : null}
 
-      <ProofChips
-        chips={heroView.proofChips}
-        label={heroView.proofChipsLabel}
-        className="mt-8 lg:mt-10"
-      />
-
-      <div
-        data-slot="ctas"
-        className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4 lg:mt-5"
-      >
-        <CtaLink
-          id={heroResumeId}
-          cta={heroView.primaryCta}
-          variant="solid"
-          className="w-full sm:min-w-36 sm:w-auto"
-        />
-        <CtaLink
-          cta={heroView.secondaryCta}
-          variant="ghost"
-          className="w-full sm:w-auto"
-        />
-        {heroView.location ? (
-          <p
-            data-slot="location"
-            className="flex h-11 items-center text-sm text-muted"
+          <div
+            data-slot="ctas"
+            className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3 lg:mt-10"
           >
-            {heroView.location}
-          </p>
-        ) : null}
-      </div>
+            <CtaLink
+              id={heroResumeId}
+              cta={heroView.primaryCta}
+              variant="solid"
+              className="min-w-32"
+            />
+            <CtaLink cta={heroView.secondaryCta} variant="ghost" />
+            {heroView.location ? (
+              <p
+                data-slot="location"
+                className="flex h-11 items-center text-sm text-muted"
+              >
+                {heroView.location}
+              </p>
+            ) : null}
+          </div>
 
-      <EmployerRow
-        employers={heroView.employers}
-        label={heroView.employersLabel}
-        className="mt-5"
-      />
+          <EmployerRow
+            employers={heroView.employers}
+            label={heroView.employersLabel}
+            className="mt-6"
+          />
+        </div>
+
+        <ProofChips
+          chips={heroView.proofChips}
+          label={heroView.proofChipsLabel}
+          className="mt-10 lg:mt-2 lg:w-56 lg:shrink-0"
+        />
+      </div>
 
       <ResumeBar cta={heroView.primaryCta} watchId={heroResumeId} />
       <ScrollRail

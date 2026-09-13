@@ -17,7 +17,7 @@ export function EmployerRow({ employers, label, className }: Props) {
     <ul
       data-slot="employers"
       aria-label={label}
-      className={["flex flex-wrap items-baseline gap-x-2 text-xs text-muted", className]
+      className={["flex flex-wrap items-baseline gap-x-2 text-sm text-muted", className]
         .filter(Boolean)
         .join(" ")}
     >

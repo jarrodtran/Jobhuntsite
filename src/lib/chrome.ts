@@ -1,5 +1,5 @@
 /** Browser / PWA theme-color — matches `--bg` paper. */
-export const THEME_COLOR = "#F4F4F5";
+export const THEME_COLOR = "#F5F0E6";
 
 /** Next.js `viewport` export: theme-color plus cover so safe-area insets apply. */
 export const viewportChrome = {

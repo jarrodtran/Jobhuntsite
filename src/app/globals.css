@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
- * Design tokens (FE Designer spec). This file is the visual surface; components
+ * Design tokens. This file is the visual surface; components
  * reference tokens by name (max-w-content, mt-section, ease-soft, text-ink),
  * so retuning here restyles the site without touching src/components.
  *
@@ -12,25 +12,26 @@
  *                                                   strip, mobile sticky CTA,
  *                                                   desktop top rail
  *   [data-slot="..."]                               named rows inside a section
- *   [data-lead="true"]                              the $260M hero figure
+ *   [data-lead="true"]                              the 10k hero figure
  *   [data-role="<id>"] [data-primary="true"]        role links
  *   [data-entry="<id>"] [data-open="true|false"]    experience rows
  *   [data-cta="resume|linkedin|email"]              calls to action
  */
 
 :root {
-  /* Palette: warm paper, near-black ink, one muted, one hairline. No tints,
-     no tinted bands — the only surfaces are paper and white. */
-  --bg: #f4f4f5;
-  --ink: #0a0a0a;
-  --muted: #52525b;
-  --hairline: #e4e4e7;
-  --accent: #000000;
-  --surface: #ffffff;
+  /* Palette: Olivier cream paper, Poulos brown-black ink. One muted, one
+     hairline. No tints, no dark theme — the only surfaces are paper and a
+     slightly lighter sheet. */
+  --bg: #f5f0e6;
+  --ink: #1c1a17;
+  --muted: #534e46;
+  --hairline: #e4d9c8;
+  --accent: #1c1a17;
+  --surface: #fffdf8;
 
-  /* Card: white, 1px hairline, and a single 1px shadow line. Nothing softer. */
-  --card-shadow: 0 1px 0 rgb(10 10 10 / 0.04);
-  --card-radius: 0.5rem;
+  /* Card: sheet, 1px hairline, a single 1px shadow line. */
+  --card-shadow: 0 1px 0 rgb(28 26 23 / 0.04);
+  --card-radius: 0.25rem;
 
   /* Responsive measure (FE Designer spec). One column at every width; the
      column simply gets wider as the viewport does, capped at 56rem this unit.
@@ -45,9 +46,9 @@
   /* Experience date rail width at ≥640 (w-28); w-32 at ≥1024. */
   --rail: 7rem;
 
-  /* Motion: 150ms ease, opacity/height only */
+  /* Motion: 150ms, Dennis-like ease-out. Height/opacity/translate only. */
   --motion-duration: 150ms;
-  --motion-ease: ease;
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @media (min-width: 640px) {
@@ -79,6 +80,10 @@
     var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     sans-serif;
 
+  /* Display serif for the fold name only. Body and chrome stay Geist. */
+  --font-display:
+    var(--font-instrument-serif), ui-serif, Georgia, "Times New Roman", serif;
+
   /* Section label: 11px / 0.14em tracking → `text-label`, `tracking-label`. */
   --text-label: 11px;
   --text-label--line-height: 1rem;
@@ -98,11 +103,11 @@
   --ease-soft: var(--motion-ease);
 }
 
-/* Inline text link: hairline underline → ink on hover. No motion. */
+/* Inline text link: hairline underline → ink on hover. */
 @utility link {
   text-decoration-line: underline;
   text-decoration-color: var(--hairline);
-  text-underline-offset: 3px;
+  text-underline-offset: 4px;
 
   &:hover {
     text-decoration-color: var(--ink);
@@ -147,4 +152,17 @@ body {
 ::selection {
   color: var(--ink);
   background: var(--hairline);
+}
+
+/* Recruiters print to PDF. Open every experience panel; hide sticky chrome. */
+@media print {
+  [data-component="resume-bar"],
+  [data-component="scroll-rail"] {
+    display: none !important;
+  }
+
+  [data-slot="panel"] {
+    grid-template-rows: 1fr !important;
+    opacity: 1 !important;
+  }
 }

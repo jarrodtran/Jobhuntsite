@@ -8,7 +8,7 @@ import { navView } from "@/lib/selectors";
  */
 export function SiteHeader() {
   return (
-    <header data-component="site-header" className="border-b border-hairline">
+    <header data-component="site-header">
       <nav
         aria-label="Primary"
         className={`${sectionShellClass} flex h-12 items-center justify-between gap-4`}
@@ -21,10 +21,16 @@ export function SiteHeader() {
           {navView.wordmark}
         </a>
         {navView.links.length > 0 ? (
-          <ul data-slot="nav-links" className="flex items-center gap-x-4 text-sm">
+          <ul
+            data-slot="nav-links"
+            className="flex items-center gap-x-5 text-sm"
+          >
             {navView.links.map((link) => (
               <li key={link.href}>
-                <a href={link.href} className="text-muted hover:text-ink">
+                <a
+                  href={link.href}
+                  className="text-muted underline decoration-transparent underline-offset-4 transition-colors duration-150 ease-soft hover:text-ink hover:decoration-ink motion-reduce:transition-none"
+                >
                   {link.label}
                 </a>
               </li>

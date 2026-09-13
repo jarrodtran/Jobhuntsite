@@ -60,7 +60,7 @@ export function ScrollRail({ cta, watchId, wordmark, homeHref }: Props) {
           data-cta={cta.kind}
           data-variant="solid"
           tabIndex={visible ? undefined : -1}
-          className={`inline-flex h-8 min-w-24 items-center justify-center rounded-md bg-ink px-4 text-sm font-semibold text-bg hover:bg-accent active:opacity-90 ${FOCUS_VISIBLE_CLASS}`}
+          className={`inline-flex h-8 min-w-24 items-center justify-center rounded-sm bg-ink px-4 text-sm font-semibold text-bg hover:bg-accent active:opacity-90 ${FOCUS_VISIBLE_CLASS}`}
           {...ctaAnchorProps(cta)}
         >
           {cta.label}
