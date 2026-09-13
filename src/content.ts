@@ -203,6 +203,7 @@ export const ui: UiStrings = {
   skipToContent: "Skip to content",
   cta: {
     resume: "Resume",
+    resumeAriaLabel: "Resume (PDF, opens in a new tab)",
     linkedin: "LinkedIn",
   },
   hero: {

@@ -80,6 +80,20 @@ function validateContent(): void {
 validateContent();
 
 // ---------------------------------------------------------------------------
+// Current role — needed by the hero, Experience, and JSON-LD alike
+// ---------------------------------------------------------------------------
+
+/** ISO-ish date, as opposed to a word like "Present". */
+const ISO_DATE = /^\d{4}(-\d{2}(-\d{2})?)?$/;
+
+/** "Current" = the end date is a word (e.g. "Present"), not a date. */
+function isCurrent(entry: ExperienceEntry): boolean {
+  return hasText(entry.end) && !ISO_DATE.test(entry.end.trim());
+}
+
+const currentEntry: ExperienceEntry | null = experience.find(isCurrent) ?? null;
+
+// ---------------------------------------------------------------------------
 // Shared shapes
 // ---------------------------------------------------------------------------
 
@@ -95,6 +109,8 @@ export type Cta = {
   download: boolean;
   /** Open in a new browsing context. Resume uses this so the PDF is skimmable. */
   newTab: boolean;
+  /** Overrides the visible label for assistive tech. Omit when the label says enough. */
+  ariaLabel?: string;
 };
 
 /** Shared <a> attributes so Resume, the bar, and the rail open the same way. */
@@ -106,6 +122,7 @@ export function ctaAnchorProps(cta: Cta) {
     ...(cta.download
       ? { download: true as const, type: "application/pdf" as const }
       : {}),
+    ...(hasText(cta.ariaLabel) ? { "aria-label": cta.ariaLabel } : {}),
   };
 }
 
@@ -121,6 +138,8 @@ const resumeCta: Cta = {
   external: false,
   download: false,
   newTab: true,
+  /** "Resume" alone says neither what the file is nor that the tab changes. */
+  ariaLabel: ui.cta.resumeAriaLabel,
 };
 
 const linkedinCta: Cta = {
@@ -276,8 +295,6 @@ export type DateLabel = {
   dateTime: string | null;
 };
 
-const ISO_DATE = /^\d{4}(-\d{2}(-\d{2})?)?$/;
-
 function toDateLabel(value: string): DateLabel | null {
   if (!hasText(value)) return null;
   const trimmed = value.trim();
@@ -286,11 +303,6 @@ function toDateLabel(value: string): DateLabel | null {
 
 function dateRange(entry: ExperienceEntry): string {
   return joinMeta([entry.start, entry.end], ui.experience.dateRangeSeparator);
-}
-
-/** "Current" = the end date is a word (e.g. "Present"), not a date. */
-function isCurrent(entry: ExperienceEntry): boolean {
-  return hasText(entry.end) && !ISO_DATE.test(entry.end.trim());
 }
 
 /** Company slot text: "Waymo (Alphabet)" when a parent is set. */
@@ -385,7 +397,6 @@ function organization(entry: ExperienceEntry) {
 }
 
 /** worksFor is the current employer; alumniOf is every other company, once, plus the school. */
-const currentEntry = experience.find(isCurrent) ?? null;
 const alumniOf = [
   ...experience
     .filter((entry) => entry.company !== currentEntry?.company)

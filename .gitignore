@@ -20,6 +20,12 @@
 # production
 /build
 
+# asset-script scratch (fetched Instrument Serif for scripts/build-og.py)
+/.cache/
+
+# playwright mcp profile
+/.playwright-mcp/
+
 # misc
 .DS_Store
 *.pem

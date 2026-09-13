@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { ANCHOR_OFFSET_CLASS } from "@/lib/chrome";
 import type { SectionMeta } from "@/lib/schema";
 
 /**
@@ -49,7 +50,12 @@ export function Section({
       id={meta.id}
       data-section={meta.id}
       aria-labelledby={headingId(meta)}
-      className={[sectionShellClass, spacingClass[spacing], "scroll-mt-8", className]
+      className={[
+        sectionShellClass,
+        spacingClass[spacing],
+        ANCHOR_OFFSET_CLASS,
+        className,
+      ]
         .filter(Boolean)
         .join(" ")}
     >

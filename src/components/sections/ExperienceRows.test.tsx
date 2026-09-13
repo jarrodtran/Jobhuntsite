@@ -67,7 +67,7 @@ describe("ExperienceRows accordion", () => {
     expect(open).not.toHaveClass("py-2");
   });
 
-  it("sets closed-row title and company in semibold ink, with a mid-dot, scope clamped", () => {
+  it("sets closed-row title and company in semibold ink, with a mid-dot, scope unclamped", () => {
     renderRows();
     const closed = screen.getByRole("button", { name: /Role B/ });
     const title = closed.querySelector("[data-slot='title']");
@@ -81,7 +81,11 @@ describe("ExperienceRows accordion", () => {
     expect(line).toHaveTextContent("Role B");
     expect(line).toHaveTextContent("·");
     expect(line).toHaveTextContent("Co B");
-    expect(scope).toHaveClass("line-clamp-1", "text-muted");
+    // `block` beat `line-clamp-1` on `display`, so the clamp never applied and
+    // the scope has always wrapped. Recruiters get the whole outcome without a
+    // click, and it survives save-to-PDF; the class is gone rather than fixed.
+    expect(scope).toHaveClass("text-muted");
+    expect(scope?.className).not.toMatch(/line-clamp/);
   });
 
   it("keeps a long closed-row title intact and the company name untruncated", () => {

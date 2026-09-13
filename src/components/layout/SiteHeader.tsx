@@ -3,7 +3,9 @@ import { navView } from "@/lib/selectors";
 
 /**
  * Non-sticky. Wordmark + in-page section links at every width; the Resume CTA
- * lives in the hero directly below, so the header carries no button.
+ * lives in the hero directly below, so the header carries no button. The links
+ * pad vertically and pull the padding back with a negative margin: a thumb gets
+ * a 34px target on a phone, the 48px bar keeps its height.
  * Hooks: `data-component="site-header"`, `data-slot="wordmark" | "nav-links"`.
  */
 export function SiteHeader() {
@@ -29,7 +31,7 @@ export function SiteHeader() {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="text-muted underline decoration-transparent underline-offset-4 transition-colors duration-150 ease-soft hover:text-ink hover:decoration-ink motion-reduce:transition-none"
+                  className="-my-2 inline-block py-2 text-muted underline decoration-transparent underline-offset-4 transition-colors duration-150 ease-soft hover:text-ink hover:decoration-ink motion-reduce:transition-none"
                 >
                   {link.label}
                 </a>

@@ -29,6 +29,12 @@
   --accent: #1c1a17;
   --surface: #fffdf8;
 
+  /* Link underline. `--hairline` is 1.23:1 against paper — fine as a divider
+     between rows, invisible as the only thing marking a word as a link. This
+     is 3.23:1, so an inline link reads as a link before hover and on touch,
+     where there is no hover at all. */
+  --rule: #8f8474;
+
   /* Card: sheet, 1px hairline, a single 1px shadow line. */
   --card-shadow: 0 1px 0 rgb(28 26 23 / 0.04);
   --card-radius: 0.25rem;
@@ -70,6 +76,7 @@
   --color-ink: var(--ink);
   --color-muted: var(--muted);
   --color-hairline: var(--hairline);
+  --color-rule: var(--rule);
   --color-accent: var(--accent);
   --color-surface: var(--surface);
 
@@ -103,10 +110,10 @@
   --ease-soft: var(--motion-ease);
 }
 
-/* Inline text link: hairline underline → ink on hover. */
+/* Inline text link: `--rule` underline → ink on hover. */
 @utility link {
   text-decoration-line: underline;
-  text-decoration-color: var(--hairline);
+  text-decoration-color: var(--rule);
   text-underline-offset: 4px;
 
   &:hover {
@@ -154,15 +161,51 @@ body {
   background: var(--hairline);
 }
 
-/* Recruiters print to PDF. Open every experience panel; hide sticky chrome. */
+/* Recruiters save this page to PDF and forward it to a hiring manager. Print is
+   a real surface, so it gets real rules. Chrome defaults "Background graphics"
+   to off, which is why the ink-filled Resume pill has to go rather than be
+   restyled: with no background it prints as an empty box holding cream text on
+   white paper. Nothing on paper is clickable anyway, so the CTAs leave and the
+   LinkedIn URL prints as text in the footer instead. */
+@page {
+  margin: 0.55in;
+}
+
 @media print {
   [data-component="resume-bar"],
-  [data-component="scroll-rail"] {
+  [data-component="scroll-rail"],
+  [data-component="site-header"],
+  [data-slot="ctas"] [data-cta],
+  [data-entry] svg {
     display: none !important;
   }
 
+  /* Every row open, so the whole record prints, not just the current role. */
   [data-slot="panel"] {
     grid-template-rows: 1fr !important;
     opacity: 1 !important;
+  }
+
+  /* Keep a role on one page, and never leave its header stranded at the foot
+     of a page with the bullets overleaf. */
+  [data-entry] {
+    break-inside: avoid;
+  }
+
+  [data-slot="section-heading"],
+  [data-entry] h3 {
+    break-after: avoid;
+  }
+
+  /* The date column is sized for a 44rem measure; a Letter page is narrower,
+     which wraps "Oct 2022–May 2023" onto two lines. */
+  :root {
+    --rail: 8.5rem;
+  }
+
+  /* A bare "LinkedIn" is a dead end on paper. */
+  footer [data-cta="linkedin"]::after {
+    content: " — " attr(href);
+    text-decoration: none;
   }
 }

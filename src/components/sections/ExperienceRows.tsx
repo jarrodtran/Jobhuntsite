@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { Bullets } from "@/components/ui/Bullets";
+import { ANCHOR_OFFSET_CLASS } from "@/lib/chrome";
 import {
   experienceIdFromHash,
   nextOpenExperienceId,
+  rowAccessibleName,
 } from "@/lib/experienceAccordion";
 import { FOCUS_VISIBLE_CLASS } from "@/lib/focus";
 import { withReducedMotionSnap } from "@/lib/motion";
@@ -16,12 +18,20 @@ type Props = {
 };
 
 /**
+ * Long enough for the 150ms collapse of whatever row was open to finish, so the
+ * corrective scroll below measures a settled page.
+ */
+const SETTLE_MS = 200;
+
+/**
  * Accordion. One row open at a time at every width; the current role is open
  * on first paint (server-rendered, so it reads correctly before hydration).
- * A `#<entry-id>` hash — from the Fit links or a shared URL — opens that row.
+ * A `#<entry-id>` hash — from the Fit links or a shared URL — opens that row,
+ * then re-scrolls it: opening the target collapses whatever was open above it,
+ * which pulls the page up and can leave the row above the viewport.
  *
- * Closed rows are a list: dates, title · company as wrapping inline text, scope
- * `line-clamp-1`, a hairline under each, denser `py-2` / `min-h-11` so the
+ * Closed rows are a list: dates, title · company as wrapping inline text, the
+ * full scope line, a hairline under each, denser `py-2` / `min-h-11` so the
  * row is a 44px hit target without extra chrome. Hover washes the closed row
  * to the sheet and turns the hairline ink (150ms, no scale; snapped under
  * reduced motion). The open row is a sheet, not a floating card: 1.25rem
@@ -31,7 +41,9 @@ type Props = {
  * globals.css, so the bullet offset below follows it). Under 640px dates stack
  * above the title. Motion is 150ms on grid rows (height), opacity, and the
  * chevron — snapped under reduced motion. The header is a real `<button>`
- * (`aria-expanded`, Enter/Space).
+ * (`aria-expanded`, Enter/Space) carrying an `aria-label` in reading order, so
+ * heading navigation and the panel's region name are a sentence rather than
+ * "…StrategyTesla10 direct reports…".
  *
  * Hooks: `data-entry="<id>"`, `data-open`, `data-slot` on dates, title,
  * company, scope, panel, bullets.
@@ -40,6 +52,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
   const [openId, setOpenId] = useState<string | null>(
     () => rows.find((row) => row.defaultOpen)?.id ?? null,
   );
+  const [hashTargetId, setHashTargetId] = useState<string | null>(null);
 
   useEffect(() => {
     const openFromHash = () => {
@@ -47,12 +60,28 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
         window.location.hash,
         rows.map((row) => row.id),
       );
-      if (id) setOpenId(id);
+      if (!id) return;
+      setOpenId(id);
+      setHashTargetId(id);
     };
     openFromHash();
     window.addEventListener("hashchange", openFromHash);
     return () => window.removeEventListener("hashchange", openFromHash);
   }, [rows]);
+
+  useEffect(() => {
+    if (!hashTargetId) return;
+    const row = document.getElementById(hashTargetId);
+    setHashTargetId(null);
+    if (!row) return;
+    // No `behavior`: the html rule already switches smooth off under
+    // prefers-reduced-motion, and `scroll-mt` keeps the row clear of the rail.
+    const settle = window.setTimeout(
+      () => row.scrollIntoView({ block: "start" }),
+      SETTLE_MS,
+    );
+    return () => window.clearTimeout(settle);
+  }, [hashTargetId]);
 
   return (
     <ol className="mt-3">
@@ -68,7 +97,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
             data-entry={row.id}
             data-open={open}
             className={[
-              "scroll-mt-8",
+              ANCHOR_OFFSET_CLASS,
               open
                 ? "my-2 bg-surface first:mt-0"
                 : [
@@ -85,6 +114,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                   type="button"
                   aria-expanded={open}
                   aria-controls={panelId}
+                  aria-label={rowAccessibleName(row)}
                   onClick={() =>
                     setOpenId((current) => nextOpenExperienceId(current, row.id))
                   }
@@ -120,7 +150,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                     {row.scopeLine ? (
                       <span
                         data-slot="scope"
-                        className="mt-0.5 block line-clamp-1 text-sm leading-snug text-muted"
+                        className="mt-0.5 block text-sm leading-snug text-muted"
                       >
                         {row.scopeLine}
                       </span>
@@ -132,7 +162,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
               <div
                 id={panelId}
                 role="region"
-                aria-labelledby={headingId}
+                aria-label={`${row.title}, ${row.company}`}
                 aria-hidden={!open}
                 data-slot="panel"
                 className={`grid ${withReducedMotionSnap("transition-[grid-template-rows,opacity] duration-150 ease-soft")}`}
