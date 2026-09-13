@@ -173,7 +173,17 @@ describe("Copy enrich lock", () => {
     expect(byId("waymo").bullets[0]).not.toMatch(/executable operating system/);
     expect(byId("waymo").scopeLine).not.toMatch(/cadence/);
     expect(byId("apple-india").bullets[0]).not.toMatch(/zero-to-one|exacting/);
-    expect(byId("apple-india").scopeLine).toMatch(/standing start/);
+    expect(byId("apple-india").bullets[0]).toMatch(
+      /site, supplier, line, and demand plan/,
+    );
+    expect(byId("apple-india").bullets[0]).not.toMatch(
+      /^Set up iPhone manufacturing/,
+    );
+    expect(byId("apple-india").scopeLine).toMatch(/iPhone India/);
+    expect(byId("waymo").scopeLine).toMatch(
+      /Engineering Operations planning and review system/,
+    );
+    expect(byId("waymo").scopeLine).toMatch(/Returned to Tesla/);
   });
 
   it("keeps tesla-4680 stage gates and adds logistics bullets", () => {

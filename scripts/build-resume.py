@@ -69,8 +69,8 @@ ROLES = [
         "Apple  |  Strategic Operations Program Manager  |  Jun 2021 – Jun 2022",
         None,
         [
-            "Set up iPhone manufacturing in India from a standing start, covering site, supplier, line, and demand, under tight quality, regulatory, and timing requirements.",
-            "That process ran this ramp: revenue $2B to $10B, units 4.3M to 16.9M, exports from 6 to 40+ countries.",
+            "Set up the site, supplier, line, and demand plan for iPhone manufacturing in India from a standing start, under tight quality, regulatory, and timing requirements.",
+            "The plan ran this ramp: revenue $2B to $10B, units 4.3M to 16.9M, exports from 6 to 40+ countries.",
         ],
     ),
     (

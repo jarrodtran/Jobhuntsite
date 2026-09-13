@@ -117,7 +117,7 @@ export const experience: ExperienceEntry[] = [
     start: "Oct 2022",
     end: "May 2023",
     scopeLine:
-      "Set up Engineering Operations across hardware, software, fleet, product, and legal.",
+      "Set up an Engineering Operations planning and review system across hardware, software, fleet, product, and legal. Returned to Tesla.",
     bullets: [
       "Turned Engineering Operations priorities into one planning and review system across hardware, software, fleet, product, and legal.",
       "Set up annual planning, OKRs, resource plans, business reviews, and decision milestones so bottlenecks showed up without ad-hoc reporting.",
@@ -131,10 +131,10 @@ export const experience: ExperienceEntry[] = [
     start: "Jun 2021",
     end: "Jun 2022",
     scopeLine:
-      "iPhone India. $2B to $10B revenue ramp. Site, supplier, line, and demand from a standing start.",
+      "iPhone India. $2B to $10B revenue ramp. Site, supplier, line, and demand.",
     bullets: [
-      "Set up iPhone manufacturing in India from a standing start, covering site, supplier, line, and demand, under tight quality, regulatory, and timing requirements.",
-      "That process ran this ramp: revenue $2B to $10B, units 4.3M to 16.9M, exports from 6 to 40+ countries.",
+      "Set up the site, supplier, line, and demand plan for iPhone manufacturing in India from a standing start, under tight quality, regulatory, and timing requirements.",
+      "The plan ran this ramp: revenue $2B to $10B, units 4.3M to 16.9M, exports from 6 to 40+ countries.",
     ],
   },
   {
