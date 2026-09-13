@@ -182,13 +182,19 @@ function visibleChips(chips: ReadonlyArray<ProofChip>): ProofChip[] {
     }));
 }
 
+/** "Houston · open to relocate" — city plus stance, on the CTA line and in JSON-LD. */
+const locationLine: string | null = (() => {
+  const line = joinMeta([contact.location, contact.relocation]);
+  return hasText(line) ? line : null;
+})();
+
 export const heroView = {
   section: sections.hero,
   name: hero.name,
   title: hero.title,
   mappingLine: hasText(hero.mappingLine) ? hero.mappingLine : null,
   voiceLine: hasText(hero.voiceLine) ? hero.voiceLine : null,
-  location: hasText(contact.location) ? contact.location : null,
+  location: locationLine,
   proofChips: visibleChips(hero.proofChips),
   proofChipsLabel: ui.hero.proofChipsLabel,
   employers: visible(hero.employers),
@@ -287,8 +293,16 @@ function isCurrent(entry: ExperienceEntry): boolean {
   return hasText(entry.end) && !ISO_DATE.test(entry.end.trim());
 }
 
+/** Company slot text: "Waymo (Alphabet)" when a parent is set. */
+function companyLabel(entry: ExperienceEntry): string {
+  return hasText(entry.parentCompany)
+    ? `${entry.company} (${entry.parentCompany})`
+    : entry.company;
+}
+
 export type ExperienceRow = {
   id: string;
+  /** Company slot text, parent in parentheses when set. */
   company: string;
   title: string;
   start: DateLabel | null;
@@ -311,7 +325,7 @@ export const experienceView = {
   education: hasText(contact.education) ? contact.education : null,
   rows: experience.map<ExperienceRow>((entry) => ({
     id: entry.id,
-    company: entry.company,
+    company: companyLabel(entry),
     title: entry.title,
     start: toDateLabel(entry.start),
     end: toDateLabel(entry.end),
@@ -354,6 +368,37 @@ const seoDescription = hasText(hero.mappingLine)
   ? hero.mappingLine
   : hero.voiceLine;
 
+/** schema.org Organization for an employer, with the parent when set. */
+function organization(entry: ExperienceEntry) {
+  return {
+    "@type": "Organization",
+    name: entry.company,
+    ...(hasText(entry.parentCompany)
+      ? {
+          parentOrganization: {
+            "@type": "Organization",
+            name: entry.parentCompany,
+          },
+        }
+      : {}),
+  };
+}
+
+/** worksFor is the current employer; alumniOf is every other company, once, plus the school. */
+const currentEntry = experience.find(isCurrent) ?? null;
+const alumniOf = [
+  ...experience
+    .filter((entry) => entry.company !== currentEntry?.company)
+    .filter(
+      (entry, index, all) =>
+        all.findIndex((other) => other.company === entry.company) === index,
+    )
+    .map(organization),
+  ...(hasText(contact.school)
+    ? [{ "@type": "CollegeOrUniversity", name: contact.school }]
+    : []),
+];
+
 export const seoView = {
   lang: site.lang,
   siteUrl,
@@ -377,9 +422,16 @@ export const seoView = {
     "@type": "Person",
     name: hero.name,
     jobTitle: hero.title,
+    /** Filing sentence plus "Houston · open to relocate." */
+    description: visible([
+      seoDescription,
+      locationLine ? `${locationLine}.` : null,
+    ]).join(" "),
     email: mailto(contact.email),
     url: siteUrl.href,
     sameAs: visible([contact.linkedin, contact.github]),
+    ...(currentEntry ? { worksFor: organization(currentEntry) } : {}),
+    ...(alumniOf.length > 0 ? { alumniOf } : {}),
     ...(hasText(contact.location)
       ? {
           homeLocation: {

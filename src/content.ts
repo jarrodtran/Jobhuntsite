@@ -39,7 +39,7 @@ export const hero: Hero = {
   title: "Manager, AI & Factory Strategy",
   searchTitle: "Strategy & Operations, Technical Program Manager",
   mappingLine:
-    "Strategy & Operations and Technical Program Manager. Currently running AI adoption at Tesla Energy manufacturing scale.",
+    "Strategy & Operations and Technical Program Manager. Running AI adoption across Tesla Energy manufacturing (10k employees).",
   voiceLine: "",
   proofChips: [
     { metric: "10k+", label: "employees, AI enablement" },
@@ -99,9 +99,9 @@ export const experience: ExperienceEntry[] = [
     start: "Aug 2023",
     end: "Present",
     scopeLine:
-      "Energy Manufacturing. AI enablement for 10k employees. Lead a forward-deployed applied AI team as hiring manager.",
+      "10 direct reports. All production planning for the $2.5B per quarter Megapack program. AI enablement for all of Energy Manufacturing (10k employees), which supports a ~$4B per quarter Energy division.",
     bullets: [
-      "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees): as-is to to-be to ship to hand-off to a sustaining team.",
+      "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees): assess, build, ship, then hand off to a sustaining team.",
       "Stand up a forward-deployed applied AI team for custom buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity). Hiring manager for that team.",
       "Lead a 12-month NPI cost-down across materials, labor, and supplier contracts: $260M annualized cost-down, $156M incremental annual profit, on a $23M / 50+ initiative book. Megapack scale 3.2×.",
       "Mitigated $550M in projected tariff exposure by redesigning build plans and establishing FTZ / bonded-warehouse / product-changeover infrastructure.",
@@ -112,6 +112,7 @@ export const experience: ExperienceEntry[] = [
   {
     id: "waymo",
     company: "Waymo",
+    parentCompany: "Alphabet",
     title: "Strategy & Operations Manager",
     start: "Oct 2022",
     end: "May 2023",
@@ -120,6 +121,7 @@ export const experience: ExperienceEntry[] = [
     bullets: [
       "Translate org priorities into an executable operating system across hardware, software, fleet, product, and legal.",
       "Build annual planning, OKRs, resource plans, business reviews, and decision milestones so bottlenecks surface without ad-hoc reporting.",
+      "Returned to Tesla in Aug 2023 to lead AI and factory strategy for Energy Manufacturing.",
     ],
   },
   {
@@ -168,8 +170,10 @@ export const contact: Contact = {
   linkedin: "https://www.linkedin.com/in/jarrodtran/",
   resumePdf: "/resume.pdf",
   location: "Houston",
+  relocation: "open to relocate",
   education:
     "B.S. Business Administration, Finance, University at Buffalo, cum laude",
+  school: "University at Buffalo",
 };
 
 export const site: Site = {
@@ -191,7 +195,7 @@ export const sections: Record<SectionId, SectionMeta> = {
     heading: "Experience",
     navLabel: "Experience",
   },
-  roles: { id: "roles", heading: "Where I fit", navLabel: "Fit" },
+  roles: { id: "roles", heading: "Where I fit", navLabel: "Where I fit" },
   contact: { id: "contact", heading: "Contact", navLabel: "Contact" },
 };
 
