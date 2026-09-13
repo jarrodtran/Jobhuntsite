@@ -7,8 +7,9 @@ import { ScrollRail } from "@/components/ui/ScrollRail";
 import { heroView, navView } from "@/lib/selectors";
 
 /**
- * The fold: name, Tesla title, one filing sentence, proof, CTAs with Houston,
- * employers. At ≥1024 the identity column sits beside a quiet fact rail so the
+ * The fold: name, Tesla title, one filing sentence, proof, CTAs with the
+ * location line (city · relocation stance), employers in ink so companies scan
+ * before the chips. At ≥1024 the identity column sits beside a quiet fact rail so the
  * name — not a metric card — owns the page. Sticky Resume chrome follows the
  * hero CTA out of view.
  *
@@ -74,10 +75,7 @@ export function Hero() {
             />
             <CtaLink cta={heroView.secondaryCta} variant="ghost" />
             {heroView.location ? (
-              <p
-                data-slot="location"
-                className="flex h-11 items-center text-sm text-muted"
-              >
+              <p data-slot="location" className="text-sm text-muted">
                 {heroView.location}
               </p>
             ) : null}

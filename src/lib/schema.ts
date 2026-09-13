@@ -55,17 +55,17 @@ export type ProofBand = ProofChip[];
 
 export type Role = {
   id: RoleId;
-  /** Lane name. Primary thesis uses this only as context; adjacent renders it. */
+  /** Lane label on the Fit column. */
   label: string;
-  /** Exactly one role must be primary. Fit renders its summary as the thesis. */
+  /** Exactly one role must be primary. Fit renders it first in the lane stack. */
   primary: boolean;
-  /** Primary: the Fit thesis. Adjacent: the second paragraph. */
+  /** Lane paragraph. Fit underlines experience link labels inside this string. */
   summary: string;
   /** Stored, not rendered. Proof lives in Experience bullets. */
   evidence: string[];
   /** Stored for future per-audience ordering. Not rendered. */
   audiences: Audience[];
-  /** Backing rows. Validated at build. Fit renders each as a text link. */
+  /** Backing rows. Validated at build. Fit underlines matching labels in `summary`. */
   experienceIds?: string[];
 };
 
@@ -78,6 +78,12 @@ export type ExperienceEntry = {
   start: string;
   /** Year, "Mon YYYY", or "Present". */
   end: string;
+  /**
+   * Parent company, e.g. Alphabet for Waymo. The Experience row renders
+   * "Waymo (Alphabet)" and JSON-LD adds `parentOrganization`. The hero employer
+   * strip and Fit link labels keep the short `company`.
+   */
+  parentCompany?: string;
   location?: string;
   /** Reporting line, team, budget. One line. */
   scopeLine?: string;
@@ -95,8 +101,16 @@ export type Contact = {
   github?: string;
   /** City. Hero and footer render it when set. */
   location?: string;
+  /**
+   * Relocation stance in Jarrod's words, e.g. "open to relocate". Joined to
+   * `location` with a middot on the hero CTA line and in the JSON-LD
+   * description; the footer stays city-only. Never name target cities here.
+   */
+  relocation?: string;
   /** One line under Experience. Hidden when blank. */
   education?: string;
+  /** Institution named in `education`. JSON-LD `alumniOf` only, not rendered. */
+  school?: string;
   availability?: string;
   clearance?: string;
 };

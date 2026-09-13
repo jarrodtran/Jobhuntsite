@@ -2,12 +2,21 @@ import { describe, expect, it } from "vitest";
 import {
   contact,
   experience,
+  fitLead,
   hero,
   proofBand,
   roles,
+  sections,
   siteIndexable,
 } from "@/content";
-import { contentHasPlaceholders, heroView, seoView } from "@/lib/selectors";
+import {
+  contentHasPlaceholders,
+  experienceView,
+  footerView,
+  heroView,
+  navView,
+  seoView,
+} from "@/lib/selectors";
 
 const byId = (id: string) => {
   const entry = experience.find((row) => row.id === id);
@@ -31,7 +40,10 @@ describe("Copy enrich lock", () => {
     );
     expect(hero.mappingLine).toMatch(/Strategy & Operations/);
     expect(hero.mappingLine).toMatch(/Technical Program Manager/);
-    expect(hero.mappingLine).toMatch(/Tesla Energy/);
+    expect(hero.mappingLine).toMatch(
+      /across Tesla Energy manufacturing \(10k employees\)/,
+    );
+    expect(hero.mappingLine).not.toMatch(/manufacturing scale/);
     expect(hero.mappingLine).not.toMatch(/Targeting/);
     expect(hero.voiceLine).toBe("");
     expect(hero.proofChips).toEqual([
@@ -41,6 +53,49 @@ describe("Copy enrich lock", () => {
     ]);
     expect(proofBand).toEqual([]);
     expect(contact.location).toBe("Houston");
+  });
+
+  it("puts Houston · open to relocate on the CTA line and in JSON-LD, city only in the footer", () => {
+    expect(contact.relocation).toBe("open to relocate");
+    expect(heroView.location).toBe("Houston · open to relocate");
+    expect(footerView.location).toBe("Houston");
+    expect(seoView.jsonLd.description).toBe(
+      `${hero.mappingLine} Houston · open to relocate.`,
+    );
+    expect(seoView.jsonLd.homeLocation).toEqual({
+      "@type": "Place",
+      name: "Houston",
+    });
+    const copy = JSON.stringify({ hero, fitLead, roles, experience, contact });
+    expect(copy).not.toMatch(
+      /Bay Area|Seattle|Austin|Fremont|Palo Alto|Mountain View|Redmond|remote/i,
+    );
+  });
+
+  it("files worksFor and alumniOf in JSON-LD from the experience list", () => {
+    expect(seoView.jsonLd.worksFor).toEqual({
+      "@type": "Organization",
+      name: "Tesla",
+    });
+    expect(seoView.jsonLd.alumniOf).toEqual([
+      {
+        "@type": "Organization",
+        name: "Waymo",
+        parentOrganization: { "@type": "Organization", name: "Alphabet" },
+      },
+      { "@type": "Organization", name: "Apple" },
+      { "@type": "Organization", name: "Amazon" },
+      { "@type": "CollegeOrUniversity", name: "University at Buffalo" },
+    ]);
+  });
+
+  it("labels the nav entry Where I fit", () => {
+    expect(sections.roles.navLabel).toBe("Where I fit");
+    expect(navView.links.map((link) => link.label)).toEqual([
+      "Experience",
+      "Where I fit",
+      "Contact",
+    ]);
   });
 
   it("puts Tesla, AI adoption, and Strategy & Operations in the snippet", () => {
@@ -85,14 +140,34 @@ describe("Copy enrich lock", () => {
 
   it("leads tesla-ai with enablement, a forward-deployed team, then attributed cost-down", () => {
     expect(byId("tesla-ai").bullets).toEqual([
-      "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees): as-is to to-be to ship to hand-off to a sustaining team.",
+      "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees): assess, build, ship, then hand off to a sustaining team.",
       "Stand up a forward-deployed applied AI team for custom buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity). Hiring manager for that team.",
       "Lead a 12-month NPI cost-down across materials, labor, and supplier contracts: $260M annualized cost-down, $156M incremental annual profit, on a $23M / 50+ initiative book. Megapack scale 3.2×.",
       "Mitigated $550M in projected tariff exposure by redesigning build plans and establishing FTZ / bonded-warehouse / product-changeover infrastructure.",
       "Own strategy on what we build, where we build it, and when we launch, plus regulatory and cost mitigation.",
     ]);
-    expect(byId("tesla-ai").scopeLine).toMatch(/forward-deployed/);
-    expect(byId("tesla-ai").scopeLine).toMatch(/hiring manager/i);
+    expect(byId("tesla-ai").bullets[1]).toMatch(/Hiring manager for that team/);
+  });
+
+  it("puts Jarrod's scope facts on the Tesla row, numbers as he gave them", () => {
+    expect(byId("tesla-ai").scopeLine).toBe(
+      "10 direct reports. All production planning for the $2.5B per quarter Megapack program. AI enablement for all of Energy Manufacturing (10k employees), which supports a ~$4B per quarter Energy division.",
+    );
+    expect(byId("tesla-ai").scopeLine).not.toMatch(/~\$2\.5B/);
+    expect(byId("tesla-ai").scopeLine).not.toMatch(/Director|Senior|Staff|L\d|M\d/);
+  });
+
+  it("files Waymo as an Alphabet stint and says why he went back to Tesla", () => {
+    expect(byId("waymo").company).toBe("Waymo");
+    expect(byId("waymo").parentCompany).toBe("Alphabet");
+    expect(
+      experienceView.rows.find((row) => row.id === "waymo")?.company,
+    ).toBe("Waymo (Alphabet)");
+    expect(hero.employers).toContain("Waymo");
+    expect(hero.employers).not.toContain("Waymo (Alphabet)");
+    expect(byId("waymo").bullets.at(-1)).toBe(
+      "Returned to Tesla in Aug 2023 to lead AI and factory strategy for Energy Manufacturing.",
+    );
   });
 
   it("keeps tesla-4680 stage gates and adds logistics bullets", () => {
@@ -104,22 +179,41 @@ describe("Copy enrich lock", () => {
     ]);
   });
 
-  it("renders Fit as an AI thesis plus one StratOps lane", () => {
+  it("renders Fit as a filing sentence plus AI and StratOps lanes", () => {
     expect(roles.map((role) => role.id)).toEqual(["ai-enablement", "bizops"]);
     expect(roles.some((role) => role.primary)).toBe(true);
+    expect(roles.find((role) => role.primary)?.label).toBe("AI adoption");
     expect(roles.find((role) => role.primary)?.summary).toMatch(
-      /as-is to to-be, ship, then hand off/,
+      /forward-deployed applied AI team/,
     );
     expect(roles.find((role) => role.primary)?.summary).not.toMatch(
       /pilot graveyard/,
     );
+    expect(roles.find((role) => role.id === "bizops")?.experienceIds).toEqual([
+      "tesla-ai",
+      "waymo",
+      "apple-india",
+      "tesla-4680",
+    ]);
+    expect(fitLead).toMatch(/Manager, AI & Factory Strategy/);
+    expect(fitLead).toMatch(/Technical Program Manager/);
+    expect(fitLead).not.toMatch(/Houston/);
+    expect(fitLead).not.toMatch(/reloc/i);
+    expect(roles.find((role) => role.id === "bizops")?.summary).toMatch(
+      /At Waymo I set up annual planning, OKRs, and business reviews/,
+    );
+    expect(roles.find((role) => role.id === "bizops")?.summary).not.toMatch(
+      /operating cadence/,
+    );
     expect(contact.education).toMatch(/University at Buffalo/);
+    expect(contact.school).toBe("University at Buffalo");
   });
 
   it("holds banned figures out of copy and keeps cities off experience rows", () => {
     const copy = JSON.stringify({
       hero,
       proofBand,
+      fitLead,
       experience,
       roles,
     });
@@ -131,5 +225,12 @@ describe("Copy enrich lock", () => {
     expect(copy).not.toMatch(/\bFDE\b/);
     expect(copy).not.toMatch(/Targeting/);
     expect(copy).not.toMatch(/pilot graveyard/);
+    expect(copy).not.toMatch(/as-is to to-be/);
+    expect(copy).not.toMatch(/VC Platform|Chief of Staff|Director/);
+    const fitCopy = JSON.stringify({ fitLead, roles });
+    expect(fitCopy).not.toMatch(/Enablement plus custom buildouts/);
+    expect(fitCopy).not.toMatch(/executable operating cadence/);
+    expect(fitCopy).not.toMatch(/VC Platform/);
+    expect(fitCopy).not.toMatch(/Chief of Staff/);
   });
 });

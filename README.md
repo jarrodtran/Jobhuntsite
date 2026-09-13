@@ -73,9 +73,11 @@ All copy lives in [`src/content.ts`](src/content.ts). Types are in [`src/lib/sch
 | `proofBand` | Secondary metrics in the full-bleed strip under the hero. Same shape as a chip; every figure must already appear in `experience`. Hidden when empty |
 | `hero.employers` | Pedigree row. Hidden when empty |
 | `roles` | "Where I fit" text links. The one `primary: true` role renders first with the badge. Each link points at the first entry in `experienceIds` (a role with none renders as plain text). `summary`, `evidence`, and `audiences` are stored and validated but not rendered — proof lives in Experience bullets |
-| `experience` | Accordion rows. `id` is the anchor target and the key `Role.experienceIds` points at. Lead with an outcome-led bullet. `location` and `scopeLine` are optional; `url` is stored, not rendered |
+| `experience` | Accordion rows. `id` is the anchor target and the key `Role.experienceIds` points at. Lead with an outcome-led bullet. `scopeLine` is the one-line scope (reports, book, org) under the title. `parentCompany` renders as "Waymo (Alphabet)" in the company slot and as JSON-LD `parentOrganization`; `location` is optional; `url` is stored, not rendered |
 | `contact.email`, `linkedin` | Footer links. `resumePdf` drives the hero Resume CTA |
-| `contact.location`, `github`, `availability`, `clearance` | Stored, not rendered (footer is email + LinkedIn only) |
+| `contact.location`, `relocation` | City and relocation stance. The hero CTA line renders `Houston · open to relocate`; the footer renders the city; JSON-LD gets `homeLocation` and the stance in `description` |
+| `contact.education`, `school` | One line under Experience; `school` feeds JSON-LD `alumniOf` alongside past employers (`worksFor` is the current one) |
+| `contact.github`, `availability`, `clearance` | Stored, not rendered |
 | `site.origin`, `lang`, `ogImage` | Canonical origin, `<html lang>`, and OG image path/dimensions |
 | `sections` | Heading, anchor id, and nav label per section |
 | `ui` | Every non-content string: CTA labels, badge text, a11y labels, date separator |

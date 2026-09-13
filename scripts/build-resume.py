@@ -19,18 +19,21 @@ PAGE_W, PAGE_H = letter
 LEFT = 54
 RIGHT = PAGE_W - 54
 WIDTH = RIGHT - LEFT
-TOP = PAGE_H - 40
+TOP = PAGE_H - 34
 BOTTOM = 34
+# Body leading. 12.2 (was 12.6) buys the Tesla scope line and the Waymo
+# why-back bullet without dropping a section from the single page.
+LEADING = 12.2
 INK = (0.04, 0.04, 0.04)
 MUTED = (0.32, 0.32, 0.36)
 
 SUMMARY = (
-    "Strategy & Operations and Technical Program Manager. Currently running AI "
-    "adoption at Tesla Energy manufacturing scale: as-is to to-be, ship, then "
+    "Strategy & Operations and Technical Program Manager. Running AI adoption "
+    "across Tesla Energy manufacturing (10k employees): assess, build, ship, then "
     "hand off to a sustaining team. Lead a forward-deployed applied AI team for "
     "custom buildouts, with factory strategy and NPI cost-down beside that work. "
-    "Prior Waymo Strategy & Operations, Apple iPhone India launch, Tesla 4680 "
-    "special projects, Amazon fulfillment ops."
+    "Prior Waymo (Alphabet) Strategy & Operations, Apple iPhone India launch, "
+    "Tesla 4680 special projects, Amazon fulfillment ops."
 )
 
 RESULTS = [
@@ -40,11 +43,13 @@ RESULTS = [
     "Apple: India revenue $2B to $10B; units 4.3M to 16.9M; exports 6 to 40+ countries",
 ]
 
+# (header, scope line or None, bullets). Scope mirrors the site's Tesla row.
 ROLES = [
     (
         "Tesla  |  Manager, AI & Factory Strategy  |  Aug 2023 – Present",
+        "10 direct reports. All production planning for the $2.5B per quarter Megapack program. AI enablement for all of Energy Manufacturing (10k employees), which supports a ~$4B per quarter Energy division.",
         [
-            "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees): as-is to to-be to ship to hand-off to a sustaining team.",
+            "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees): assess, build, ship, then hand off to a sustaining team.",
             "Stand up a forward-deployed applied AI team for custom buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity). Hiring manager for that team.",
             "Lead a 12-month NPI cost-down across materials, labor, and supplier contracts: $260M annualized cost-down, $156M incremental annual profit, on a $23M / 50+ initiative book. Megapack scale 3.2×.",
             "Mitigated $550M in projected tariff exposure by redesigning build plans and establishing FTZ / bonded-warehouse / product-changeover infrastructure.",
@@ -52,14 +57,17 @@ ROLES = [
         ],
     ),
     (
-        "Waymo  |  Strategy & Operations Manager  |  Oct 2022 – May 2023",
+        "Waymo (Alphabet)  |  Strategy & Operations Manager  |  Oct 2022 – May 2023",
+        None,
         [
             "Translated Engineering Operations priorities into one decision system across hardware, software, fleet, product, and legal so leadership could move without ad-hoc reporting.",
             "Installed annual planning, OKRs, resource plans, business reviews, and decision milestones that surfaced bottlenecks without ad-hoc reporting.",
+            "Returned to Tesla in Aug 2023 to lead AI and factory strategy for Energy Manufacturing.",
         ],
     ),
     (
         "Apple  |  Strategic Operations Program Manager  |  Jun 2021 – Jun 2022",
+        None,
         [
             "Built the zero-to-one operating system for iPhone manufacturing in India under exacting quality, regulatory, and timing requirements.",
             "Shipped the ramp the operating system ran: revenue $2B to $10B, units 4.3M to 16.9M, exports expanded from 6 to 40+ countries.",
@@ -67,6 +75,7 @@ ROLES = [
     ),
     (
         "Tesla  |  Program Manager, Special Projects  |  Jun 2018 – Jun 2021",
+        None,
         [
             "Advanced Project Roadrunner (4680) from early battery-cell pilot to a production-ready platform.",
             "Installed stage gates, readiness reviews, and supplier coordination, then handed cross-functional launch ownership to engineering, production, and supply chain.",
@@ -76,6 +85,7 @@ ROLES = [
     ),
     (
         "Amazon  |  Operations Area Manager  |  Mar 2017 – Apr 2018",
+        None,
         [
             "Led a team of 100+ associates in a high-volume fulfillment center.",
         ],
@@ -121,11 +131,13 @@ class Pen:
         self.y -= leading
 
     def heading(self, value: str) -> None:
-        self.gap(8)
-        self.text(value, "Sans-Bold", 9.5, 16)
+        self.gap(6)
+        self.text(value, "Sans-Bold", 9.5, 15)
 
-    def para(self, value: str, font: str, size: float, leading: float, indent: float = 0) -> None:
-        self.pdf.setFillColorRGB(*INK)
+    def para(
+        self, value: str, font: str, size: float, leading: float, indent: float = 0, color=INK
+    ) -> None:
+        self.pdf.setFillColorRGB(*color)
         self.pdf.setFont(font, size)
         for line in wrap(value, font, size, WIDTH - indent):
             if self.y - size < BOTTOM:
@@ -133,7 +145,7 @@ class Pen:
             self.pdf.drawString(LEFT + indent, self.y - size, line)
             self.y -= leading
 
-    def bullets(self, items: list[str], size: float = 10, leading: float = 12.6) -> None:
+    def bullets(self, items: list[str], size: float = 10, leading: float = LEADING) -> None:
         bullet_x = LEFT
         text_x = LEFT + 10
         width = WIDTH - 10
@@ -162,7 +174,7 @@ def main() -> None:
     pen.text("Jarrod Tran", "Sans-Bold", 17.5, 20)
     pen.text("Manager, AI & Factory Strategy", "Sans-Bold", 11, 14)
     pen.text(
-        "Houston  |  jarrodtran@outlook.com  |  linkedin.com/in/jarrodtran  |  jarrodtran.com",
+        "Houston · open to relocate  |  jarrodtran@outlook.com  |  linkedin.com/in/jarrodtran  |  jarrodtran.com",
         "Sans",
         9.5,
         12,
@@ -170,27 +182,30 @@ def main() -> None:
     )
 
     pen.heading("SUMMARY")
-    pen.para(SUMMARY, "Sans", 10, 12.6)
+    pen.para(SUMMARY, "Sans", 10, LEADING)
 
     pen.heading("SELECTED RESULTS")
     pen.bullets(RESULTS)
 
     pen.heading("EXPERIENCE")
-    for i, (header, bullets) in enumerate(ROLES):
+    for i, (header, scope, bullets) in enumerate(ROLES):
         if i:
             pen.gap(4)
         pen.text(header, "Sans-Bold", 10.2, 13.8)
+        if scope:
+            pen.para(scope, "Sans", 9.5, 12, color=MUTED)
+            pen.gap(1)
         pen.bullets(bullets)
 
     pen.heading("SKILLS")
-    pen.para(SKILLS, "Sans", 10, 12.6)
+    pen.para(SKILLS, "Sans", 10, LEADING)
 
     pen.heading("EDUCATION")
-    pen.text(
+    pen.para(
         "University at Buffalo. B.S. Business Administration, Finance (Cum Laude)",
         "Sans",
         10,
-        12.6,
+        LEADING,
     )
 
     pdf.save()
