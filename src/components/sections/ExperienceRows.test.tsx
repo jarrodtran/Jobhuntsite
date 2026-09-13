@@ -133,11 +133,11 @@ describe("ExperienceRows accordion", () => {
     );
   });
 
-  it("washes a closed row white and turns the hairline ink on hover, 150ms, no scale", () => {
+  it("washes a closed row to the sheet and turns the hairline ink on hover, 150ms, no scale", () => {
     renderRows();
     const closed = document.querySelector("[data-entry='row-b']");
 
-    expect(closed).toHaveClass("hover:bg-white", "hover:border-ink");
+    expect(closed).toHaveClass("hover:bg-surface", "hover:border-ink");
     expect(closed).toHaveClass("duration-150");
     expect(closed).toHaveClass("motion-reduce:transition-none");
     expect(closed?.className).not.toMatch(/scale/);

@@ -12,19 +12,19 @@ type Props = {
 };
 
 const baseClass = [
-  "inline-flex h-11 items-center justify-center rounded-md border px-6 text-sm font-semibold",
+  "inline-flex h-11 items-center justify-center rounded-sm border px-6 text-sm font-semibold",
   "active:opacity-90",
   FOCUS_VISIBLE_CLASS,
 ].join(" ");
 
 /**
- * Solid = ink fill, black on hover: the inevitable button. Ghost = hairline
- * border that goes ink on hover, muted text to ink. Press is opacity 0.9.
- * No scale, no motion.
+ * Solid = ink fill: the Resume hit. Ghost = text link with a hairline
+ * underline (Olivier), muted to ink. Press is opacity 0.9. No scale.
  */
 const variantClass: Record<Variant, string> = {
   solid: "border-ink bg-ink text-bg hover:border-accent hover:bg-accent",
-  ghost: "border-hairline bg-transparent text-muted hover:border-ink hover:text-ink",
+  ghost:
+    "border-transparent bg-transparent px-0 text-muted underline decoration-hairline underline-offset-4 hover:border-transparent hover:text-ink hover:decoration-ink",
 };
 
 /**

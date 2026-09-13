@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Bullets } from "@/components/ui/Bullets";
-import { bleedCardClass, cardClass } from "@/components/ui/card";
 import {
   experienceIdFromHash,
   nextOpenExperienceId,
@@ -24,15 +23,15 @@ type Props = {
  * Closed rows are a list: dates, title · company as wrapping inline text, scope
  * `line-clamp-1`, a hairline under each, denser `py-2` / `min-h-11` so the
  * row is a 44px hit target without extra chrome. Hover washes the closed row
- * white and turns the hairline ink (150ms, no scale; snapped under reduced
- * motion). The open row is the product panel: white card, 1.25rem padding, the
- * 7rem date column (`--rail`) as its left rail and the bullets aligned to the
- * title column (`tabular-nums` on the panel list). At ≥1024 the panel pads
- * 1.5rem and the rail widens to 8rem (`--rail` steps in globals.css, so the
- * bullet offset below follows it). Under 640px the panel runs edge to edge
- * and dates stack above the title. Motion is 150ms on grid rows (height),
- * opacity, and the chevron — snapped under reduced motion. The header is a
- * real `<button>` (`aria-expanded`, Enter/Space).
+ * to the sheet and turns the hairline ink (150ms, no scale; snapped under
+ * reduced motion). The open row is a sheet, not a floating card: 1.25rem
+ * padding, the 7rem date column (`--rail`) as its left rail and the bullets
+ * aligned to the title column (`tabular-nums` on the panel list). At ≥1024
+ * the panel pads 1.5rem and the rail widens to 8rem (`--rail` steps in
+ * globals.css, so the bullet offset below follows it). Under 640px dates stack
+ * above the title. Motion is 150ms on grid rows (height), opacity, and the
+ * chevron — snapped under reduced motion. The header is a real `<button>`
+ * (`aria-expanded`, Enter/Space).
  *
  * Hooks: `data-entry="<id>"`, `data-open`, `data-slot` on dates, title,
  * company, scope, panel, bullets.
@@ -71,9 +70,9 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
             className={[
               "scroll-mt-8",
               open
-                ? `${cardClass} ${bleedCardClass} my-2 first:mt-0`
+                ? "my-2 bg-surface first:mt-0"
                 : [
-                    "border-b border-hairline hover:border-ink hover:bg-white",
+                    "border-b border-hairline hover:border-ink hover:bg-surface",
                     withReducedMotionSnap(
                       "transition-colors duration-150 ease-soft",
                     ),

@@ -1,8 +1,16 @@
 import type { Metadata, Viewport } from "next";
+import { Instrument_Serif } from "next/font/google";
 import { GeistSans } from "geist/font/sans";
 import { viewportChrome } from "@/lib/chrome";
 import { seoView } from "@/lib/selectors";
 import "./globals.css";
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  variable: "--font-instrument-serif",
+});
 
 export const viewport: Viewport = viewportChrome;
 
@@ -56,7 +64,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang={seoView.lang} className={GeistSans.variable} id="top">
+    <html
+      lang={seoView.lang}
+      className={`${GeistSans.variable} ${instrumentSerif.variable}`}
+      id="top"
+    >
       <body className="bg-bg text-ink antialiased">
         <a
           href="#main"

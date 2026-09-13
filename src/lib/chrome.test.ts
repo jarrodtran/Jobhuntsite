@@ -6,10 +6,11 @@ import { THEME_COLOR, viewportChrome } from "@/lib/chrome";
 
 const srcDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-const PAPER = "#F4F4F5";
-const INK = "#0A0A0A";
-const MUTED = "#52525B";
-const HAIRLINE = "#E4E4E7";
+const PAPER = "#F5F0E6";
+const INK = "#1C1A17";
+const MUTED = "#534E46";
+const HAIRLINE = "#E4D9C8";
+const SURFACE = "#FFFDF8";
 
 function firstRootDeclarations(css: string): string {
   const block = css.match(/:root\s*\{([\s\S]*?)\n\}/);
@@ -58,7 +59,7 @@ function contrastRatio(foreground: string, background: string): number {
 }
 
 describe("browser chrome", () => {
-  it("sets theme-color to paper #F4F4F5", () => {
+  it("sets theme-color to paper #F5F0E6", () => {
     expect(THEME_COLOR).toBe(PAPER);
     expect(viewportChrome.themeColor).toBe(PAPER);
   });
@@ -78,6 +79,12 @@ describe("browser chrome", () => {
     expect(css).toMatch(/::selection\s*\{[^}]*color:\s*var\(--ink\)/s);
     expect(css).toMatch(/::selection\s*\{[^}]*background:\s*var\(--hairline\)/s);
   });
+
+  it("opens every experience panel when a recruiter prints", () => {
+    const css = readFileSync(path.join(srcDir, "app/globals.css"), "utf8");
+    expect(css).toMatch(/@media print/);
+    expect(css).toMatch(/\[data-slot="panel"\]/);
+  });
 });
 
 describe("contrast tokens", () => {
@@ -91,9 +98,9 @@ describe("contrast tokens", () => {
     expect(css).not.toMatch(/\[data-theme|prefers-color-scheme:\s*dark|--bg-dark/);
   });
 
-  it("keeps cards white and ink-aligns the 1px card shadow", () => {
-    expect(tokenValue(css, "surface").toLowerCase()).toBe("#ffffff");
-    expect(tokenValue(css, "card-shadow")).toBe("0 1px 0 rgb(10 10 10 / 0.04)");
+  it("keeps the sheet slightly lighter than paper and ink-aligns the 1px card shadow", () => {
+    expect(tokenValue(css, "surface").toLowerCase()).toBe(SURFACE.toLowerCase());
+    expect(tokenValue(css, "card-shadow")).toBe("0 1px 0 rgb(28 26 23 / 0.04)");
   });
 
   it("gives muted ~6:1 contrast on the new paper (WCAG AA)", () => {
@@ -112,7 +119,6 @@ describe("site typeface", () => {
     expect(layout).toContain('from "geist/font/sans"');
     expect(layout).toContain("GeistSans.variable");
     expect(layout).not.toMatch(/\bInter\b/);
-    expect(layout).not.toContain("next/font/google");
 
     const css = readFileSync(path.join(srcDir, "app/globals.css"), "utf8");
     expect(css).toMatch(
@@ -121,5 +127,22 @@ describe("site typeface", () => {
     expect(css).toMatch(/html\s*\{[^}]*font-family:\s*var\(--font-sans\)/s);
     expect(css).toMatch(/body\s*\{[^}]*font-family:\s*var\(--font-sans\)/s);
     expect(css).not.toContain("--font-inter");
+  });
+
+  it("loads Instrument Serif only as the display face for the fold name", () => {
+    const layout = readFileSync(path.join(srcDir, "app/layout.tsx"), "utf8");
+    expect(layout).toContain('from "next/font/google"');
+    expect(layout).toContain("Instrument_Serif");
+    expect(layout).toContain("--font-instrument-serif");
+    expect(layout).not.toMatch(/\bInter\b/);
+
+    const css = readFileSync(path.join(srcDir, "app/globals.css"), "utf8");
+    expect(css).toMatch(/--font-display:\s*var\(--font-instrument-serif\)/);
+
+    const hero = readFileSync(
+      path.join(srcDir, "components/sections/Hero.tsx"),
+      "utf8",
+    );
+    expect(hero).toMatch(/data-slot="name"[\s\S]*font-display/);
   });
 });
