@@ -28,9 +28,9 @@ INK = (0.04, 0.04, 0.04)
 MUTED = (0.32, 0.32, 0.36)
 
 SUMMARY = (
-    "Strategy & Operations and Technical Program Manager. Running AI adoption "
-    "across Tesla Energy manufacturing (10k employees): assess, build, ship, then "
-    "hand off to a sustaining team. Lead a forward-deployed applied AI team for "
+    "Strategy & Operations and Technical Program Manager. I run AI adoption "
+    "across Tesla Energy manufacturing (10k employees). Assess, build, ship, then "
+    "hand off to a sustaining team. Built a forward-deployed applied AI team for "
     "custom buildouts, with factory strategy and NPI cost-down beside that work. "
     "Prior Waymo (Alphabet) Strategy & Operations, Apple iPhone India launch, "
     "Tesla 4680 special projects, Amazon fulfillment ops."
@@ -49,19 +49,19 @@ ROLES = [
         "Tesla  |  Manager, AI & Factory Strategy  |  Aug 2023 – Present",
         "10 direct reports. All production planning for the $2.5B per quarter Megapack program. AI enablement for all of Energy Manufacturing (10k employees), which supports a ~$4B per quarter Energy division.",
         [
-            "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees): assess, build, ship, then hand off to a sustaining team.",
-            "Stand up a forward-deployed applied AI team for custom buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity). Hiring manager for that team.",
+            "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees). Assess, build, ship, then hand off to a sustaining team.",
+            "Built a forward-deployed applied AI team for custom buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity). Hiring manager for that team.",
             "Lead a 12-month NPI cost-down across materials, labor, and supplier contracts: $260M annualized cost-down, $156M incremental annual profit, on a $23M / 50+ initiative book. Megapack scale 3.2×.",
             "Mitigated $550M in projected tariff exposure by redesigning build plans and establishing FTZ / bonded-warehouse / product-changeover infrastructure.",
-            "Own strategy on what we build, where we build it, and when we launch, plus regulatory and cost mitigation.",
+            "Own what we build, where we build it, and when we launch, plus regulatory and cost mitigation.",
         ],
     ),
     (
         "Waymo (Alphabet)  |  Strategy & Operations Manager  |  Oct 2022 – May 2023",
         None,
         [
-            "Translated Engineering Operations priorities into one decision system across hardware, software, fleet, product, and legal so leadership could move without ad-hoc reporting.",
-            "Installed annual planning, OKRs, resource plans, business reviews, and decision milestones that surfaced bottlenecks without ad-hoc reporting.",
+            "Turned Engineering Operations priorities into one planning and review system across hardware, software, fleet, product, and legal.",
+            "Set up annual planning, OKRs, resource plans, business reviews, and decision milestones so bottlenecks showed up without ad-hoc reporting.",
             "Returned to Tesla in Aug 2023 to lead AI and factory strategy for Energy Manufacturing.",
         ],
     ),
@@ -69,16 +69,16 @@ ROLES = [
         "Apple  |  Strategic Operations Program Manager  |  Jun 2021 – Jun 2022",
         None,
         [
-            "Built the zero-to-one operating system for iPhone manufacturing in India under exacting quality, regulatory, and timing requirements.",
-            "Shipped the ramp the operating system ran: revenue $2B to $10B, units 4.3M to 16.9M, exports expanded from 6 to 40+ countries.",
+            "Set up iPhone manufacturing in India from a standing start, covering site, supplier, line, and demand, under tight quality, regulatory, and timing requirements.",
+            "That process ran this ramp: revenue $2B to $10B, units 4.3M to 16.9M, exports from 6 to 40+ countries.",
         ],
     ),
     (
         "Tesla  |  Program Manager, Special Projects  |  Jun 2018 – Jun 2021",
         None,
         [
-            "Advanced Project Roadrunner (4680) from early battery-cell pilot to a production-ready platform.",
-            "Installed stage gates, readiness reviews, and supplier coordination, then handed cross-functional launch ownership to engineering, production, and supply chain.",
+            "Advanced Project Roadrunner from an early battery-cell pilot to a production-ready platform.",
+            "Put in stage gates, readiness reviews, and supplier coordination, with launch owned across engineering, production, and supply chain.",
             "Sustained Model 3 / Model Y rates through demand surges and supply disruptions.",
             "Designed and launched a $3.5M/month Warehouse on Wheels logistics platform protecting battery and drivetrain flow.",
         ],
@@ -95,7 +95,7 @@ ROLES = [
 SKILLS = (
     "Strategy & Operations  |  Technical Program Manager  |  AI enablement and adoption  |  "
     "Factory and operating strategy  |  Launch readiness  |  Capacity and cost economics  |  "
-    "Zero-to-one manufacturing launches"
+    "Manufacturing launches from a standing start"
 )
 
 

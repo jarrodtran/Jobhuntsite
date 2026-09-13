@@ -39,7 +39,7 @@ export const hero: Hero = {
   title: "Manager, AI & Factory Strategy",
   searchTitle: "Strategy & Operations, Technical Program Manager",
   mappingLine:
-    "Strategy & Operations and Technical Program Manager. Running AI adoption across Tesla Energy manufacturing (10k employees).",
+    "Strategy & Operations and Technical Program Manager. I run AI adoption across Tesla Energy manufacturing (10k employees).",
   voiceLine: "",
   proofChips: [
     { metric: "10k+", label: "employees, AI enablement" },
@@ -60,7 +60,7 @@ export const proofBand: ProofBand = [];
  * for that job; this line is the overlap (StratOps / hardware TPM / AI adoption).
  */
 export const fitLead =
-  "At Tesla I am Manager, AI & Factory Strategy. That means Strategy & Operations and Technical Program Manager work: AI adoption across Energy Manufacturing, and the factory and new product introduction programs I still lead.";
+  "At Tesla I am Manager, AI & Factory Strategy. I do Strategy & Operations and Technical Program Manager work. I run AI adoption across Energy Manufacturing, and I still lead the factory and new product introduction programs.";
 
 export const roles: Role[] = [
   {
@@ -81,10 +81,10 @@ export const roles: Role[] = [
     label: "Strategy & Operations",
     primary: false,
     summary:
-      "Hardware and new product introduction. I led the factory cost-down at Tesla Energy. Before that, the iPhone India launch at Apple and the 4680 cell program at Tesla. At Waymo I set up annual planning, OKRs, and business reviews for engineering operations.",
+      "I work on hardware and new product introduction. I led the factory cost-down at Tesla Energy. Before that I did the iPhone India launch at Apple and the 4680 cell program at Tesla. At Waymo I set up annual planning, OKRs, and business reviews for engineering operations.",
     evidence: [
       "Sequenced a $23M / 50+ initiative portfolio: $260M annualized cost-down, $156M incremental annual profit; Megapack scale 3.2×.",
-      "Built Waymo engineering-ops cadence: annual planning, OKRs, resource plans, and decision milestones.",
+      "Set up Waymo Engineering Operations: annual planning, OKRs, resource plans, and decision milestones.",
     ],
     audiences: ["big-tech", "ai-startup"],
     experienceIds: ["tesla-ai", "waymo", "apple-india", "tesla-4680"],
@@ -101,11 +101,11 @@ export const experience: ExperienceEntry[] = [
     scopeLine:
       "10 direct reports. All production planning for the $2.5B per quarter Megapack program. AI enablement for all of Energy Manufacturing (10k employees), which supports a ~$4B per quarter Energy division.",
     bullets: [
-      "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees): assess, build, ship, then hand off to a sustaining team.",
-      "Stand up a forward-deployed applied AI team for custom buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity). Hiring manager for that team.",
+      "Lead AI enablement across Tesla Energy Manufacturing (10,000 employees). Assess, build, ship, then hand off to a sustaining team.",
+      "Built a forward-deployed applied AI team for custom buildouts (20+ tools, 1,000+ active users, ~$1.6M productivity). Hiring manager for that team.",
       "Lead a 12-month NPI cost-down across materials, labor, and supplier contracts: $260M annualized cost-down, $156M incremental annual profit, on a $23M / 50+ initiative book. Megapack scale 3.2×.",
       "Mitigated $550M in projected tariff exposure by redesigning build plans and establishing FTZ / bonded-warehouse / product-changeover infrastructure.",
-      "Own strategy on what we build, where we build it, and when we launch, plus regulatory and cost mitigation.",
+      "Own what we build, where we build it, and when we launch, plus regulatory and cost mitigation.",
     ],
     url: "https://www.tesla.com/megapack",
   },
@@ -117,10 +117,10 @@ export const experience: ExperienceEntry[] = [
     start: "Oct 2022",
     end: "May 2023",
     scopeLine:
-      "Installed Eng Ops cadence across hardware, software, fleet, product, and legal, then returned to Tesla.",
+      "Set up Engineering Operations across hardware, software, fleet, product, and legal.",
     bullets: [
-      "Translate org priorities into an executable operating system across hardware, software, fleet, product, and legal.",
-      "Build annual planning, OKRs, resource plans, business reviews, and decision milestones so bottlenecks surface without ad-hoc reporting.",
+      "Turned Engineering Operations priorities into one planning and review system across hardware, software, fleet, product, and legal.",
+      "Set up annual planning, OKRs, resource plans, business reviews, and decision milestones so bottlenecks showed up without ad-hoc reporting.",
       "Returned to Tesla in Aug 2023 to lead AI and factory strategy for Energy Manufacturing.",
     ],
   },
@@ -131,10 +131,10 @@ export const experience: ExperienceEntry[] = [
     start: "Jun 2021",
     end: "Jun 2022",
     scopeLine:
-      "iPhone India. $2B to $10B revenue ramp. Operating system for site, supplier, line, and demand.",
+      "iPhone India. $2B to $10B revenue ramp. Site, supplier, line, and demand from a standing start.",
     bullets: [
-      "Drive the zero-to-one operating system for iPhone manufacturing in India under exacting quality, regulatory, and timing requirements.",
-      "The ramp that operating system ran: revenue $2B to $10B, units 4.3M to 16.9M, exports expanded from 6 to 40+ countries.",
+      "Set up iPhone manufacturing in India from a standing start, covering site, supplier, line, and demand, under tight quality, regulatory, and timing requirements.",
+      "That process ran this ramp: revenue $2B to $10B, units 4.3M to 16.9M, exports from 6 to 40+ countries.",
     ],
   },
   {
@@ -146,8 +146,8 @@ export const experience: ExperienceEntry[] = [
     scopeLine:
       "Took 4680 / Roadrunner from cell pilot to production-ready. Warehouse on Wheels at $3.5M/month.",
     bullets: [
-      "Advance Project Roadrunner from early battery-cell pilot toward a production-ready platform.",
-      "Install stage gates, readiness reviews, supplier coordination, and cross-functional launch ownership across engineering, production, and supply chain.",
+      "Advanced Project Roadrunner from an early battery-cell pilot to a production-ready platform.",
+      "Put in stage gates, readiness reviews, and supplier coordination, with launch owned across engineering, production, and supply chain.",
       "Sustained Model 3 / Model Y rates through demand surges and supply disruptions.",
       "Designed and launched a $3.5M/month Warehouse on Wheels logistics platform protecting battery and drivetrain flow.",
     ],
