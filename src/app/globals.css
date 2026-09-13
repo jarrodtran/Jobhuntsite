@@ -192,6 +192,19 @@ body {
     break-inside: avoid;
   }
 
+  /* Paper has no fold to fill. Without this the tall Tesla row cannot fit under
+     the hero and gets pushed to a page of its own, which spends four sheets on
+     three sheets of content. */
+  [data-section="hero"] {
+    padding-top: 0 !important;
+  }
+
+  [data-section="experience"],
+  [data-section="roles"],
+  footer[data-section="contact"] {
+    margin-top: 1.75rem !important;
+  }
+
   [data-slot="section-heading"],
   [data-entry] h3 {
     break-after: avoid;
@@ -206,6 +219,11 @@ body {
   /* A bare "LinkedIn" is a dead end on paper. */
   footer [data-cta="linkedin"]::after {
     content: " — " attr(href);
+    text-decoration: none;
+  }
+
+  /* In-page jumps do not exist on paper, so stop advertising them. */
+  a[href^="#"] {
     text-decoration: none;
   }
 }

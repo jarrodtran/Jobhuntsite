@@ -1,6 +1,6 @@
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { ExperienceRows } from "@/components/sections/ExperienceRows";
 import type { ExperienceRow } from "@/lib/selectors";
 
@@ -216,5 +216,33 @@ describe("ExperienceRows accordion", () => {
         "true",
       );
     });
+  });
+
+  it("re-scrolls the hash target once the row above it has collapsed", async () => {
+    // Opening the target collapses whatever was open above it, so the page
+    // shortens and the row ends up higher than the anchor promised — off the top
+    // of the screen when the collapsed row was tall. Measured on the live page:
+    // #tesla-4680 finished 53px above the viewport.
+    const scrollIntoView = vi.fn();
+    const original = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = scrollIntoView;
+
+    try {
+      renderRows();
+      window.location.hash = "#row-b";
+      window.dispatchEvent(new HashChangeEvent("hashchange"));
+
+      await waitFor(
+        () => {
+          expect(scrollIntoView).toHaveBeenCalledWith({ block: "start" });
+        },
+        { timeout: 1500 },
+      );
+      expect(scrollIntoView.mock.instances[0]).toBe(
+        document.getElementById("row-b"),
+      );
+    } finally {
+      Element.prototype.scrollIntoView = original;
+    }
   });
 });

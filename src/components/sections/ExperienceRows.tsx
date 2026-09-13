@@ -52,9 +52,9 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
   const [openId, setOpenId] = useState<string | null>(
     () => rows.find((row) => row.defaultOpen)?.id ?? null,
   );
-  const [hashTargetId, setHashTargetId] = useState<string | null>(null);
-
   useEffect(() => {
+    let settle = 0;
+
     const openFromHash = () => {
       const id = experienceIdFromHash(
         window.location.hash,
@@ -62,26 +62,25 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
       );
       if (!id) return;
       setOpenId(id);
-      setHashTargetId(id);
+      // Opening the target collapses whatever was open above it, so the page
+      // shortens under the reader and the row ends up higher than the anchor
+      // promised — off the top of the screen when the collapsed row was tall.
+      // Wait for that to finish, then put the row back. No `behavior`: the html
+      // rule already drops smooth scrolling under prefers-reduced-motion, and
+      // `scroll-mt` keeps the row clear of the rail.
+      window.clearTimeout(settle);
+      settle = window.setTimeout(() => {
+        document.getElementById(id)?.scrollIntoView({ block: "start" });
+      }, SETTLE_MS);
     };
+
     openFromHash();
     window.addEventListener("hashchange", openFromHash);
-    return () => window.removeEventListener("hashchange", openFromHash);
+    return () => {
+      window.clearTimeout(settle);
+      window.removeEventListener("hashchange", openFromHash);
+    };
   }, [rows]);
-
-  useEffect(() => {
-    if (!hashTargetId) return;
-    const row = document.getElementById(hashTargetId);
-    setHashTargetId(null);
-    if (!row) return;
-    // No `behavior`: the html rule already switches smooth off under
-    // prefers-reduced-motion, and `scroll-mt` keeps the row clear of the rail.
-    const settle = window.setTimeout(
-      () => row.scrollIntoView({ block: "start" }),
-      SETTLE_MS,
-    );
-    return () => window.clearTimeout(settle);
-  }, [hashTargetId]);
 
   return (
     <ol className="mt-3">
