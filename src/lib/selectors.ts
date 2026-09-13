@@ -373,6 +373,11 @@ export const footerView = {
 // SEO / metadata
 // ---------------------------------------------------------------------------
 
+/**
+ * Ship gate. `sections` holds copy too — headings and nav labels — so a `todo()`
+ * placeholder there would otherwise ship indexable with "TODO_COPY:" visible in
+ * the nav.
+ */
 export const contentHasPlaceholders: boolean = JSON.stringify({
   hero,
   proofBand,
@@ -380,6 +385,7 @@ export const contentHasPlaceholders: boolean = JSON.stringify({
   roles,
   experience,
   contact,
+  sections,
   ui,
 }).includes(TODO_COPY);
 

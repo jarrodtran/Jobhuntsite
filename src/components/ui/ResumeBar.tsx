@@ -1,6 +1,7 @@
 "use client";
 
 import { CHROME_HEIGHT_PX } from "@/lib/chrome";
+import { withReducedMotionSnap } from "@/lib/motion";
 import { ctaAnchorProps, footerView, type Cta } from "@/lib/selectors";
 import { shouldShowResumeBar } from "@/lib/stickyCta";
 import { useHeroCtaVisibility } from "@/lib/useHeroCtaVisibility";
@@ -38,7 +39,8 @@ export function ResumeBar({ cta, watchId }: Props) {
       data-component="resume-bar"
       aria-hidden={!visible}
       className={[
-        "fixed inset-x-0 bottom-0 z-40 bg-ink pb-[env(safe-area-inset-bottom)] transition-transform duration-150 ease-soft sm:hidden",
+        "fixed inset-x-0 bottom-0 z-40 bg-ink pb-[env(safe-area-inset-bottom)] sm:hidden",
+        withReducedMotionSnap("transition-transform duration-150 ease-soft"),
         visible ? "translate-y-0" : "translate-y-full",
       ].join(" ")}
     >

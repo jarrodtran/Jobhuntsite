@@ -1,5 +1,9 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
+  TODO_COPY,
   contact,
   experience,
   fitLead,
@@ -31,6 +35,33 @@ describe("Copy enrich lock", () => {
     expect(siteIndexable).toBe(true);
     expect(contentHasPlaceholders).toBe(false);
     expect(seoView.indexable).toBe(true);
+  });
+
+  it("scans section headings and nav labels for placeholders too", () => {
+    // The gate stringified hero/roles/experience/contact/ui but not `sections`,
+    // which also holds copy — a todo() heading or nav label would have shipped
+    // indexable with "TODO_COPY:" in the nav.
+    const gate = readFileSync(
+      path.join(path.dirname(fileURLToPath(import.meta.url)), "lib/selectors.ts"),
+      "utf8",
+    ).match(
+      /contentHasPlaceholders: boolean = JSON\.stringify\(\{([\s\S]*?)\}\)/,
+    );
+
+    expect(gate?.[1]).toBeDefined();
+    for (const source of [
+      "hero",
+      "proofBand",
+      "fitLead",
+      "roles",
+      "experience",
+      "contact",
+      "sections",
+      "ui",
+    ]) {
+      expect(gate?.[1]).toContain(source);
+    }
+    expect(JSON.stringify(sections)).not.toContain(TODO_COPY);
   });
 
   it("keeps the Tesla title and files StratOps on the fold", () => {

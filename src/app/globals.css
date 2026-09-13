@@ -13,7 +13,7 @@
  *                                                   desktop top rail
  *   [data-slot="..."]                               named rows inside a section
  *   [data-lead="true"]                              the 10k hero figure
- *   [data-role="<id>"] [data-primary="true"]        role links
+ *   [data-role="<id>"]                              Fit lanes
  *   [data-entry="<id>"] [data-open="true|false"]    experience rows
  *   [data-cta="resume|linkedin|email"]              calls to action
  */
