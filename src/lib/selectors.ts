@@ -15,6 +15,7 @@ import {
   TODO_COPY,
   contact,
   experience,
+  fitLead,
   hero,
   proofBand,
   roles,
@@ -207,7 +208,7 @@ export const proofBandView = {
 };
 
 // ---------------------------------------------------------------------------
-// Roles ("Where I fit") — primary thesis, one adjacent lane, experience links
+// Roles ("Where I fit") — filing sentence, two labeled lanes, in-prose links
 // ---------------------------------------------------------------------------
 
 export type FitLink = {
@@ -222,12 +223,19 @@ export type FitLane = {
   links: FitLink[];
 };
 
+/** Fit prose uses these strings as the underlined jump targets. */
+function fitLinkLabel(entry: ExperienceEntry): string {
+  if (entry.id === "tesla-ai") return "Tesla Energy Manufacturing";
+  if (entry.id === "tesla-4680") return "4680";
+  return entry.company;
+}
+
 function experienceLinks(ids: ReadonlyArray<string> | undefined): FitLink[] {
   const byId = new Map(experience.map((entry) => [entry.id, entry]));
   return visible(ids ?? []).flatMap((id) => {
     const entry = byId.get(id);
     if (!entry) return [];
-    return [{ href: `#${id}` as const, label: entry.company }];
+    return [{ href: `#${id}` as const, label: fitLinkLabel(entry) }];
   });
 }
 
@@ -246,6 +254,7 @@ const adjacentRole = roles.find((role) => role.id !== primaryRole.id);
 
 export const rolesView = {
   section: sections.roles,
+  intro: hasText(fitLead) ? fitLead : null,
   thesis: toFitLane(primaryRole),
   adjacent: adjacentRole ? toFitLane(adjacentRole) : null,
 };
@@ -331,6 +340,7 @@ export const footerView = {
 export const contentHasPlaceholders: boolean = JSON.stringify({
   hero,
   proofBand,
+  fitLead,
   roles,
   experience,
   contact,

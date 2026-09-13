@@ -55,17 +55,17 @@ export type ProofBand = ProofChip[];
 
 export type Role = {
   id: RoleId;
-  /** Lane name. Primary thesis uses this only as context; adjacent renders it. */
+  /** Lane label on the Fit column. */
   label: string;
-  /** Exactly one role must be primary. Fit renders its summary as the thesis. */
+  /** Exactly one role must be primary. Fit renders it first in the lane stack. */
   primary: boolean;
-  /** Primary: the Fit thesis. Adjacent: the second paragraph. */
+  /** Lane paragraph. Fit underlines experience link labels inside this string. */
   summary: string;
   /** Stored, not rendered. Proof lives in Experience bullets. */
   evidence: string[];
   /** Stored for future per-audience ordering. Not rendered. */
   audiences: Audience[];
-  /** Backing rows. Validated at build. Fit renders each as a text link. */
+  /** Backing rows. Validated at build. Fit underlines matching labels in `summary`. */
   experienceIds?: string[];
 };
 

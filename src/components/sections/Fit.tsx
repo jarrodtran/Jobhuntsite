@@ -1,12 +1,14 @@
-import { Section } from "@/components/layout/Section";
+import type { ReactNode } from "react";
+import { Fragment } from "react";
+import { Section, sectionLabelClass } from "@/components/layout/Section";
 import { FOCUS_VISIBLE_CLASS } from "@/lib/focus";
-import { rolesView, type FitLane } from "@/lib/selectors";
+import { rolesView, type FitLane, type FitLink } from "@/lib/selectors";
 
 /**
- * Primary thesis plus one adjacent lane. Hash links open the backing
- * experience row.
+ * Filing sentence beside two labeled lanes. Company names in the prose are
+ * the hash links; there is no chip row.
  *
- * Hooks: `data-section="roles"`, `data-slot="thesis|adjacent"`,
+ * Hooks: `data-section="roles"`, `data-slot="intro|thesis|adjacent"`,
  * `data-role="<id>"`, `data-slot="fit-links"`.
  */
 export function Fit() {
@@ -14,17 +16,27 @@ export function Fit() {
 
   return (
     <Section meta={rolesView.section}>
-      <div className="mt-4 flex flex-col gap-5 text-base leading-relaxed lg:mt-5 lg:text-lg">
-        <FitParagraph lane={rolesView.thesis} slot="thesis" />
-        {rolesView.adjacent ? (
-          <FitParagraph lane={rolesView.adjacent} slot="adjacent" />
+      <div className="mt-5 flex flex-col gap-10 lg:mt-6 lg:flex-row lg:items-start lg:gap-16">
+        {rolesView.intro ? (
+          <p
+            data-slot="intro"
+            className="min-w-0 flex-1 text-base leading-relaxed text-ink lg:text-lg"
+          >
+            {rolesView.intro}
+          </p>
         ) : null}
+        <div className="flex min-w-0 flex-1 flex-col gap-8">
+          <FitLaneBlock lane={rolesView.thesis} slot="thesis" />
+          {rolesView.adjacent ? (
+            <FitLaneBlock lane={rolesView.adjacent} slot="adjacent" />
+          ) : null}
+        </div>
       </div>
     </Section>
   );
 }
 
-function FitParagraph({
+function FitLaneBlock({
   lane,
   slot,
 }: {
@@ -33,34 +45,51 @@ function FitParagraph({
 }) {
   return (
     <div data-slot={slot} data-role={lane.id}>
-      {slot === "adjacent" ? (
-        <p className="text-ink">
-          <span className="font-semibold">{lane.label}. </span>
-          <span className="text-muted">{lane.summary}</span>
-        </p>
-      ) : (
-        <p className="text-ink">{lane.summary}</p>
-      )}
-      {lane.links.length > 0 ? (
-        <ul
-          data-slot="fit-links"
-          className="mt-1.5 flex flex-wrap items-baseline gap-x-3 gap-y-1 text-sm text-muted lg:text-base"
-        >
-          {lane.links.map((link) => (
-            <li
-              key={link.href}
-              className="after:text-muted after:content-['·'] last:after:content-none"
-            >
-              <a
-                href={link.href}
-                className={`link text-muted hover:text-ink ${FOCUS_VISIBLE_CLASS}`}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      ) : null}
+      <h3 className={sectionLabelClass}>{lane.label}</h3>
+      <p
+        data-slot="fit-links"
+        className="mt-2 text-base leading-relaxed text-ink"
+      >
+        {linkifyFitSummary(lane.summary, lane.links)}
+      </p>
     </div>
   );
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+/** Wrap the first occurrence of each Fit link label in the summary. */
+function linkifyFitSummary(
+  summary: string,
+  links: readonly FitLink[],
+): ReactNode {
+  const usable = links.filter((link) => summary.includes(link.label));
+  if (usable.length === 0) return summary;
+
+  const sorted = [...usable].sort((a, b) => b.label.length - a.label.length);
+  const pattern = new RegExp(
+    `(${sorted.map((link) => escapeRegExp(link.label)).join("|")})`,
+    "g",
+  );
+  const hrefByLabel = new Map(usable.map((link) => [link.label, link.href]));
+  const seen = new Set<string>();
+
+  return summary.split(pattern).map((part, index) => {
+    const href = hrefByLabel.get(part);
+    if (!href || seen.has(part)) {
+      return <Fragment key={index}>{part}</Fragment>;
+    }
+    seen.add(part);
+    return (
+      <a
+        key={`${href}-${index}`}
+        href={href}
+        className={`link text-ink ${FOCUS_VISIBLE_CLASS}`}
+      >
+        {part}
+      </a>
+    );
+  });
 }

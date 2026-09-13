@@ -55,13 +55,20 @@ export const hero: Hero = {
  */
 export const proofBand: ProofBand = [];
 
+/**
+ * Filing sentence for the Fit section. Lanes below it are the two names
+ * for that job; this line is the overlap (StratOps / hardware TPM / AI adoption).
+ */
+export const fitLead =
+  "At Tesla I am Manager, AI & Factory Strategy. That means Strategy & Operations and Technical Program Manager work: AI adoption across Energy Manufacturing, and the factory and new product introduction programs I still lead.";
+
 export const roles: Role[] = [
   {
     id: "ai-enablement",
-    label: "AI Enablement",
+    label: "AI adoption",
     primary: true,
     summary:
-      "I run AI adoption in large manufacturing orgs: as-is to to-be, ship, then hand off to a sustaining team. Enablement plus custom buildouts.",
+      "I run AI enablement across Tesla Energy Manufacturing for 10,000 employees, then hand the program to a sustaining team. A forward-deployed applied AI team does the custom buildouts.",
     evidence: [
       "AI enablement across Tesla Energy Manufacturing for 10,000 employees, with successor hand-off.",
       "Forward-deployed applied AI team for custom buildouts: 20+ tools, 1,000+ active users, ~$1.6M productivity.",
@@ -74,13 +81,13 @@ export const roles: Role[] = [
     label: "Strategy & Operations",
     primary: false,
     summary:
-      "I turn capacity, cost, and launch choices into one executable operating cadence so leadership can move without ad-hoc reporting.",
+      "Hardware and new product introduction. I led the factory cost-down at Tesla Energy Manufacturing. Apple's iPhone India launch, 4680, and Waymo are the same kind of program.",
     evidence: [
       "Sequenced a $23M / 50+ initiative portfolio: $260M annualized cost-down, $156M incremental annual profit; Megapack scale 3.2×.",
       "Built Waymo engineering-ops cadence: annual planning, OKRs, resource plans, and decision milestones.",
     ],
     audiences: ["big-tech", "ai-startup"],
-    experienceIds: ["tesla-ai", "waymo", "apple-india"],
+    experienceIds: ["tesla-ai", "waymo", "apple-india", "tesla-4680"],
   },
 ];
 

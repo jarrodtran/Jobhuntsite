@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   contact,
   experience,
+  fitLead,
   hero,
   proofBand,
   roles,
@@ -104,15 +105,26 @@ describe("Copy enrich lock", () => {
     ]);
   });
 
-  it("renders Fit as an AI thesis plus one StratOps lane", () => {
+  it("renders Fit as a filing sentence plus AI and StratOps lanes", () => {
     expect(roles.map((role) => role.id)).toEqual(["ai-enablement", "bizops"]);
     expect(roles.some((role) => role.primary)).toBe(true);
+    expect(roles.find((role) => role.primary)?.label).toBe("AI adoption");
     expect(roles.find((role) => role.primary)?.summary).toMatch(
-      /as-is to to-be, ship, then hand off/,
+      /forward-deployed applied AI team/,
     );
     expect(roles.find((role) => role.primary)?.summary).not.toMatch(
       /pilot graveyard/,
     );
+    expect(roles.find((role) => role.id === "bizops")?.experienceIds).toEqual([
+      "tesla-ai",
+      "waymo",
+      "apple-india",
+      "tesla-4680",
+    ]);
+    expect(fitLead).toMatch(/Manager, AI & Factory Strategy/);
+    expect(fitLead).toMatch(/Technical Program Manager/);
+    expect(fitLead).not.toMatch(/Houston/);
+    expect(fitLead).not.toMatch(/reloc/i);
     expect(contact.education).toMatch(/University at Buffalo/);
   });
 
@@ -120,6 +132,7 @@ describe("Copy enrich lock", () => {
     const copy = JSON.stringify({
       hero,
       proofBand,
+      fitLead,
       experience,
       roles,
     });
@@ -131,5 +144,11 @@ describe("Copy enrich lock", () => {
     expect(copy).not.toMatch(/\bFDE\b/);
     expect(copy).not.toMatch(/Targeting/);
     expect(copy).not.toMatch(/pilot graveyard/);
+    const fitCopy = JSON.stringify({ fitLead, roles });
+    expect(fitCopy).not.toMatch(/as-is to to-be/);
+    expect(fitCopy).not.toMatch(/Enablement plus custom buildouts/);
+    expect(fitCopy).not.toMatch(/executable operating cadence/);
+    expect(fitCopy).not.toMatch(/VC Platform/);
+    expect(fitCopy).not.toMatch(/Chief of Staff/);
   });
 });

@@ -90,4 +90,11 @@ describe("measure scale locks", () => {
     expect(rows).toContain('open ? "p-5 lg:p-6"');
     expect(rows).toContain("sm:grid-cols-[var(--rail)_1fr_auto]");
   });
+
+  it("keeps Fit as two-column craft at ≥1024, not a chip dump", () => {
+    const fit = readSrc("components/sections/Fit.tsx");
+    expect(fit).toMatch(/lg:flex-row/);
+    expect(fit).toMatch(/data-slot="intro"/);
+    expect(fit).not.toMatch(/after:content-\['·'\]/);
+  });
 });
