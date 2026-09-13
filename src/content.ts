@@ -81,7 +81,7 @@ export const roles: Role[] = [
     label: "Strategy & Operations",
     primary: false,
     summary:
-      "Hardware and new product introduction. I led the factory cost-down at Tesla Energy. Apple's iPhone India launch and 4680 are the hardware programs; Waymo is the operating cadence.",
+      "Hardware and new product introduction. I led the factory cost-down at Tesla Energy. Before that, the iPhone India launch at Apple and the 4680 cell program at Tesla. At Waymo I set up annual planning, OKRs, and business reviews for engineering operations.",
     evidence: [
       "Sequenced a $23M / 50+ initiative portfolio: $260M annualized cost-down, $156M incremental annual profit; Megapack scale 3.2×.",
       "Built Waymo engineering-ops cadence: annual planning, OKRs, resource plans, and decision milestones.",

@@ -27,7 +27,10 @@ describe("Fit thesis", () => {
     expect(adjacent).toHaveTextContent("Strategy & Operations");
     expect(adjacent).toHaveTextContent("I led the factory cost-down at Tesla Energy");
     expect(adjacent).toHaveTextContent("4680");
-    expect(adjacent).toHaveTextContent("Waymo");
+    expect(adjacent).toHaveTextContent(
+      "At Waymo I set up annual planning, OKRs, and business reviews for engineering operations.",
+    );
+    expect(adjacent).not.toHaveTextContent(/operating cadence/);
 
     expect(container.querySelector("[data-slot='badge']")).toBeNull();
     expect(container.querySelector("[data-slot='thesis'] ul")).toBeNull();
