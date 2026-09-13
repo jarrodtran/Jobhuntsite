@@ -59,8 +59,8 @@ ROLES = [
     (
         "Waymo (Alphabet)  |  Strategy & Operations Manager  |  Oct 2022 – May 2023",
         None,
+        # Matches the site: the old first bullet restated the row's own summary.
         [
-            "Turned Engineering Operations priorities into one planning and review system across hardware, software, fleet, product, and legal.",
             "Set up annual planning, OKRs, resource plans, business reviews, and decision milestones so bottlenecks showed up without ad-hoc reporting.",
             "Returned to Tesla in Aug 2023 to lead AI and factory strategy for Energy Manufacturing.",
         ],
@@ -172,7 +172,8 @@ def main() -> None:
     pen = Pen(pdf)
 
     pen.text("Jarrod Tran", "Sans-Bold", 17.5, 20)
-    pen.text("Manager, AI & Factory Strategy", "Sans-Bold", 11, 14)
+    # Employer on the title line, same as the site fold.
+    pen.text("Manager, AI & Factory Strategy · Tesla", "Sans-Bold", 11, 14)
     pen.text(
         "Houston · open to relocate  |  jarrodtran@outlook.com  |  linkedin.com/in/jarrodtran  |  jarrodtran.com",
         "Sans",

@@ -1,5 +1,9 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
+  TODO_COPY,
   contact,
   experience,
   fitLead,
@@ -31,6 +35,33 @@ describe("Copy enrich lock", () => {
     expect(siteIndexable).toBe(true);
     expect(contentHasPlaceholders).toBe(false);
     expect(seoView.indexable).toBe(true);
+  });
+
+  it("scans section headings and nav labels for placeholders too", () => {
+    // The gate stringified hero/roles/experience/contact/ui but not `sections`,
+    // which also holds copy — a todo() heading or nav label would have shipped
+    // indexable with "TODO_COPY:" in the nav.
+    const gate = readFileSync(
+      path.join(path.dirname(fileURLToPath(import.meta.url)), "lib/selectors.ts"),
+      "utf8",
+    ).match(
+      /contentHasPlaceholders: boolean = JSON\.stringify\(\{([\s\S]*?)\}\)/,
+    );
+
+    expect(gate?.[1]).toBeDefined();
+    for (const source of [
+      "hero",
+      "proofBand",
+      "fitLead",
+      "roles",
+      "experience",
+      "contact",
+      "sections",
+      "ui",
+    ]) {
+      expect(gate?.[1]).toContain(source);
+    }
+    expect(JSON.stringify(sections)).not.toContain(TODO_COPY);
   });
 
   it("keeps the Tesla title and files StratOps on the fold", () => {
@@ -89,6 +120,15 @@ describe("Copy enrich lock", () => {
       { "@type": "Organization", name: "Amazon" },
       { "@type": "CollegeOrUniversity", name: "University at Buffalo" },
     ]);
+  });
+
+  it("puts the current employer beside the Tesla-internal title on the fold", () => {
+    // "Manager, AI & Factory Strategy" names no company, and the employer strip
+    // below it reads as history. A sourcer's first fixation is title + company.
+    expect(heroView.currentCompany).toBe("Tesla");
+    expect(heroView.title).toBe(hero.title);
+    // JSON-LD jobTitle stays the real job name, not the concatenation.
+    expect(seoView.jsonLd.jobTitle).toBe("Manager, AI & Factory Strategy");
   });
 
   it("labels the nav entry Where I fit", () => {
@@ -171,6 +211,9 @@ describe("Copy enrich lock", () => {
       "Returned to Tesla in Aug 2023 to lead AI and factory strategy for Energy Manufacturing.",
     );
     expect(byId("waymo").bullets[0]).not.toMatch(/executable operating system/);
+    expect(byId("waymo").bullets[0]).not.toMatch(
+      /Turned Engineering Operations priorities/,
+    );
     expect(byId("waymo").scopeLine).not.toMatch(/cadence/);
     expect(byId("apple-india").bullets[0]).not.toMatch(/zero-to-one|exacting/);
     expect(byId("apple-india").bullets[0]).toMatch(
@@ -231,6 +274,31 @@ describe("Copy enrich lock", () => {
     );
     expect(contact.education).toMatch(/University at Buffalo/);
     expect(contact.school).toBe("University at Buffalo");
+  });
+
+  it("never spends a bullet restating the scope line above it", () => {
+    // The closed row shows the scope line; the bullets are the reward for
+    // opening it. A bullet that repeats the same clause is a wasted click.
+    const clause = (value: string) =>
+      value
+        .toLowerCase()
+        .replace(/[^a-z0-9 ]/g, " ")
+        .split(/\s+/)
+        .filter(Boolean);
+
+    const restatements = experience.flatMap((entry) => {
+      if (!entry.scopeLine) return [];
+      const scope = clause(entry.scopeLine);
+      return entry.bullets
+        .map((bullet) => {
+          const words = clause(bullet);
+          const shared = words.filter((word) => scope.includes(word)).length;
+          return { id: entry.id, bullet, overlap: shared / words.length };
+        })
+        .filter((row) => row.overlap >= 0.75);
+    });
+
+    expect(restatements).toEqual([]);
   });
 
   it("holds banned figures out of copy and keeps cities off experience rows", () => {

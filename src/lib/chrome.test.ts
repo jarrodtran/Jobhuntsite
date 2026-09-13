@@ -2,7 +2,12 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { THEME_COLOR, viewportChrome } from "@/lib/chrome";
+import {
+  ANCHOR_OFFSET_CLASS,
+  CHROME_HEIGHT_PX,
+  THEME_COLOR,
+  viewportChrome,
+} from "@/lib/chrome";
 
 const srcDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -87,6 +92,69 @@ describe("browser chrome", () => {
   });
 });
 
+describe("save-to-PDF", () => {
+  const css = readFileSync(path.join(srcDir, "app/globals.css"), "utf8");
+  const printBlock = (() => {
+    const match = css.match(/@media print \{([\s\S]*)\n\}/);
+    if (!match) throw new Error("missing @media print block");
+    return match[1];
+  })();
+
+  it("drops the CTAs, the nav, and the chevrons from paper", () => {
+    // Chrome prints with background graphics off by default, which leaves the
+    // ink-filled Resume pill as an empty box holding cream text on white.
+    expect(printBlock).toMatch(/\[data-component="site-header"\]/);
+    expect(printBlock).toMatch(/\[data-slot="ctas"\] \[data-cta\]/);
+    expect(printBlock).toMatch(/\[data-entry\] svg/);
+  });
+
+  it("keeps a role on one page and its header with its bullets", () => {
+    expect(printBlock).toMatch(/\[data-entry\]\s*\{\s*break-inside: avoid/);
+    expect(printBlock).toMatch(/break-after: avoid/);
+  });
+
+  it("prints the LinkedIn URL, since paper has nothing to click", () => {
+    expect(printBlock).toMatch(
+      /footer \[data-cta="linkedin"\]::after \{\s*content: " — " attr\(href\)/,
+    );
+  });
+
+  it("sets page margins", () => {
+    expect(css).toMatch(/@page \{\s*margin: [\d.]+in;/);
+  });
+});
+
+describe("in-page anchors", () => {
+  it("clears the fixed rail so a clicked heading is not tucked under it", () => {
+    // scroll-mt-8 is 32px, under the 48px rail: the old offset left the
+    // Experience heading 17px beneath it. sm:scroll-mt-20 is 80px.
+    expect(CHROME_HEIGHT_PX).toBe(48);
+    expect(ANCHOR_OFFSET_CLASS).toBe("scroll-mt-8 sm:scroll-mt-20");
+
+    const remToPx = (value: string) => Number(value) * 4;
+    const desktopOffset = remToPx(
+      ANCHOR_OFFSET_CLASS.match(/sm:scroll-mt-(\d+)/)?.[1] ?? "0",
+    );
+    expect(desktopOffset).toBeGreaterThan(CHROME_HEIGHT_PX);
+  });
+
+  it("is the one offset sections and experience rows both use", () => {
+    const section = readFileSync(
+      path.join(srcDir, "components/layout/Section.tsx"),
+      "utf8",
+    );
+    const rows = readFileSync(
+      path.join(srcDir, "components/sections/ExperienceRows.tsx"),
+      "utf8",
+    );
+
+    expect(section).toContain("ANCHOR_OFFSET_CLASS");
+    expect(rows).toContain("ANCHOR_OFFSET_CLASS");
+    expect(section).not.toMatch(/"scroll-mt-8"/);
+    expect(rows).not.toMatch(/"scroll-mt-8"/);
+  });
+});
+
 describe("contrast tokens", () => {
   const css = readFileSync(path.join(srcDir, "app/globals.css"), "utf8");
 
@@ -110,6 +178,22 @@ describe("contrast tokens", () => {
     const ratio = contrastRatio(muted, paper);
     expect(ratio).toBeGreaterThanOrEqual(4.5);
     expect(ratio).toBeGreaterThanOrEqual(5.5);
+  });
+
+  it("underlines links with a rule a reader can actually see", () => {
+    // --hairline is 1.23:1 on paper. As the only thing marking a word as a
+    // link — and with no hover on touch — that is invisible, so the Where-I-fit
+    // jump links and the footer email read as plain text. WCAG 1.4.11 wants 3:1
+    // for a non-text indicator.
+    const rule = tokenValue(css, "rule");
+    expect(contrastRatio(rule, tokenValue(css, "bg"))).toBeGreaterThanOrEqual(3);
+    expect(contrastRatio(rule, tokenValue(css, "surface"))).toBeGreaterThanOrEqual(3);
+    expect(contrastRatio(tokenValue(css, "hairline"), tokenValue(css, "bg"))).toBeLessThan(3);
+
+    expect(css).toMatch(
+      /@utility link \{[^}]*text-decoration-color:\s*var\(--rule\)/s,
+    );
+    expect(css).toMatch(/--color-rule:\s*var\(--rule\)/);
   });
 });
 

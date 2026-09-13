@@ -53,4 +53,41 @@ describe("CtaLink focus", () => {
     expect(link).toHaveAttribute("rel", "noopener");
     expect(link).not.toHaveAttribute("download");
   });
+
+  it("names the file type and the new tab for assistive tech", () => {
+    const { container } = render(
+      <CtaLink
+        cta={{ ...cta, ariaLabel: "Resume (PDF, opens in a new tab)" }}
+        variant="solid"
+      />,
+    );
+    const link = container.querySelector("[data-cta='resume']");
+
+    expect(link).toHaveAttribute(
+      "aria-label",
+      "Resume (PDF, opens in a new tab)",
+    );
+    expect(link).toHaveTextContent("Resume");
+  });
+
+  it("leaves aria-label off when the visible label already says enough", () => {
+    const { container } = render(
+      <CtaLink
+        cta={{ ...cta, kind: "linkedin", label: "LinkedIn", ariaLabel: "" }}
+        variant="ghost"
+      />,
+    );
+
+    expect(
+      container.querySelector("[data-cta='linkedin']"),
+    ).not.toHaveAttribute("aria-label");
+  });
+
+  it("underlines the ghost CTA with --rule, not the near-invisible hairline", () => {
+    const { container } = render(<CtaLink cta={cta} variant="ghost" />);
+    const ghost = container.querySelector("[data-variant='ghost']");
+
+    expect(ghost).toHaveClass("decoration-rule");
+    expect(ghost?.className).not.toMatch(/decoration-hairline/);
+  });
 });

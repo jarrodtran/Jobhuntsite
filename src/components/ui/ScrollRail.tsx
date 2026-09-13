@@ -1,6 +1,7 @@
 "use client";
 
 import { sectionShellClass } from "@/components/layout/Section";
+import { CHROME_HEIGHT_PX } from "@/lib/chrome";
 import { FOCUS_VISIBLE_CLASS } from "@/lib/focus";
 import { withReducedMotionSnap } from "@/lib/motion";
 import { ctaAnchorProps, type Cta } from "@/lib/selectors";
@@ -15,8 +16,12 @@ type Props = {
   homeHref: string;
 };
 
-/** The rail's own height, so a button hidden behind it still counts as off-screen. */
-const RAIL_HEIGHT_PX = 48;
+/**
+ * The rail's own height, so a button hidden behind it still counts as
+ * off-screen. Shared with the anchor scroll offset in `@/lib/chrome`, which has
+ * to clear this same bar.
+ */
+const RAIL_HEIGHT_PX = CHROME_HEIGHT_PX;
 
 /**
  * Desktop only (≥640): a fixed h-12 top bar with the name wordmark and a solid
