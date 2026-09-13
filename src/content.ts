@@ -118,8 +118,10 @@ export const experience: ExperienceEntry[] = [
     end: "May 2023",
     scopeLine:
       "Set up an Engineering Operations planning and review system across hardware, software, fleet, product, and legal. Returned to Tesla.",
+    // The old first bullet restated this row's scope line almost word for word,
+    // so opening the row gave a recruiter the sentence they had just read. The
+    // bullets now start where the closed line stops.
     bullets: [
-      "Turned Engineering Operations priorities into one planning and review system across hardware, software, fleet, product, and legal.",
       "Set up annual planning, OKRs, resource plans, business reviews, and decision milestones so bottlenecks showed up without ad-hoc reporting.",
       "Returned to Tesla in Aug 2023 to lead AI and factory strategy for Energy Manufacturing.",
     ],

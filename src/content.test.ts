@@ -180,6 +180,9 @@ describe("Copy enrich lock", () => {
       "Returned to Tesla in Aug 2023 to lead AI and factory strategy for Energy Manufacturing.",
     );
     expect(byId("waymo").bullets[0]).not.toMatch(/executable operating system/);
+    expect(byId("waymo").bullets[0]).not.toMatch(
+      /Turned Engineering Operations priorities/,
+    );
     expect(byId("waymo").scopeLine).not.toMatch(/cadence/);
     expect(byId("apple-india").bullets[0]).not.toMatch(/zero-to-one|exacting/);
     expect(byId("apple-india").bullets[0]).toMatch(
@@ -240,6 +243,31 @@ describe("Copy enrich lock", () => {
     );
     expect(contact.education).toMatch(/University at Buffalo/);
     expect(contact.school).toBe("University at Buffalo");
+  });
+
+  it("never spends a bullet restating the scope line above it", () => {
+    // The closed row shows the scope line; the bullets are the reward for
+    // opening it. A bullet that repeats the same clause is a wasted click.
+    const clause = (value: string) =>
+      value
+        .toLowerCase()
+        .replace(/[^a-z0-9 ]/g, " ")
+        .split(/\s+/)
+        .filter(Boolean);
+
+    const restatements = experience.flatMap((entry) => {
+      if (!entry.scopeLine) return [];
+      const scope = clause(entry.scopeLine);
+      return entry.bullets
+        .map((bullet) => {
+          const words = clause(bullet);
+          const shared = words.filter((word) => scope.includes(word)).length;
+          return { id: entry.id, bullet, overlap: shared / words.length };
+        })
+        .filter((row) => row.overlap >= 0.75);
+    });
+
+    expect(restatements).toEqual([]);
   });
 
   it("holds banned figures out of copy and keeps cities off experience rows", () => {
