@@ -93,6 +93,9 @@ function isCurrent(entry: ExperienceEntry): boolean {
 
 const currentEntry: ExperienceEntry | null = experience.find(isCurrent) ?? null;
 
+const currentEmployer: string | null =
+  currentEntry && hasText(currentEntry.company) ? currentEntry.company : null;
+
 // ---------------------------------------------------------------------------
 // Shared shapes
 // ---------------------------------------------------------------------------
@@ -211,6 +214,13 @@ export const heroView = {
   section: sections.hero,
   name: hero.name,
   title: hero.title,
+  /**
+   * Current employer, read off the experience row that has no end date. The
+   * title slot on its own is a Tesla-internal job name with no company in it,
+   * and the employer strip below reads as history — a sourcer's first fixation
+   * is title plus company, so it belongs on the same line.
+   */
+  currentCompany: currentEmployer,
   mappingLine: hasText(hero.mappingLine) ? hero.mappingLine : null,
   voiceLine: hasText(hero.voiceLine) ? hero.voiceLine : null,
   location: locationLine,

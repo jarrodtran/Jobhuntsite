@@ -91,6 +91,15 @@ describe("Copy enrich lock", () => {
     ]);
   });
 
+  it("puts the current employer beside the Tesla-internal title on the fold", () => {
+    // "Manager, AI & Factory Strategy" names no company, and the employer strip
+    // below it reads as history. A sourcer's first fixation is title + company.
+    expect(heroView.currentCompany).toBe("Tesla");
+    expect(heroView.title).toBe(hero.title);
+    // JSON-LD jobTitle stays the real job name, not the concatenation.
+    expect(seoView.jsonLd.jobTitle).toBe("Manager, AI & Factory Strategy");
+  });
+
   it("labels the nav entry Where I fit", () => {
     expect(sections.roles.navLabel).toBe("Where I fit");
     expect(navView.links.map((link) => link.label)).toEqual([
