@@ -15,10 +15,15 @@ describe("robots.txt", () => {
 });
 
 describe("sitemap.xml", () => {
-  it("lists the canonical homepage once, with a trailing slash", () => {
+  it("lists home, Writing, and Work with trailing slashes", () => {
     const entries = sitemap();
-    expect(entries).toHaveLength(1);
-    expect(entries[0].url).toBe("https://jarrodtran.com/");
+    const urls = entries.map((entry) => entry.url);
+    expect(urls).toEqual([
+      "https://jarrodtran.com/",
+      "https://jarrodtran.com/writing/",
+      "https://jarrodtran.com/work/",
+    ]);
     expect(entries[0].url).toBe(seoView.siteUrl.href);
+    expect(entries[0].priority).toBe(1);
   });
 });
