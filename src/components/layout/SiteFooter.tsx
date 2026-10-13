@@ -2,7 +2,7 @@ import { sectionShellClass } from "@/components/layout/Section";
 import { ctaAnchorProps, footerView } from "@/lib/selectors";
 
 /**
- * Email, LinkedIn, and city. Resume stays in the hero and sticky chrome.
+ * Email, LinkedIn, and city. Resume stays on /work and its sticky chrome.
  * <address> makes the contact info machine-identifiable; the footer is the
  * `#contact` anchor the header nav points at.
  * Hooks: `data-section="contact"`, `data-slot="contact-links"`.

@@ -6,16 +6,14 @@
  * so retuning here restyles the site without touching src/components.
  *
  * Structural hooks available in the markup:
- *   [data-section="hero|experience|roles|contact"]  top-level sections
+ *   [data-section="home|now|writing|hero|experience|roles|contact"]
+ *   [data-page="home"]                              publisher home atmosphere
  *   [data-component="site-header|proof-band|resume-bar|scroll-rail"]
- *                                                   chrome, hairline proof
- *                                                   strip, mobile sticky CTA,
- *                                                   desktop top rail
  *   [data-slot="..."]                               named rows inside a section
  *   [data-lead="true"]                              the 10k hero figure
  *   [data-role="<id>"] [data-primary="true"]        role links
  *   [data-entry="<id>"] [data-open="true|false"]    experience rows
- *   [data-cta="resume|linkedin|email"]              calls to action
+ *   [data-cta="resume|linkedin|email|subscribe|substack"]
  */
 
 :root {
@@ -139,6 +137,43 @@ body {
   font-family: var(--font-sans);
   font-size: 1rem;
   line-height: 1.5;
+}
+
+/* Soft paper wash — atmosphere without a flat fill. */
+[data-page="home"],
+[data-page="writing"],
+[data-page="work"] {
+  background:
+    radial-gradient(
+      ellipse 90% 55% at 50% -10%,
+      var(--surface) 0%,
+      transparent 70%
+    ),
+    var(--bg);
+}
+
+/* Home fold: name then Now enter softly (snaps under reduced motion). */
+@keyframes enter-soft {
+  from {
+    opacity: 0;
+    transform: translateY(0.4rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+[data-page="home"] [data-slot="name"] {
+  animation: enter-soft 420ms var(--motion-ease) both;
+}
+
+[data-page="home"] [data-section="now"] {
+  animation: enter-soft 420ms var(--motion-ease) 90ms both;
+}
+
+[data-page="home"] [data-section="writing"] {
+  animation: enter-soft 420ms var(--motion-ease) 160ms both;
 }
 
 /* Focus rings: 2px ink, offset 2 */

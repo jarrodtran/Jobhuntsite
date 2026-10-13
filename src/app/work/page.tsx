@@ -9,7 +9,7 @@ export default function WorkPage() {
   return (
     <>
       <SiteHeader />
-      <main id="main">
+      <main id="main" data-page="work">
         <WorkHeader />
         <Experience />
         <Fit />

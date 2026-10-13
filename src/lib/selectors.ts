@@ -176,12 +176,11 @@ export const sectionOrder: SectionMeta[] = [
   sections.contact,
 ];
 
-/** Site chrome: publisher routes + contact anchor. */
+/** Site chrome: wordmark is home; links are Writing / Work / Contact. */
 export const navView = {
   wordmark: hero.name,
   homeHref: "/" as const,
   links: [
-    { href: "/", label: ui.nav.home },
     { href: "/writing/", label: ui.nav.writing },
     { href: "/work/", label: ui.nav.work },
     { href: "#contact", label: ui.nav.contact },
@@ -246,6 +245,9 @@ export const writingView = {
   heading: ui.writing.heading,
   empty: ui.writing.empty,
   readLabel: ui.writing.readOnSubstack,
+  openSubstackLabel: ui.writing.openSubstack,
+  allWritingLabel: ui.writing.allWriting,
+  indexHref: "/writing/" as const,
   posts: substackPosts,
   subscribe: subscribeCta,
   publicationUrl: substack.publicationUrl,

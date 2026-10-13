@@ -92,10 +92,9 @@ describe("Copy enrich lock", () => {
     ]);
   });
 
-  it("labels publisher nav Home, Writing, Work, Contact", () => {
+  it("labels publisher nav Writing, Work, Contact (wordmark is home)", () => {
     expect(navView.homeHref).toBe("/");
     expect(navView.links.map((link) => [link.label, link.href])).toEqual([
-      ["Home", "/"],
       ["Writing", "/writing/"],
       ["Work", "/work/"],
       ["Contact", "#contact"],
@@ -114,6 +113,8 @@ describe("Copy enrich lock", () => {
   it("exposes an empty Writing feed until Substack has posts", () => {
     expect(writingView.posts).toEqual([]);
     expect(writingView.subscribe.href).toContain("substack.com/subscribe");
+    expect(writingView.indexHref).toBe("/writing/");
+    expect(writingView.allWritingLabel).toBe("All writing");
   });
 
   it("opens the resume in a new tab instead of downloading it", () => {

@@ -3,8 +3,10 @@ import { SubscribeCta } from "@/components/ui/SubscribeCta";
 import { writingView } from "@/lib/selectors";
 
 type Props = {
-  /** When true, show every post. Home uses the same list while the feed is small. */
+  /** When set, show at most this many posts (home preview). */
   previewLimit?: number;
+  /** Full Writing route uses page heading (h1); home keeps a section h2. */
+  asPage?: boolean;
 };
 
 function formatDate(iso: string): string | null {
@@ -20,38 +22,54 @@ function formatDate(iso: string): string | null {
 }
 
 /** Substack posts from build-time JSON. Empty feed shows copy + Subscribe. */
-export function WritingList({ previewLimit }: Props) {
+export function WritingList({ previewLimit, asPage = false }: Props) {
   const headingId = `${writingView.section.id}-heading`;
   const posts =
     typeof previewLimit === "number"
       ? writingView.posts.slice(0, previewLimit)
       : writingView.posts;
+  const HeadingTag = asPage ? "h1" : "h2";
+  const showIndexLink = typeof previewLimit === "number" && !asPage;
 
   return (
     <section
       id={writingView.section.id}
       data-section={writingView.section.id}
       aria-labelledby={headingId}
-      className={`${sectionShellClass} mt-section`}
+      className={`${sectionShellClass} ${asPage ? "pt-16 sm:pt-20 lg:pt-24" : "mt-section"}`}
     >
       <div className="flex flex-wrap items-baseline justify-between gap-4">
-        <h2
+        <HeadingTag
           id={headingId}
           data-slot="section-heading"
-          className="text-label font-semibold uppercase tracking-label text-muted"
+          className={
+            asPage
+              ? "font-display text-5xl font-normal tracking-tight lg:text-6xl"
+              : "text-label font-semibold uppercase tracking-label text-muted"
+          }
         >
           {writingView.heading}
-        </h2>
+        </HeadingTag>
         <SubscribeCta />
       </div>
 
       {posts.length === 0 ? (
-        <p
-          data-slot="writing-empty"
-          className="mt-5 max-w-voice text-base leading-relaxed text-muted"
-        >
-          {writingView.empty}
-        </p>
+        <div data-slot="writing-empty" className="mt-5 max-w-voice">
+          <p className="text-base leading-relaxed text-muted">
+            {writingView.empty}
+          </p>
+          <p className="mt-3 text-sm">
+            <a
+              href={writingView.publicationUrl}
+              target="_blank"
+              rel="noopener"
+              className="link text-ink"
+              data-cta="substack"
+            >
+              {writingView.openSubstackLabel}
+            </a>
+          </p>
+        </div>
       ) : (
         <ul data-slot="writing-list" className="mt-6 divide-y divide-hairline">
           {posts.map((post) => {
@@ -95,6 +113,18 @@ export function WritingList({ previewLimit }: Props) {
           })}
         </ul>
       )}
+
+      {showIndexLink ? (
+        <p className="mt-6 text-sm">
+          <a
+            href={writingView.indexHref}
+            className="link text-ink"
+            data-cta="writing-index"
+          >
+            {writingView.allWritingLabel}
+          </a>
+        </p>
+      ) : null}
     </section>
   );
 }
