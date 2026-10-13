@@ -4,14 +4,14 @@ import { navView } from "@/lib/selectors";
 
 /**
  * Non-sticky chrome. Wordmark → home. PrimaryNav carries Writing / Work / Contact.
- * Hairline under the bar separates chrome from the fold without a card.
+ * Surface sheet + hairline separates chrome from the fold without a card.
  * Hooks: `data-component="site-header"`, `data-slot="wordmark" | "nav-links"`.
  */
 export function SiteHeader() {
   return (
     <header
       data-component="site-header"
-      className="border-b border-hairline/80 bg-bg/80 backdrop-blur-[2px]"
+      className="border-b border-hairline bg-surface/90 backdrop-blur-[3px]"
     >
       <nav
         aria-label="Primary"

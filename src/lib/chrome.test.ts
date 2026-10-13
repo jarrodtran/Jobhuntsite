@@ -11,11 +11,11 @@ import {
 
 const srcDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-const PAPER = "#F1EBE0";
-const INK = "#161411";
-const MUTED = "#4A453E";
-const HAIRLINE = "#DDD2C0";
-const SURFACE = "#FAF6ED";
+const PAPER = "#E4E0D6";
+const INK = "#121110";
+const MUTED = "#514D45";
+const HAIRLINE = "#CFC9BB";
+const SURFACE = "#F3F0E8";
 
 function firstRootDeclarations(css: string): string {
   const block = css.match(/:root\s*\{([\s\S]*?)\n\}/);
@@ -64,7 +64,7 @@ function contrastRatio(foreground: string, background: string): number {
 }
 
 describe("browser chrome", () => {
-  it("sets theme-color to paper #F1EBE0", () => {
+  it("sets theme-color to paper #E4E0D6", () => {
     expect(THEME_COLOR).toBe(PAPER);
     expect(viewportChrome.themeColor).toBe(PAPER);
   });
@@ -168,7 +168,7 @@ describe("contrast tokens", () => {
 
   it("keeps the sheet slightly lighter than paper and ink-aligns the 1px card shadow", () => {
     expect(tokenValue(css, "surface").toLowerCase()).toBe(SURFACE.toLowerCase());
-    expect(tokenValue(css, "card-shadow")).toBe("0 1px 0 rgb(22 20 17 / 0.05)");
+    expect(tokenValue(css, "card-shadow")).toBe("0 1px 0 rgb(18 17 16 / 0.06)");
   });
 
   it("gives muted ~6:1 contrast on the new paper (WCAG AA)", () => {

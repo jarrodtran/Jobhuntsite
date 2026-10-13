@@ -82,12 +82,13 @@ describe("ScrollRail", () => {
     ).toHaveTextContent("Resume");
   });
 
-  it("uses solid paper chrome: bg-bg, 1px hairline, z-50", () => {
+  it("uses surface sheet chrome: bg-surface, 1px hairline, z-50", () => {
     renderRail();
     const rail = document.querySelector("[data-component='scroll-rail']");
 
-    expect(rail).toHaveClass("bg-bg", "border-b", "border-hairline", "z-50");
+    expect(rail).toHaveClass("bg-surface", "border-b", "border-hairline", "z-50");
     expect(rail).not.toHaveClass("z-40");
+    expect(rail).not.toHaveClass("bg-bg");
   });
 
   it("snaps translate under reduced motion instead of a 150ms slide", () => {
