@@ -7,7 +7,7 @@
  *
  * Structural hooks available in the markup:
  *   [data-section="home|now|writing|hero|experience|roles|contact"]
- *   [data-page="home"]                              publisher home atmosphere
+ *   [data-page="home|writing|work"]                 publisher atmosphere
  *   [data-component="site-header|proof-band|resume-bar|scroll-rail"]
  *   [data-slot="..."]                               named rows inside a section
  *   [data-lead="true"]                              the 10k hero figure
@@ -17,15 +17,14 @@
  */
 
 :root {
-  /* Palette: Olivier cream paper, Poulos brown-black ink. One muted, one
-     hairline. No tints, no dark theme — the only surfaces are paper and a
-     slightly lighter sheet. */
-  --bg: #f5f0e6;
-  --ink: #1c1a17;
-  --muted: #534e46;
-  --hairline: #e4d9c8;
-  --accent: #1c1a17;
-  --surface: #fffdf8;
+  /* Palette: warm stone paper, near-black ink. One muted, one hairline.
+     No purple, no terracotta accent, no dark theme — paper + sheet only. */
+  --bg: #f1ebe0;
+  --ink: #161411;
+  --muted: #4a453e;
+  --hairline: #ddd2c0;
+  --accent: #161411;
+  --surface: #faf6ed;
 
   /* Link underline. `--hairline` is 1.23:1 against paper — fine as a divider
      between rows, invisible as the only thing marking a word as a link. This
@@ -34,7 +33,7 @@
   --rule: #8f8474;
 
   /* Card: sheet, 1px hairline, a single 1px shadow line. */
-  --card-shadow: 0 1px 0 rgb(28 26 23 / 0.04);
+  --card-shadow: 0 1px 0 rgb(22 20 17 / 0.05);
   --card-radius: 0.25rem;
 
   /* Responsive measure (FE Designer spec). One column at every width; the
@@ -85,21 +84,24 @@
     var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     sans-serif;
 
-  /* Display serif for the fold name only. Body and chrome stay Geist. */
+  /* Display serif for page names and Writing titles. Body stays Geist. */
   --font-display:
     var(--font-instrument-serif), ui-serif, Georgia, "Times New Roman", serif;
 
-  /* Section label: 11px / 0.14em tracking → `text-label`, `tracking-label`. */
+  /* Meta face for dates and chrome numerals. */
+  --font-mono:
+    var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Consolas,
+    monospace;
+
+  /* Section label: 11px / 0.16em tracking → `text-label`, `tracking-label`. */
   --text-label: 11px;
   --text-label--line-height: 1rem;
-  --tracking-label: 0.14em;
+  --tracking-label: 0.16em;
 
   /* Layout: single column on the responsive measure above (`max-w-content`),
-     8pt rhythm. Section gap is `--section-gap` (5rem → 6rem at ≥1024);
-     hero→proof strip (2.5rem) and strip→Experience (3rem) are tighter and set
-     where those blocks render. */
+     8pt rhythm. Voice line stays short for Now / excerpts. */
   --container-content: var(--measure);
-  --container-voice: 60ch;
+  --container-voice: 54ch;
   --spacing-section: var(--section-gap);
 
   /* Motion */
@@ -122,6 +124,8 @@
 html {
   scroll-behavior: smooth;
   font-family: var(--font-sans);
+  font-optical-sizing: auto;
+  text-rendering: optimizeLegibility;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -142,8 +146,9 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family: var(--font-sans);
-  font-size: 1rem;
-  line-height: 1.5;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  letter-spacing: -0.005em;
 }
 
 /* Soft paper wash — atmosphere without a flat fill. */
@@ -152,9 +157,14 @@ body {
 [data-page="work"] {
   background:
     radial-gradient(
-      ellipse 90% 55% at 50% -10%,
+      ellipse 110% 70% at 12% -20%,
       var(--surface) 0%,
-      transparent 70%
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse 80% 50% at 90% 0%,
+      rgb(255 253 248 / 0.55) 0%,
+      transparent 55%
     ),
     var(--bg);
 }
@@ -181,6 +191,12 @@ body {
 
 [data-page="home"] [data-section="writing"] {
   animation: enter-soft 420ms var(--motion-ease) 160ms both;
+}
+
+/* Display type: optical size feel on large serif names. */
+.font-display {
+  font-feature-settings: "kern" 1;
+  letter-spacing: -0.02em;
 }
 
 /* Focus rings: 2px ink, offset 2 */
