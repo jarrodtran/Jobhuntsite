@@ -7,14 +7,15 @@ import { ScrollRail } from "@/components/ui/ScrollRail";
 import { heroView, navView } from "@/lib/selectors";
 
 /**
- * The fold: name, Tesla title, one filing sentence, proof, CTAs with the
- * location line (city · relocation stance), employers in ink so companies scan
- * before the chips. At ≥1024 the identity column sits beside a quiet fact rail so the
- * name — not a metric card — owns the page. Sticky Resume chrome follows the
- * hero CTA out of view.
+ * The fold: name, Tesla title with the current employer in ink beside it, one
+ * filing sentence, proof, CTAs with the location line (city · relocation
+ * stance), employers in ink so companies scan before the chips. At ≥1024 the
+ * identity column sits beside a quiet fact rail so the name — not a metric card
+ * — owns the page. Sticky Resume chrome follows the hero CTA out of view.
  *
- * Hooks: `data-section="hero"`, `data-slot` on each row (name, title, mapping,
- * voice, proof-chips, ctas, location, employers); `data-component="resume-bar|scroll-rail"`.
+ * Hooks: `data-section="hero"`, `data-slot` on each row (name, title,
+ * current-company, mapping, voice, proof-chips, ctas, location, employers);
+ * `data-component="resume-bar|scroll-rail"`.
  */
 export function Hero() {
   const headingId = `${heroView.section.id}-heading`;
@@ -42,6 +43,16 @@ export function Hero() {
               className="mt-4 text-base text-muted lg:text-lg"
             >
               {heroView.title}
+              {heroView.currentCompany ? (
+                <>
+                  <span aria-hidden="true" className="px-1.5">
+                    ·
+                  </span>
+                  <span data-slot="current-company" className="text-ink">
+                    {heroView.currentCompany}
+                  </span>
+                </>
+              ) : null}
             </p>
           </hgroup>
 

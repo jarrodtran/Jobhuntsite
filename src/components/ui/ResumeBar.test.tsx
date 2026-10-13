@@ -81,4 +81,16 @@ describe("ResumeBar chrome", () => {
     fireIntersection("contact", true);
     expect(bar?.className).toContain("translate-y-full");
   });
+
+  it("snaps its slide under reduced motion, like the desktop rail", () => {
+    // The rail wrapped its transition in withReducedMotionSnap and the bar did
+    // not, in an otherwise mirrored pair. The blanket globals.css rule covers it
+    // today, so this is consistency, not a live bug.
+    renderBar();
+    fireIntersection("hero-resume", false);
+
+    expect(
+      document.querySelector("[data-component='resume-bar']"),
+    ).toHaveClass("motion-reduce:transition-none");
+  });
 });

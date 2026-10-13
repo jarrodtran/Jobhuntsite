@@ -160,6 +160,8 @@ export type UiStrings = {
   skipToContent: string;
   cta: {
     resume: string;
+    /** Announced instead of `resume`: names the file type and the new tab. */
+    resumeAriaLabel: string;
     linkedin: string;
     subscribe: string;
   };

@@ -1,6 +1,6 @@
 import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { ExperienceRows } from "@/components/sections/ExperienceRows";
 import type { ExperienceRow } from "@/lib/selectors";
 
@@ -67,7 +67,7 @@ describe("ExperienceRows accordion", () => {
     expect(open).not.toHaveClass("py-2");
   });
 
-  it("sets closed-row title and company in semibold ink, with a mid-dot, scope clamped", () => {
+  it("sets closed-row title and company in semibold ink, with a mid-dot, scope unclamped", () => {
     renderRows();
     const closed = screen.getByRole("button", { name: /Role B/ });
     const title = closed.querySelector("[data-slot='title']");
@@ -81,7 +81,11 @@ describe("ExperienceRows accordion", () => {
     expect(line).toHaveTextContent("Role B");
     expect(line).toHaveTextContent("·");
     expect(line).toHaveTextContent("Co B");
-    expect(scope).toHaveClass("line-clamp-1", "text-muted");
+    // `block` beat `line-clamp-1` on `display`, so the clamp never applied and
+    // the scope has always wrapped. Recruiters get the whole outcome without a
+    // click, and it survives save-to-PDF; the class is gone rather than fixed.
+    expect(scope).toHaveClass("text-muted");
+    expect(scope?.className).not.toMatch(/line-clamp/);
   });
 
   it("keeps a long closed-row title intact and the company name untruncated", () => {
@@ -212,5 +216,33 @@ describe("ExperienceRows accordion", () => {
         "true",
       );
     });
+  });
+
+  it("re-scrolls the hash target once the row above it has collapsed", async () => {
+    // Opening the target collapses whatever was open above it, so the page
+    // shortens and the row ends up higher than the anchor promised — off the top
+    // of the screen when the collapsed row was tall. Measured on the live page:
+    // #tesla-4680 finished 53px above the viewport.
+    const scrollIntoView = vi.fn();
+    const original = Element.prototype.scrollIntoView;
+    Element.prototype.scrollIntoView = scrollIntoView;
+
+    try {
+      renderRows();
+      window.location.hash = "#row-b";
+      window.dispatchEvent(new HashChangeEvent("hashchange"));
+
+      await waitFor(
+        () => {
+          expect(scrollIntoView).toHaveBeenCalledWith({ block: "start" });
+        },
+        { timeout: 1500 },
+      );
+      expect(scrollIntoView.mock.instances[0]).toBe(
+        document.getElementById("row-b"),
+      );
+    } finally {
+      Element.prototype.scrollIntoView = original;
+    }
   });
 });
