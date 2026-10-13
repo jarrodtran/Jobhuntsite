@@ -11,6 +11,7 @@ import {
   nowBody,
   proofBand,
   roles,
+  sections,
   siteIndexable,
 } from "@/content";
 import {
