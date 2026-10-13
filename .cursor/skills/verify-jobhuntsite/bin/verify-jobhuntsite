@@ -1,0 +1,296 @@
+#!/usr/bin/env bash
+# Launch, doctor, and tear down an isolated Jobhuntsite verification instance.
+# Invocation examples live in ../SKILL.md — do not reverse-engineer from this file alone.
+set -euo pipefail
+
+# bin/ → verify-jobhuntsite/ → skills/ → .cursor/ → repo root
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
+SKILL_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+DEFAULT_PORT_BASE=3100
+RUN_ID="${JOBHUNTSITE_VERIFY_RUN_ID:-}"
+PORT="${JOBHUNTSITE_VERIFY_PORT:-}"
+
+die() {
+  echo "verify-jobhuntsite: $*" >&2
+  exit 1
+}
+
+require_cmd() {
+  command -v "$1" >/dev/null 2>&1 || die "missing required command: $1"
+}
+
+run_dir() {
+  [[ -n "$RUN_ID" ]] || die "no RUN_ID; run launch first or set JOBHUNTSITE_VERIFY_RUN_ID"
+  echo "/tmp/jobhuntsite-verify-${RUN_ID}"
+}
+
+state_file() {
+  echo "$(run_dir)/instance.env"
+}
+
+artifacts_dir() {
+  [[ -n "$RUN_ID" ]] || die "no RUN_ID; run launch first or set JOBHUNTSITE_VERIFY_RUN_ID"
+  echo "${SKILL_DIR}/artifacts/${RUN_ID}"
+}
+
+load_state() {
+  local sf
+  if [[ -z "$RUN_ID" ]]; then
+    if [[ -f "${SKILL_DIR}/.active-run" ]]; then
+      RUN_ID="$(cat "${SKILL_DIR}/.active-run")"
+    else
+      die "no active run; launch first or export JOBHUNTSITE_VERIFY_RUN_ID"
+    fi
+  fi
+  sf="$(state_file)"
+  [[ -f "$sf" ]] || die "missing state file: $sf"
+  # shellcheck disable=SC1090
+  source "$sf"
+  [[ -n "${JOBHUNTSITE_URL:-}" ]] || die "JOBHUNTSITE_URL missing from state"
+  [[ -n "${JOBHUNTSITE_PID:-}" ]] || die "JOBHUNTSITE_PID missing from state"
+  [[ -n "${JOBHUNTSITE_PORT:-}" ]] || die "JOBHUNTSITE_PORT missing from state"
+}
+
+port_in_use() {
+  local p="$1"
+  if command -v ss >/dev/null 2>&1; then
+    ss -ltn "sport = :${p}" 2>/dev/null | grep -q ":${p}"
+    return $?
+  fi
+  # Fallback: bind probe — exit 0 means free, so invert for "in use".
+  if node -e "const n=require('net');const s=n.createServer();s.once('error',()=>process.exit(1));s.listen(${p},'127.0.0.1',()=>s.close(()=>process.exit(0)));" >/dev/null 2>&1; then
+    return 1
+  fi
+  return 0
+}
+
+pick_port() {
+  local candidate="${PORT:-$DEFAULT_PORT_BASE}"
+  local i=0
+  while (( i < 40 )); do
+    if ! port_in_use "$candidate"; then
+      echo "$candidate"
+      return 0
+    fi
+    candidate=$((candidate + 1))
+    i=$((i + 1))
+  done
+  die "could not find a free port near ${PORT:-$DEFAULT_PORT_BASE}"
+}
+
+wait_ready() {
+  local url="$1"
+  local log="$2"
+  local attempts=0
+  while (( attempts < 90 )); do
+    # Match publisher home markers. Avoid requiring a single attribute string
+    # that may arrive mid-stream during Turbopack's first compile.
+    body="$(curl -fsS "$url" 2>/dev/null || true)"
+    if [[ "$body" == *'Jarrod Tran'* ]] && {
+      [[ "$body" == *'data-page="home"'* ]] || [[ "$body" == *'data-section="now"'* ]]
+    }; then
+      return 0
+    fi
+    if [[ -f "$log" ]] && grep -qE 'Error|EADDRINUSE' "$log" 2>/dev/null; then
+      die "dev server failed; see $log"
+    fi
+    sleep 0.5
+    attempts=$((attempts + 1))
+  done
+  die "timed out waiting for usable page at $url (log: $log)"
+}
+
+cmd_launch() {
+  require_cmd pnpm
+  require_cmd curl
+  require_cmd node
+
+  cd "$ROOT"
+  [[ -d node_modules ]] || pnpm install
+
+  RUN_ID="${RUN_ID:-$(date +%Y%m%d-%H%M%S)-$$}"
+  PORT="$(pick_port)"
+  local dir log pid
+  dir="$(run_dir)"
+  mkdir -p "$dir" "$(artifacts_dir)"
+  log="${dir}/next-dev.log"
+
+  # Isolated instance: own port only. This site is static content — no DB/profile.
+  # Do not reuse an instance you did not start. setsid gives a dedicated session
+  # so cleanup never kills the agent shell's process group.
+  cd "$ROOT"
+  if command -v setsid >/dev/null 2>&1; then
+    setsid pnpm exec next dev --turbopack --hostname 127.0.0.1 --port "$PORT" \
+      >"$log" 2>&1 </dev/null &
+  else
+    pnpm exec next dev --turbopack --hostname 127.0.0.1 --port "$PORT" \
+      >"$log" 2>&1 </dev/null &
+  fi
+  pid=$!
+
+  cat >"$(state_file)" <<EOF
+JOBHUNTSITE_RUN_ID=${RUN_ID}
+JOBHUNTSITE_PID=${pid}
+JOBHUNTSITE_PORT=${PORT}
+JOBHUNTSITE_URL=http://127.0.0.1:${PORT}/
+JOBHUNTSITE_LOG=${log}
+JOBHUNTSITE_ROOT=${ROOT}
+JOBHUNTSITE_ARTIFACTS=$(artifacts_dir)
+EOF
+  echo "$RUN_ID" >"${SKILL_DIR}/.active-run"
+
+  wait_ready "http://127.0.0.1:${PORT}/" "$log"
+
+  if ! kill -0 "$pid" 2>/dev/null; then
+    die "dev server exited early; see $log"
+  fi
+
+  echo "RUN_ID=${RUN_ID}"
+  echo "URL=http://127.0.0.1:${PORT}/"
+  echo "PID=${pid}"
+  echo "LOG=${log}"
+  echo "ARTIFACTS=$(artifacts_dir)"
+}
+
+# Kill a pid and its descendants. Never matches by process name.
+kill_tree() {
+  local root_pid="$1"
+  local signal="${2:-TERM}"
+  local child
+  while read -r child; do
+    [[ -z "$child" ]] && continue
+    kill_tree "$child" "$signal"
+  done < <(ps -o pid= --ppid "$root_pid" 2>/dev/null | tr -d ' ')
+  kill "-${signal}" "$root_pid" 2>/dev/null || true
+}
+
+cmd_doctor() {
+  load_state
+  require_cmd curl
+
+  local body tmp code owns_port
+  tmp="$(mktemp)"
+  if ! kill -0 "${JOBHUNTSITE_PID}" 2>/dev/null; then
+    die "process ${JOBHUNTSITE_PID} is not running"
+  fi
+
+  code="$(curl -sS -o "$tmp" -w '%{http_code}' "${JOBHUNTSITE_URL}" || true)"
+  [[ "$code" == "200" ]] || die "HTTP ${code} from ${JOBHUNTSITE_URL}"
+
+  grep -q 'data-slot="name"' "$tmp" || die "page missing data-slot=name (wrong app?)"
+  grep -q 'Jarrod Tran' "$tmp" || die "page missing name Jarrod Tran"
+  grep -q 'data-section="now"' "$tmp" || die "page missing data-section=now"
+  grep -q 'data-section="writing"' "$tmp" || die "page missing data-section=writing"
+  grep -q 'data-cta="subscribe"' "$tmp" || die "page missing Subscribe CTA"
+
+  local work
+  work="$(mktemp)"
+  code="$(curl -sS -o "$work" -w '%{http_code}' "${JOBHUNTSITE_URL}work/" || true)"
+  [[ "$code" == "200" ]] || die "HTTP ${code} from ${JOBHUNTSITE_URL}work/"
+  grep -q 'data-section="experience"' "$work" || die "/work missing experience"
+  grep -q 'id="work-resume"' "$work" || die "/work missing #work-resume"
+  grep -q '/resume.pdf' "$work" || die "/work missing resume.pdf href"
+  rm -f "$work"
+
+  # Port should still answer on the URL we recorded.
+  owns_port=0
+  if curl -fsS "http://127.0.0.1:${JOBHUNTSITE_PORT}/" >/dev/null 2>&1; then
+    owns_port=1
+  fi
+  [[ "$owns_port" == "1" ]] || die "port ${JOBHUNTSITE_PORT} not serving"
+
+  # Package identity check (read-only).
+  local pkg_name
+  pkg_name="$(node -e "console.log(require('${JOBHUNTSITE_ROOT}/package.json').name)")"
+  [[ "$pkg_name" == "jobhuntsite" ]] || die "unexpected package name: ${pkg_name}"
+
+  rm -f "$tmp"
+  echo "ok"
+  echo "RUN_ID=${JOBHUNTSITE_RUN_ID}"
+  echo "URL=${JOBHUNTSITE_URL}"
+  echo "PID=${JOBHUNTSITE_PID}"
+  echo "PORT=${JOBHUNTSITE_PORT}"
+  echo "PACKAGE=${pkg_name}"
+  echo "ARTIFACTS=${JOBHUNTSITE_ARTIFACTS}"
+}
+
+cmd_url() {
+  load_state
+  echo "${JOBHUNTSITE_URL}"
+}
+
+cmd_artifacts() {
+  load_state
+  echo "${JOBHUNTSITE_ARTIFACTS}"
+}
+
+cmd_stop() {
+  load_state
+  local pid="${JOBHUNTSITE_PID}"
+  if kill -0 "$pid" 2>/dev/null; then
+    kill_tree "$pid" TERM
+  fi
+  local i=0
+  while kill -0 "$pid" 2>/dev/null && (( i < 20 )); do
+    sleep 0.25
+    i=$((i + 1))
+  done
+  if kill -0 "$pid" 2>/dev/null; then
+    kill_tree "$pid" KILL
+  fi
+  echo "stopped PID=${pid} PORT=${JOBHUNTSITE_PORT}"
+}
+
+cmd_cleanup() {
+  # Tear down instance + scratch state. Never delete artifacts/.
+  if [[ -z "$RUN_ID" && -f "${SKILL_DIR}/.active-run" ]]; then
+    RUN_ID="$(cat "${SKILL_DIR}/.active-run")"
+  fi
+  if [[ -n "$RUN_ID" && -f "$(state_file)" ]]; then
+    cmd_stop || true
+    rm -rf "$(run_dir)"
+  fi
+  rm -f "${SKILL_DIR}/.active-run"
+  echo "cleaned run state; artifacts retained under ${SKILL_DIR}/artifacts/"
+}
+
+usage() {
+  cat <<'EOF'
+Usage:
+  verify-jobhuntsite launch [--port N]
+  verify-jobhuntsite doctor
+  verify-jobhuntsite url
+  verify-jobhuntsite artifacts
+  verify-jobhuntsite stop
+  verify-jobhuntsite cleanup
+
+Env:
+  JOBHUNTSITE_VERIFY_RUN_ID   reuse / target a run id
+  JOBHUNTSITE_VERIFY_PORT     preferred port (launch picks next free if busy)
+EOF
+}
+
+main() {
+  local cmd="${1:-}"
+  shift || true
+  case "$cmd" in
+    launch)
+      while [[ $# -gt 0 ]]; do
+        case "$1" in
+          --port) PORT="$2"; shift 2 ;;
+          *) die "unknown launch flag: $1" ;;
+        esac
+      done
+      cmd_launch
+      ;;
+    doctor) cmd_doctor ;;
+    url) cmd_url ;;
+    artifacts) cmd_artifacts ;;
+    stop) cmd_stop ;;
+    cleanup) cmd_cleanup ;;
+    -h|--help|help|"") usage; [[ -n "$cmd" ]] || exit 1 ;;
+    *) die "unknown command: $cmd" ;;
+  esac
+}
+
+main "$@"

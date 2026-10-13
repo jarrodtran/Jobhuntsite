@@ -26,6 +26,7 @@ import type {
   SectionId,
   SectionMeta,
   Site,
+  SubstackConfig,
   UiStrings,
 } from "@/lib/schema";
 
@@ -186,19 +187,31 @@ export const site: Site = {
 };
 
 /**
- * Recruiter scan path, top to bottom: Hero → Experience → Fit → Footer.
- * Object order here is render order and nav order. `navLabel` is omitted for
- * the hero (the header wordmark links to top).
+ * What’s going on now. Homepage lead copy for the publisher pivot.
+ * Keep this current; Writing cards come from Substack RSS at build time.
+ */
+export const nowBody =
+  "Currently leading Super Intelligence efforts for Tesla Energy Manufacturing. Working on SI enablement and leading Forward Deployed Engineering. I also lead factory strategy for Energy products — planning what to build, when, and where.";
+
+export const substack: SubstackConfig = {
+  publicationUrl: "https://jarrodtran.substack.com",
+  subscribeUrl: "https://jarrodtran.substack.com/subscribe",
+};
+
+/**
+ * Section metadata. Homepage uses now + writing; /work uses experience + roles.
+ * Site chrome nav is route-based (see selectors `navView`), not this object order alone.
  */
 export const sections: Record<SectionId, SectionMeta> = {
   hero: { id: "hero", heading: hero.name },
+  now: { id: "now", heading: "Now" },
+  writing: { id: "writing", heading: "Writing" },
   experience: {
     id: "experience",
     heading: "Experience",
-    navLabel: "Experience",
   },
-  roles: { id: "roles", heading: "Where I fit", navLabel: "Where I fit" },
-  contact: { id: "contact", heading: "Contact", navLabel: "Contact" },
+  roles: { id: "roles", heading: "Where I fit" },
+  contact: { id: "contact", heading: "Contact" },
 };
 
 export const ui: UiStrings = {
@@ -207,6 +220,7 @@ export const ui: UiStrings = {
     resume: "Resume",
     resumeAriaLabel: "Resume (PDF, opens in a new tab)",
     linkedin: "LinkedIn",
+    subscribe: "Subscribe",
   },
   hero: {
     proofChipsLabel: "Proof points",
@@ -217,6 +231,23 @@ export const ui: UiStrings = {
   },
   experience: {
     dateRangeSeparator: "–",
+  },
+  now: {
+    heading: "Now",
+  },
+  writing: {
+    heading: "Writing",
+    empty:
+      "No posts yet. New notes appear here when they publish on Substack.",
+    readOnSubstack: "Read on Substack",
+    openSubstack: "Open Substack",
+    allWriting: "All writing",
+  },
+  nav: {
+    home: "Home",
+    writing: "Writing",
+    work: "Work",
+    contact: "Contact",
   },
 };
 

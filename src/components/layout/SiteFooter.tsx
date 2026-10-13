@@ -7,7 +7,7 @@ import { ANCHOR_OFFSET_CLASS } from "@/lib/chrome";
 import { ctaAnchorProps, footerView } from "@/lib/selectors";
 
 /**
- * Email, LinkedIn, and city. Resume stays in the hero and sticky chrome.
+ * Email, LinkedIn, and city. Resume stays on /work and its sticky chrome.
  * <address> makes the contact info machine-identifiable; the footer is the
  * `#contact` anchor the header nav points at, so it carries the same scroll
  * offset as every other anchor target.

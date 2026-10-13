@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "fetch:substack": "node scripts/fetch-substack.mjs",
+    "prebuild": "node scripts/fetch-substack.mjs",
     "build": "next build",
     "lint": "eslint",
     "test": "vitest run"

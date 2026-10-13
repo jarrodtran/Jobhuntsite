@@ -17,11 +17,13 @@ import {
   experience,
   fitLead,
   hero,
+  nowBody,
   proofBand,
   roles,
   sections,
   site,
   siteIndexable,
+  substack,
   ui,
 } from "@/content";
 import type {
@@ -30,8 +32,13 @@ import type {
   Role,
   SectionMeta,
 } from "@/lib/schema";
+import {
+  normalizeFeedFile,
+  type SubstackPost,
+} from "@/lib/substack";
 import { hasText, joinMeta, visible } from "@/lib/text";
 import { absoluteAsset, asset, mailto, siteUrl } from "@/lib/url";
+import feedFile from "@/data/substack-posts.json";
 
 // ---------------------------------------------------------------------------
 // Validation
@@ -100,7 +107,7 @@ const currentEmployer: string | null =
 // Shared shapes
 // ---------------------------------------------------------------------------
 
-export type CtaKind = "resume" | "linkedin" | "email";
+export type CtaKind = "resume" | "linkedin" | "email" | "subscribe";
 
 export type Cta = {
   kind: CtaKind;
@@ -130,7 +137,7 @@ export function ctaAnchorProps(cta: Cta) {
 }
 
 export type Anchor = {
-  href: `#${string}`;
+  href: string;
   label: string;
 };
 
@@ -164,13 +171,25 @@ const emailCta: Cta = {
   newTab: false,
 };
 
+const subscribeCta: Cta = {
+  kind: "subscribe",
+  label: ui.cta.subscribe,
+  href: substack.subscribeUrl,
+  external: true,
+  download: false,
+  newTab: true,
+};
+
+const substackPosts: readonly SubstackPost[] =
+  normalizeFeedFile(feedFile).posts;
+
 // ---------------------------------------------------------------------------
 // Sections + navigation
 // ---------------------------------------------------------------------------
 
 /**
- * Scan-path order (FE Designer IA): Hero → Experience → Fit → Footer.
- * Drives both render order in page.tsx and the header nav.
+ * Work-page section order (recruiter path on /work).
+ * Kept for any caller that still walks in-page Experience → Fit → Contact.
  */
 export const sectionOrder: SectionMeta[] = [
   sections.hero,
@@ -179,15 +198,15 @@ export const sectionOrder: SectionMeta[] = [
   sections.contact,
 ];
 
+/** Site chrome: wordmark is home; links are Writing / Work / Contact. */
 export const navView = {
   wordmark: hero.name,
-  homeHref: "#top" as const,
-  links: sectionOrder
-    .filter((section) => hasText(section.navLabel))
-    .map<Anchor>((section) => ({
-      href: `#${section.id}`,
-      label: section.navLabel as string,
-    })),
+  homeHref: "/" as const,
+  links: [
+    { href: "/writing/", label: ui.nav.writing },
+    { href: "/work/", label: ui.nav.work },
+    { href: "#contact", label: ui.nav.contact },
+  ] satisfies Anchor[],
 };
 
 // ---------------------------------------------------------------------------
@@ -231,6 +250,44 @@ export const heroView = {
   /** Primary first (solid), then secondary (ghost). */
   primaryCta: resumeCta,
   secondaryCta: linkedinCta,
+};
+
+/** Compact identity + Resume for /work (not the publisher home). */
+export const workHeaderView = {
+  section: sections.hero,
+  name: hero.name,
+  title: hero.title,
+  mappingLine: hasText(hero.mappingLine) ? hero.mappingLine : null,
+  primaryCta: resumeCta,
+  secondaryCta: linkedinCta,
+  location: locationLine,
+};
+
+export const nowView = {
+  section: sections.now,
+  heading: ui.now.heading,
+  body: nowBody,
+};
+
+export const writingView = {
+  section: sections.writing,
+  heading: ui.writing.heading,
+  empty: ui.writing.empty,
+  readLabel: ui.writing.readOnSubstack,
+  openSubstackLabel: ui.writing.openSubstack,
+  allWritingLabel: ui.writing.allWriting,
+  indexHref: "/writing/" as const,
+  posts: substackPosts,
+  subscribe: subscribeCta,
+  publicationUrl: substack.publicationUrl,
+};
+
+/** Homepage: name, Now, Writing preview (all posts for now; empty-safe). */
+export const homeView = {
+  name: hero.name,
+  title: hero.title,
+  now: nowView,
+  writing: writingView,
 };
 
 // ---------------------------------------------------------------------------
@@ -382,19 +439,23 @@ export const contentHasPlaceholders: boolean = JSON.stringify({
   hero,
   proofBand,
   fitLead,
+  nowBody,
   roles,
   experience,
   contact,
   sections,
+  substack,
   ui,
 }).includes(TODO_COPY);
 
 const seoTitle = `${hero.name} — ${
   hasText(hero.searchTitle) ? hero.searchTitle : hero.title
 }`;
-const seoDescription = hasText(hero.mappingLine)
-  ? hero.mappingLine
-  : hero.voiceLine;
+const seoDescription = hasText(nowBody)
+  ? nowBody
+  : hasText(hero.mappingLine)
+    ? hero.mappingLine
+    : hero.voiceLine;
 
 /** schema.org Organization for an employer, with the parent when set. */
 function organization(entry: ExperienceEntry) {
