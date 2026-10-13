@@ -13,18 +13,18 @@ export function SiteFooter() {
       id={footerView.section.id}
       data-section={footerView.section.id}
       aria-label={footerView.section.heading}
-      className={`${sectionShellClass} mt-section pb-10`}
+      className={`${sectionShellClass} mt-section pb-14`}
     >
       <address className="border-t border-hairline pt-10 not-italic">
         <ul
           data-slot="contact-links"
-          className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm"
+          className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted"
         >
           {footerView.links.map((cta) => (
             <li key={cta.kind}>
               <a
                 data-cta={cta.kind}
-                className="link text-ink"
+                className="link text-ink hover:text-ink"
                 {...ctaAnchorProps(cta)}
               >
                 {cta.label}

@@ -13,7 +13,7 @@ export function PrimaryNav() {
   return (
     <ul
       data-slot="nav-links"
-      className="flex items-center gap-x-5 text-sm"
+      className="flex items-center gap-x-5 text-sm tracking-tight"
     >
       {navView.links.map((link) => {
         const hash = link.href.startsWith("#");

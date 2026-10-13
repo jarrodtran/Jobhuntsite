@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Instrument_Serif } from "next/font/google";
+import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 import { viewportChrome } from "@/lib/chrome";
 import { seoView } from "@/lib/selectors";
@@ -66,10 +67,10 @@ export default function RootLayout({
   return (
     <html
       lang={seoView.lang}
-      className={`${GeistSans.variable} ${instrumentSerif.variable}`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${instrumentSerif.variable}`}
       id="top"
     >
-      <body className="bg-bg text-ink antialiased">
+      <body className="bg-bg text-ink antialiased [font-synthesis:none]">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:bg-bg focus:px-3 focus:py-2"

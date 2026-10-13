@@ -17,17 +17,20 @@ export function WorkHeader() {
       id={workHeaderView.section.id}
       data-section={workHeaderView.section.id}
       aria-labelledby={headingId}
-      className={`${sectionShellClass} pt-16 sm:pt-20 lg:pt-24`}
+      className={`${sectionShellClass} pt-20 sm:pt-24 lg:pt-28`}
     >
       <hgroup>
         <h1
           id={headingId}
           data-slot="name"
-          className="font-display text-5xl font-normal leading-[0.92] tracking-tight lg:text-6xl"
+          className="font-display text-4xl font-normal leading-[0.95] sm:text-5xl lg:text-6xl"
         >
           {workHeaderView.name}
         </h1>
-        <p data-slot="title" className="mt-4 text-base text-muted lg:text-lg">
+        <p
+          data-slot="title"
+          className="mt-5 max-w-voice text-lg leading-snug text-muted"
+        >
           {workHeaderView.title}
         </p>
       </hgroup>

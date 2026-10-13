@@ -36,15 +36,15 @@ export function WritingList({ previewLimit, asPage = false }: Props) {
       id={writingView.section.id}
       data-section={writingView.section.id}
       aria-labelledby={headingId}
-      className={`${sectionShellClass} ${asPage ? "pt-16 sm:pt-20 lg:pt-24" : "mt-section"}`}
+      className={`${sectionShellClass} ${asPage ? "pt-20 sm:pt-24 lg:pt-28" : "mt-section"}`}
     >
-      <div className="flex flex-wrap items-baseline justify-between gap-4">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-3">
         <HeadingTag
           id={headingId}
           data-slot="section-heading"
           className={
             asPage
-              ? "font-display text-5xl font-normal tracking-tight lg:text-6xl"
+              ? "font-display text-4xl font-normal leading-[0.95] sm:text-5xl lg:text-6xl"
               : "text-label font-semibold uppercase tracking-label text-muted"
           }
         >
@@ -54,8 +54,8 @@ export function WritingList({ previewLimit, asPage = false }: Props) {
       </div>
 
       {posts.length === 0 ? (
-        <div data-slot="writing-empty" className="mt-5 max-w-voice">
-          <p className="text-base leading-relaxed text-muted">
+        <div data-slot="writing-empty" className="mt-8 max-w-voice sm:mt-10">
+          <p className="text-base leading-relaxed text-muted sm:text-lg">
             {writingView.empty}
           </p>
           <p className="mt-3 text-sm">
@@ -91,7 +91,7 @@ export function WritingList({ previewLimit, asPage = false }: Props) {
                   {date ? (
                     <p
                       data-slot="dates"
-                      className="mt-1 text-xs tabular-nums text-muted"
+                      className="mt-1 font-mono text-xs tabular-nums tracking-wide text-muted"
                     >
                       <time dateTime={post.publishedAt}>{date}</time>
                     </p>

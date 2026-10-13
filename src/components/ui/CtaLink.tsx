@@ -22,7 +22,7 @@ const baseClass = [
  * underline (Olivier), muted to ink. Press is opacity 0.9. No scale.
  */
 const variantClass: Record<Variant, string> = {
-  solid: "border-ink bg-ink text-bg hover:border-accent hover:bg-accent",
+  solid: "border-ink bg-ink text-surface hover:border-accent hover:bg-accent",
   ghost:
     "border-transparent bg-transparent px-0 text-muted underline decoration-hairline underline-offset-4 hover:border-transparent hover:text-ink hover:decoration-ink",
 };
