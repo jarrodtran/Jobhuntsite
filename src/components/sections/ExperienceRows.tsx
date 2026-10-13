@@ -96,7 +96,7 @@ export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
                 >
                   <span
                     data-slot="dates"
-                    className="text-xs tabular-nums leading-6 text-muted"
+                    className="font-mono text-xs tabular-nums leading-6 tracking-wide text-muted"
                   >
                     <DateText date={row.start} />
                     {row.start && row.end ? dateRangeSeparator : null}

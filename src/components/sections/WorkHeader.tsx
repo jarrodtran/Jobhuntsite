@@ -56,7 +56,10 @@ export function WorkHeader() {
         />
         <CtaLink cta={workHeaderView.secondaryCta} variant="ghost" />
         {workHeaderView.location ? (
-          <p data-slot="location" className="text-sm text-muted">
+          <p
+            data-slot="location"
+            className="font-mono text-xs tracking-wide text-muted"
+          >
             {workHeaderView.location}
           </p>
         ) : null}
