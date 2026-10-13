@@ -21,8 +21,8 @@ Preconditions:
 - Doctor ok.
 - Know whether `src/data/substack-posts.json` has posts (empty is the usual local state).
 
-- **Home Writing.** On `/`, find `[data-section="writing"]`. If empty, expect `[data-slot="writing-empty"]` and `[data-cta="subscribe"]` whose `href` contains `substack.com/subscribe`. Also `[data-cta="substack"]` → publication URL.
-- **Writing route.** Navigate to `<URL>writing/`. Same section and empty/posts behavior.
+- **Home Writing.** On `/`, find `[data-section="writing"]`. If empty, expect `[data-slot="writing-empty"]` and `[data-cta="subscribe"]` whose `href` contains `substack.com/subscribe`. Also `[data-cta="substack"]` → publication URL. Home preview also exposes `[data-cta="writing-index"]` → `/writing/`.
+- **Writing route.** Navigate to `<URL>writing/`. Expect `main[data-page="writing"]` and an `h1` section heading. Same empty/posts behavior (no writing-index CTA on the full page).
 - **When posts exist.** Expect `[data-slot="writing-list"]` with titles linking off-site (`target="_blank"`).
 - **Proof.** Screenshot of empty or populated Writing under `artifacts/.../writing-feed/`.
 

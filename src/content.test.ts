@@ -113,6 +113,8 @@ describe("Copy enrich lock", () => {
   it("exposes an empty Writing feed until Substack has posts", () => {
     expect(writingView.posts).toEqual([]);
     expect(writingView.subscribe.href).toContain("substack.com/subscribe");
+    expect(writingView.indexHref).toBe("/writing/");
+    expect(writingView.allWritingLabel).toBe("All writing");
   });
 
   it("opens the resume in a new tab instead of downloading it", () => {

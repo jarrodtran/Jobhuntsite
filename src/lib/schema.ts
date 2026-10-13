@@ -183,6 +183,8 @@ export type UiStrings = {
     empty: string;
     readOnSubstack: string;
     openSubstack: string;
+    /** Home preview link to the full Writing index. */
+    allWriting: string;
   };
   nav: {
     home: string;

@@ -246,6 +246,8 @@ export const writingView = {
   empty: ui.writing.empty,
   readLabel: ui.writing.readOnSubstack,
   openSubstackLabel: ui.writing.openSubstack,
+  allWritingLabel: ui.writing.allWriting,
+  indexHref: "/writing/" as const,
   posts: substackPosts,
   subscribe: subscribeCta,
   publicationUrl: substack.publicationUrl,

@@ -139,8 +139,10 @@ body {
   line-height: 1.5;
 }
 
-/* Soft paper wash on the publisher home — atmosphere without a flat fill. */
-[data-page="home"] {
+/* Soft paper wash — atmosphere without a flat fill. */
+[data-page="home"],
+[data-page="writing"],
+[data-page="work"] {
   background:
     radial-gradient(
       ellipse 90% 55% at 50% -10%,
@@ -148,6 +150,30 @@ body {
       transparent 70%
     ),
     var(--bg);
+}
+
+/* Home fold: name then Now enter softly (snaps under reduced motion). */
+@keyframes enter-soft {
+  from {
+    opacity: 0;
+    transform: translateY(0.4rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+[data-page="home"] [data-slot="name"] {
+  animation: enter-soft 420ms var(--motion-ease) both;
+}
+
+[data-page="home"] [data-section="now"] {
+  animation: enter-soft 420ms var(--motion-ease) 90ms both;
+}
+
+[data-page="home"] [data-section="writing"] {
+  animation: enter-soft 420ms var(--motion-ease) 160ms both;
 }
 
 /* Focus rings: 2px ink, offset 2 */

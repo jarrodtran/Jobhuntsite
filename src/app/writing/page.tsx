@@ -7,8 +7,8 @@ export default function WritingPage() {
   return (
     <>
       <SiteHeader />
-      <main id="main" className="pt-8">
-        <WritingList />
+      <main id="main" data-page="writing">
+        <WritingList asPage />
       </main>
       <SiteFooter />
     </>
