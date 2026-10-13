@@ -10,22 +10,25 @@ export function HomeIdentity() {
     <section
       data-section="home"
       aria-labelledby="home-name"
-      className={`${sectionShellClass} pt-16 sm:pt-20 lg:pt-24`}
+      className={`${sectionShellClass} pt-20 sm:pt-24 lg:pt-28`}
     >
       <h1
         id="home-name"
         data-slot="name"
-        className="font-display text-6xl font-normal leading-[0.92] tracking-tight lg:text-7xl"
+        className="font-display text-5xl font-normal leading-[0.95] sm:text-6xl lg:text-7xl"
       >
         {homeView.name}
       </h1>
-      <p data-slot="title" className="mt-4 text-base text-muted lg:text-lg">
+      <p
+        data-slot="title"
+        className="mt-5 max-w-voice text-lg leading-snug text-muted sm:text-xl"
+      >
         {homeView.title}
       </p>
       <div
         id={nowView.section.id}
         data-section={nowView.section.id}
-        className="mt-8 max-w-voice lg:mt-10"
+        className="mt-10 max-w-voice border-t border-hairline pt-8 lg:mt-12"
       >
         <h2
           id={`${nowView.section.id}-heading`}
@@ -36,7 +39,7 @@ export function HomeIdentity() {
         </h2>
         <p
           data-slot="now-body"
-          className="mt-3 text-base leading-relaxed text-ink lg:text-lg"
+          className="mt-3 text-base leading-relaxed text-ink sm:text-lg"
         >
           {nowView.body}
         </p>

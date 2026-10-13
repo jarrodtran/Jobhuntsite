@@ -4,7 +4,7 @@ import type { SectionMeta } from "@/lib/schema";
 /**
  * Shared shell for every top-level block. Single column on the responsive
  * measure (`--measure` in globals.css: full width <640, 44rem ≥640, 56rem
- * ≥1024), page pad 1.25rem → 2rem at ≥768.
+ * ≥1024), page pad 1.25rem → 2rem at ≥768. Voice copy uses `max-w-voice` (54ch).
  *
  * Hooks: `data-section="<id>"` on the wrapper; `data-slot="section-heading"`
  * on the <h2>.
