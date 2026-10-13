@@ -5,6 +5,9 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+  # Rebuild so Substack RSS posts land without a manual push.
+  schedule:
+    - cron: "0 14 * * 1"
 
 permissions:
   contents: read

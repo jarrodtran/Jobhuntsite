@@ -18,7 +18,21 @@ export type Audience =
 export type RoleId = "ai-enablement" | "bizops";
 
 /** Section anchors. Also the `data-section` hook FE Designer can style against. */
-export type SectionId = "hero" | "roles" | "experience" | "contact";
+export type SectionId =
+  | "hero"
+  | "now"
+  | "writing"
+  | "roles"
+  | "experience"
+  | "contact";
+
+/** Copy-owned Substack endpoints. Feed sync uses the publication URL + /feed. */
+export type SubstackConfig = {
+  /** Publication home, e.g. https://jarrodtran.substack.com */
+  publicationUrl: string;
+  /** Subscribe landing page. */
+  subscribeUrl: string;
+};
 
 export type ProofChip = {
   /** Headline number. Optional: leave out when there is no defensible figure. */
@@ -147,6 +161,7 @@ export type UiStrings = {
   cta: {
     resume: string;
     linkedin: string;
+    subscribe: string;
   };
   hero: {
     proofChipsLabel: string;
@@ -159,5 +174,19 @@ export type UiStrings = {
   experience: {
     /** Separator between start and end inside a date range. */
     dateRangeSeparator: string;
+  };
+  now: {
+    heading: string;
+  };
+  writing: {
+    heading: string;
+    empty: string;
+    readOnSubstack: string;
+  };
+  nav: {
+    home: string;
+    writing: string;
+    work: string;
+    contact: string;
   };
 };

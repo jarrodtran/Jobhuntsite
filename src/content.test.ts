@@ -4,9 +4,9 @@ import {
   experience,
   fitLead,
   hero,
+  nowBody,
   proofBand,
   roles,
-  sections,
   siteIndexable,
 } from "@/content";
 import {
@@ -16,6 +16,7 @@ import {
   heroView,
   navView,
   seoView,
+  writingView,
 } from "@/lib/selectors";
 
 const byId = (id: string) => {
@@ -62,7 +63,7 @@ describe("Copy enrich lock", () => {
     expect(heroView.location).toBe("Houston · open to relocate");
     expect(footerView.location).toBe("Houston");
     expect(seoView.jsonLd.description).toBe(
-      `${hero.mappingLine} Houston · open to relocate.`,
+      `${nowBody} Houston · open to relocate.`,
     );
     expect(seoView.jsonLd.homeLocation).toEqual({
       "@type": "Place",
@@ -91,24 +92,28 @@ describe("Copy enrich lock", () => {
     ]);
   });
 
-  it("labels the nav entry Where I fit", () => {
-    expect(sections.roles.navLabel).toBe("Where I fit");
-    expect(navView.links.map((link) => link.label)).toEqual([
-      "Experience",
-      "Where I fit",
-      "Contact",
+  it("labels publisher nav Home, Writing, Work, Contact", () => {
+    expect(navView.homeHref).toBe("/");
+    expect(navView.links.map((link) => [link.label, link.href])).toEqual([
+      ["Home", "/"],
+      ["Writing", "/writing/"],
+      ["Work", "/work/"],
+      ["Contact", "#contact"],
     ]);
   });
 
-  it("puts Tesla, AI adoption, and Strategy & Operations in the snippet", () => {
+  it("leads SEO description with the Now blurb", () => {
     expect(seoView.title).toBe(
       "Jarrod Tran — Strategy & Operations, Technical Program Manager",
     );
-    expect(seoView.description).toBe(hero.mappingLine);
-    expect(seoView.description).toMatch(/Tesla/);
-    expect(seoView.description).toMatch(/AI adoption/);
-    expect(seoView.description).toMatch(/Strategy & Operations/);
-    expect(seoView.description).toMatch(/Technical Program Manager/);
+    expect(seoView.description).toBe(nowBody);
+    expect(seoView.description).toMatch(/Super Intelligence/);
+    expect(seoView.description).toMatch(/Tesla Energy Manufacturing/);
+  });
+
+  it("exposes an empty Writing feed until Substack has posts", () => {
+    expect(writingView.posts).toEqual([]);
+    expect(writingView.subscribe.href).toContain("substack.com/subscribe");
   });
 
   it("opens the resume in a new tab instead of downloading it", () => {

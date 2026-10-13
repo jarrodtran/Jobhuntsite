@@ -1,8 +1,8 @@
 # Jarrod Tran — personal site
 
-Minimalist single-page site for the job hunt: AI enablement strategy and ops, business operations, chief of staff, and VC platform roles. Recruiters get title, employers, scoped proof, and a resume link in the first viewport. Hiring managers get role fit and experience on scroll.
+Publisher-style personal site: homepage is Now + Writing (Substack), with the recruiter Experience / Fit path on `/work`. Posts sync from `https://jarrodtran.substack.com/feed` at build time into `src/data/substack-posts.json`.
 
-Content is locked (Copy v1) and the site is served `noindex` until `siteIndexable` is flipped. The visual bar is an operator memo, not a portfolio: warm paper, one `$260M` figure block, hairline rules, one white product panel. The structure exposes stable hooks so further retuning does not need markup changes.
+Content lives in `src/content.ts`. The visual system stays warm paper, Instrument Serif for the name, Geist for body, with stable `data-*` hooks.
 
 ## Local development
 
@@ -10,10 +10,11 @@ Requires Node 22 and [pnpm](https://pnpm.io/).
 
 ```bash
 pnpm install
+pnpm fetch:substack   # optional; also runs as prebuild
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000). Routes: `/`, `/writing/`, `/work/`.
 
 ```bash
 pnpm lint
@@ -32,29 +33,28 @@ Then open `http://localhost:3000/Jobhuntsite/`.
 
 ## Architecture
 
-One page, one direction of data flow:
+One direction of data flow across three routes:
 
 ```
-src/content.ts          Copy-owned data. Every word on the site.
-      │
-src/lib/schema.ts       Eng-owned types for that data.
-src/lib/selectors.ts    Render-ready views: blanks dropped, primary role first,
-      │                 experience ids resolved, basePath applied. Validates
-      │                 content at build time.
-src/lib/url.ts          The only module that reads NEXT_PUBLIC_BASE_PATH.
-      │
-src/components/         Dumb renderers. Import from @/lib/selectors only.
-  layout/               SiteHeader, Section (shared shell + <h2>), SiteFooter
-  sections/             Hero, ProofBand, Experience (+ ExperienceRows, client), Fit
-  ui/                   CtaLink, ProofChips, ResumeBar (client), ScrollRail (client),
-                        EmployerRow, Bullets, card (shared classes)
-      │
-src/app/page.tsx        Composes sections in scan-path order.
-src/app/layout.tsx      <title>, OG, Twitter, JSON-LD, robots — all from seoView.
-src/app/globals.css     Design tokens (palette, column, rhythm, motion) + hooks.
+src/content.ts             Copy-owned data (including nowBody + substack URLs).
+scripts/fetch-substack.mjs Build-time RSS → src/data/substack-posts.json
+src/lib/substack.ts        Parse / normalize Substack posts.
+src/lib/schema.ts          Eng-owned types.
+src/lib/selectors.ts       Render-ready views; validates content at build time.
+src/lib/url.ts             The only module that reads NEXT_PUBLIC_BASE_PATH.
+src/components/            Dumb renderers. Import from @/lib/selectors only.
+src/app/page.tsx           Home: identity → Now → Writing.
+src/app/writing/page.tsx   Writing index (same feed).
+src/app/work/page.tsx      Work: compact header → Experience → Fit.
+src/app/layout.tsx         <title>, OG, Twitter, JSON-LD, robots — from seoView.
+src/app/globals.css        Design tokens + hooks.
 ```
 
-**Recruiter scan path** (top to bottom, per FE Designer spec): Hero (name → title → voice whisper → the `$260M` figure block with the secondary pair → Resume solid + LinkedIn ghost → one muted employer line) → Proof strip (three secondary metrics between hairline rules; not a nav section) → Experience (primary scan path; list-like rows, current role open as the product panel) → Where I fit (one line of text links to the backing experience rows, primary first) → Footer (email + LinkedIn). `sectionOrder` in `selectors.ts` drives the header nav; `page.tsx` renders in the same order. Sticky chrome uses one rule (`shouldShowScrollRail`): show only while the hero Resume (`#hero-resume`) is off-screen, so it never coexists with the in-hero button. Under 640px that chrome is a bottom `ResumeBar`; at ≥640 it is a thin top `ScrollRail` (wordmark + solid Resume).
+**Home.** Name, Now blurb, Writing list (or empty state + Subscribe to Substack). Nav: Home · Writing · Work · Contact.
+
+**Work.** Compact header with Resume + LinkedIn, then Experience accordion and Where I fit. Sticky Resume chrome (`ResumeBar` / `ScrollRail`) watches `#work-resume` on this page only.
+
+**Substack.** `pnpm fetch:substack` (also `prebuild`) pulls the feed. On failure the prior JSON is kept so `pnpm build` still succeeds. Deploy workflow also runs on a weekly cron so new posts can land without a manual commit.
 
 **Experience accordion.** `ExperienceRows`, `ResumeBar`, and `ScrollRail` are the only client components. Closed row = dates + title + company + scope line with a hairline underneath, denser `py-2.5` / `min-h-11` hit target; open row = the product panel: white card, 1.25rem padding, the 7rem date column (`--rail`) as its left rail, bullets aligned to the title column. One row open at a time at every width; the current role (`end` is a word such as "Present") is open on first paint and server-rendered, so the page reads correctly before hydration. A `#<experience-id>` hash (the Fit links, or a shared URL) opens that row. Headers are real `<button>`s (`aria-expanded`, Enter/Space). Under 640px dates stack above the title and the panel runs edge to edge. Motion is 150ms on `grid-template-rows` (height), opacity, and the chevron rotation.
 
