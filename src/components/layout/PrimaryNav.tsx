@@ -28,7 +28,7 @@ export function PrimaryNav() {
               href={link.href}
               aria-current={active ? "page" : undefined}
               className={[
-                "underline decoration-transparent underline-offset-4 transition-colors duration-150 ease-soft hover:text-ink hover:decoration-ink motion-reduce:transition-none",
+                "underline decoration-transparent underline-offset-4 transition-colors duration-150 ease-soft hover:text-ink hover:decoration-rule motion-reduce:transition-none",
                 active ? "text-ink decoration-ink" : "text-muted",
               ].join(" ")}
             >

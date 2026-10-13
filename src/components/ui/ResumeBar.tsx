@@ -48,7 +48,7 @@ export function ResumeBar({ cta, watchId }: Props) {
         data-cta={cta.kind}
         data-variant="bar"
         tabIndex={visible ? undefined : -1}
-        className="flex h-12 items-center justify-center text-sm font-semibold text-bg"
+        className="flex h-12 items-center justify-center text-sm font-semibold text-surface"
         {...ctaAnchorProps(cta)}
       >
         {cta.label}

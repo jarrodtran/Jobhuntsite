@@ -17,23 +17,22 @@
  */
 
 :root {
-  /* Palette: warm stone paper, near-black ink. One muted, one hairline.
-     No purple, no terracotta accent, no dark theme — paper + sheet only. */
-  --bg: #f1ebe0;
-  --ink: #161411;
-  --muted: #4a453e;
-  --hairline: #ddd2c0;
-  --accent: #161411;
-  --surface: #faf6ed;
+  /* Palette: cool stone paper, near-black ink. One muted, one hairline.
+     Cooler than the prior peach paper so the publisher UI does not read as
+     generic cream. No purple, no terracotta accent, no dark theme. */
+  --bg: #e4e0d6;
+  --ink: #121110;
+  --muted: #514d45;
+  --hairline: #cfc9bb;
+  --accent: #121110;
+  --surface: #f3f0e8;
 
-  /* Link underline. `--hairline` is 1.23:1 against paper — fine as a divider
-     between rows, invisible as the only thing marking a word as a link. This
-     is 3.23:1, so an inline link reads as a link before hover and on touch,
-     where there is no hover at all. */
-  --rule: #8f8474;
+  /* Link underline. `--hairline` is a divider only. `--rule` stays ≥3:1 on
+     paper and sheet so inline links read before hover / on touch. */
+  --rule: #787266;
 
   /* Card: sheet, 1px hairline, a single 1px shadow line. */
-  --card-shadow: 0 1px 0 rgb(22 20 17 / 0.05);
+  --card-shadow: 0 1px 0 rgb(18 17 16 / 0.06);
   --card-radius: 0.25rem;
 
   /* Responsive measure (FE Designer spec). One column at every width; the
@@ -151,22 +150,27 @@ body {
   letter-spacing: -0.005em;
 }
 
-/* Soft paper wash — atmosphere without a flat fill. */
+/* Soft stone wash — atmosphere without a flat fill. */
 [data-page="home"],
 [data-page="writing"],
 [data-page="work"] {
   background:
     radial-gradient(
-      ellipse 110% 70% at 12% -20%,
+      ellipse 100% 65% at 8% -18%,
       var(--surface) 0%,
-      transparent 58%
+      transparent 60%
     ),
     radial-gradient(
-      ellipse 80% 50% at 90% 0%,
-      rgb(255 253 248 / 0.55) 0%,
-      transparent 55%
+      ellipse 70% 45% at 92% 8%,
+      rgb(243 240 232 / 0.65) 0%,
+      transparent 52%
     ),
     var(--bg);
+}
+
+/* Open experience sheet: a quiet ink rail so the open role reads as selected. */
+[data-entry][data-open="true"] {
+  box-shadow: inset 2px 0 0 var(--ink);
 }
 
 /* Home fold: name then Now enter softly (snaps under reduced motion). */
