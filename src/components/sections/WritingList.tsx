@@ -46,12 +46,22 @@ export function WritingList({ previewLimit }: Props) {
       </div>
 
       {posts.length === 0 ? (
-        <p
-          data-slot="writing-empty"
-          className="mt-5 max-w-voice text-base leading-relaxed text-muted"
-        >
-          {writingView.empty}
-        </p>
+        <div data-slot="writing-empty" className="mt-5 max-w-voice">
+          <p className="text-base leading-relaxed text-muted">
+            {writingView.empty}
+          </p>
+          <p className="mt-3 text-sm">
+            <a
+              href={writingView.publicationUrl}
+              target="_blank"
+              rel="noopener"
+              className="link text-ink"
+              data-cta="substack"
+            >
+              {writingView.openSubstackLabel}
+            </a>
+          </p>
+        </div>
       ) : (
         <ul data-slot="writing-list" className="mt-6 divide-y divide-hairline">
           {posts.map((post) => {

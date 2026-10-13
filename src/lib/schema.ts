@@ -182,6 +182,7 @@ export type UiStrings = {
     heading: string;
     empty: string;
     readOnSubstack: string;
+    openSubstack: string;
   };
   nav: {
     home: string;

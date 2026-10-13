@@ -92,10 +92,9 @@ describe("Copy enrich lock", () => {
     ]);
   });
 
-  it("labels publisher nav Home, Writing, Work, Contact", () => {
+  it("labels publisher nav Writing, Work, Contact (wordmark is home)", () => {
     expect(navView.homeHref).toBe("/");
     expect(navView.links.map((link) => [link.label, link.href])).toEqual([
-      ["Home", "/"],
       ["Writing", "/writing/"],
       ["Work", "/work/"],
       ["Contact", "#contact"],

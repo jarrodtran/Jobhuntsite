@@ -237,6 +237,7 @@ export const ui: UiStrings = {
     empty:
       "No posts yet. New notes appear here when they publish on Substack.",
     readOnSubstack: "Read on Substack",
+    openSubstack: "Open Substack",
   },
   nav: {
     home: "Home",

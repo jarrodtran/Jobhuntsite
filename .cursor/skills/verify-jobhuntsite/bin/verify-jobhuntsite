@@ -83,10 +83,13 @@ wait_ready() {
   local log="$2"
   local attempts=0
   while (( attempts < 90 )); do
-    if curl -fsS "$url" 2>/dev/null | grep -q 'data-slot="name"'; then
-      if curl -fsS "$url" 2>/dev/null | grep -q 'Jarrod Tran'; then
-        return 0
-      fi
+    # Match publisher home markers. Avoid requiring a single attribute string
+    # that may arrive mid-stream during Turbopack's first compile.
+    body="$(curl -fsS "$url" 2>/dev/null || true)"
+    if [[ "$body" == *'Jarrod Tran'* ]] && {
+      [[ "$body" == *'data-page="home"'* ]] || [[ "$body" == *'data-section="now"'* ]]
+    }; then
+      return 0
     fi
     if [[ -f "$log" ]] && grep -qE 'Error|EADDRINUSE' "$log" 2>/dev/null; then
       die "dev server failed; see $log"
@@ -175,11 +178,19 @@ cmd_doctor() {
   [[ "$code" == "200" ]] || die "HTTP ${code} from ${JOBHUNTSITE_URL}"
 
   grep -q 'data-slot="name"' "$tmp" || die "page missing data-slot=name (wrong app?)"
-  grep -q 'Jarrod Tran' "$tmp" || die "page missing hero name Jarrod Tran"
-  grep -q 'data-section="hero"' "$tmp" || die "page missing data-section=hero"
-  grep -q 'data-section="experience"' "$tmp" || die "page missing data-section=experience"
-  grep -q 'id="hero-resume"' "$tmp" || die "page missing #hero-resume CTA"
-  grep -q '/resume.pdf' "$tmp" || die "page missing resume.pdf href"
+  grep -q 'Jarrod Tran' "$tmp" || die "page missing name Jarrod Tran"
+  grep -q 'data-section="now"' "$tmp" || die "page missing data-section=now"
+  grep -q 'data-section="writing"' "$tmp" || die "page missing data-section=writing"
+  grep -q 'data-cta="subscribe"' "$tmp" || die "page missing Subscribe CTA"
+
+  local work
+  work="$(mktemp)"
+  code="$(curl -sS -o "$work" -w '%{http_code}' "${JOBHUNTSITE_URL}work/" || true)"
+  [[ "$code" == "200" ]] || die "HTTP ${code} from ${JOBHUNTSITE_URL}work/"
+  grep -q 'data-section="experience"' "$work" || die "/work missing experience"
+  grep -q 'id="work-resume"' "$work" || die "/work missing #work-resume"
+  grep -q '/resume.pdf' "$work" || die "/work missing resume.pdf href"
+  rm -f "$work"
 
   # Port should still answer on the URL we recorded.
   owns_port=0

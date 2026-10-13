@@ -1,7 +1,10 @@
 import { sectionShellClass } from "@/components/layout/Section";
-import { homeView } from "@/lib/selectors";
+import { homeView, nowView } from "@/lib/selectors";
 
-/** Brand-first home identity. Name owns the first viewport with title under it. */
+/**
+ * First viewport: brand name, title, and Now as the supporting paragraph.
+ * One composition — not a dashboard.
+ */
 export function HomeIdentity() {
   return (
     <section
@@ -19,6 +22,25 @@ export function HomeIdentity() {
       <p data-slot="title" className="mt-4 text-base text-muted lg:text-lg">
         {homeView.title}
       </p>
+      <div
+        id={nowView.section.id}
+        data-section={nowView.section.id}
+        className="mt-8 max-w-voice lg:mt-10"
+      >
+        <h2
+          id={`${nowView.section.id}-heading`}
+          data-slot="section-heading"
+          className="text-label font-semibold uppercase tracking-label text-muted"
+        >
+          {nowView.heading}
+        </h2>
+        <p
+          data-slot="now-body"
+          className="mt-3 text-base leading-relaxed text-ink lg:text-lg"
+        >
+          {nowView.body}
+        </p>
+      </div>
     </section>
   );
 }
