@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# verification skill run state + captured proof (skill docs stay tracked)
+.cursor/skills/verify-jobhuntsite/.active-run
+.cursor/skills/verify-jobhuntsite/artifacts/*
+!.cursor/skills/verify-jobhuntsite/artifacts/.gitkeep
+
+# local browser harness scratch
+.playwright-mcp/
