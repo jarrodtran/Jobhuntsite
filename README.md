@@ -61,7 +61,7 @@ src/app/globals.css        Design tokens + hooks.
 
 ## Editing content
 
-All copy lives in [`src/content.ts`](src/content.ts). Types are in [`src/lib/schema.ts`](src/lib/schema.ts). See those files for field shapes, locked fields, and values that are stored but not rendered.
+Site copy lives in [`src/content.ts`](src/content.ts). Types are in [`src/lib/schema.ts`](src/lib/schema.ts). See those files for field shapes, locked fields, and values that are stored but not rendered.
 
 Placeholders are `TODO_COPY: hint` via `todo()`. Blank optional fields are dropped in selectors before components see them.
 
