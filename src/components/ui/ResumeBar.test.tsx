@@ -26,11 +26,11 @@ function fireIntersection(id: string, isIntersecting: boolean) {
 function renderBar() {
   return render(
     <>
-      <a id="hero-resume" href="/resume.pdf">
-        In-hero Resume
+      <a id="work-resume" href="/resume.pdf">
+        Work Resume
       </a>
       <footer id="contact">Contact</footer>
-      <ResumeBar watchId="hero-resume" cta={cta} />
+      <ResumeBar watchId="work-resume" cta={cta} />
     </>,
   );
 }
@@ -61,7 +61,7 @@ describe("ResumeBar chrome", () => {
 
   it("pads the bottom with the iOS safe-area inset and keeps the control h-12", () => {
     renderBar();
-    fireIntersection("hero-resume", false);
+    fireIntersection("work-resume", false);
 
     const bar = document.querySelector("[data-component='resume-bar']");
     const control = bar?.querySelector("[data-cta='resume']");
@@ -72,7 +72,7 @@ describe("ResumeBar chrome", () => {
 
   it("hides the bar when #contact intersects and the hero CTA is off-screen", () => {
     renderBar();
-    fireIntersection("hero-resume", false);
+    fireIntersection("work-resume", false);
     fireIntersection("contact", false);
 
     const bar = document.querySelector("[data-component='resume-bar']");
@@ -83,11 +83,8 @@ describe("ResumeBar chrome", () => {
   });
 
   it("snaps its slide under reduced motion, like the desktop rail", () => {
-    // The rail wrapped its transition in withReducedMotionSnap and the bar did
-    // not, in an otherwise mirrored pair. The blanket globals.css rule covers it
-    // today, so this is consistency, not a live bug.
     renderBar();
-    fireIntersection("hero-resume", false);
+    fireIntersection("work-resume", false);
 
     expect(
       document.querySelector("[data-component='resume-bar']"),

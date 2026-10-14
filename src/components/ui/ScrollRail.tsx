@@ -10,7 +10,7 @@ import { useHeroCtaVisibility } from "@/lib/useHeroCtaVisibility";
 
 type Props = {
   cta: Cta;
-  /** id of the in-hero Resume button; the rail shows only while it is off-screen. */
+  /** id of the work Resume (#work-resume); the rail shows only while it is off-screen. */
   watchId: string;
   wordmark: string;
   homeHref: string;

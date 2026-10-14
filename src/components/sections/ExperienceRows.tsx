@@ -23,31 +23,6 @@ type Props = {
  */
 const SETTLE_MS = 200;
 
-/**
- * Accordion. One row open at a time at every width; the current role is open
- * on first paint (server-rendered, so it reads correctly before hydration).
- * A `#<entry-id>` hash — from the Fit links or a shared URL — opens that row,
- * then re-scrolls it: opening the target collapses whatever was open above it,
- * which pulls the page up and can leave the row above the viewport.
- *
- * Closed rows are a list: dates, title · company as wrapping inline text, the
- * full scope line, a hairline under each, denser `py-2` / `min-h-11` so the
- * row is a 44px hit target without extra chrome. Hover washes the closed row
- * to the sheet and turns the hairline ink (150ms, no scale; snapped under
- * reduced motion). The open row is a sheet, not a floating card: 1.25rem
- * padding, the 7rem date column (`--rail`) as its left rail and the bullets
- * aligned to the title column (`tabular-nums` on the panel list). At ≥1024
- * the panel pads 1.5rem and the rail widens to 8rem (`--rail` steps in
- * globals.css, so the bullet offset below follows it). Under 640px dates stack
- * above the title. Motion is 150ms on grid rows (height), opacity, and the
- * chevron — snapped under reduced motion. The header is a real `<button>`
- * (`aria-expanded`, Enter/Space) carrying an `aria-label` in reading order, so
- * heading navigation and the panel's region name are a sentence rather than
- * "…StrategyTesla10 direct reports…".
- *
- * Hooks: `data-entry="<id>"`, `data-open`, `data-slot` on dates, title,
- * company, scope, panel, bullets.
- */
 export function ExperienceRows({ rows, dateRangeSeparator }: Props) {
   const [openId, setOpenId] = useState<string | null>(
     () => rows.find((row) => row.defaultOpen)?.id ?? null,

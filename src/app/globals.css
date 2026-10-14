@@ -216,12 +216,6 @@ body {
   background: var(--hairline);
 }
 
-/* Recruiters save this page to PDF and forward it to a hiring manager. Print is
-   a real surface, so it gets real rules. Chrome defaults "Background graphics"
-   to off, which is why the ink-filled Resume pill has to go rather than be
-   restyled: with no background it prints as an empty box holding cream text on
-   white paper. Nothing on paper is clickable anyway, so the CTAs leave and the
-   LinkedIn URL prints as text in the footer instead. */
 @page {
   margin: 0.55in;
 }

@@ -81,9 +81,6 @@ describe("ExperienceRows accordion", () => {
     expect(line).toHaveTextContent("Role B");
     expect(line).toHaveTextContent("·");
     expect(line).toHaveTextContent("Co B");
-    // `block` beat `line-clamp-1` on `display`, so the clamp never applied and
-    // the scope has always wrapped. Recruiters get the whole outcome without a
-    // click, and it survives save-to-PDF; the class is gone rather than fixed.
     expect(scope).toHaveClass("text-muted");
     expect(scope?.className).not.toMatch(/line-clamp/);
   });

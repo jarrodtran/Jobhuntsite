@@ -19,7 +19,7 @@ const baseClass = [
 
 /**
  * Solid = ink fill: the Resume hit. Ghost = text link with a hairline
- * underline (Olivier), muted to ink. Press is opacity 0.9. No scale.
+ * underline, muted to ink. Press is opacity 0.9. No scale.
  */
 const variantClass: Record<Variant, string> = {
   solid: "border-ink bg-ink text-surface hover:border-accent hover:bg-accent",
