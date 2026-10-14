@@ -26,11 +26,11 @@ function fireIntersection(isIntersecting: boolean) {
 function renderRail() {
   return render(
     <>
-      <a id="hero-resume" href="/resume.pdf">
-        In-hero Resume
+      <a id="work-resume" href="/resume.pdf">
+        Work Resume
       </a>
       <ScrollRail
-        watchId="hero-resume"
+        watchId="work-resume"
         wordmark="Jarrod Tran"
         homeHref="#top"
         cta={cta}
@@ -67,7 +67,7 @@ describe("ScrollRail", () => {
     const rail = document.querySelector("[data-component='scroll-rail']");
     expect(rail).toHaveAttribute("aria-hidden", "true");
     expect(rail).toHaveClass("hidden", "sm:block");
-    expect(screen.getByText("In-hero Resume")).toBeInTheDocument();
+    expect(screen.getByText("Work Resume")).toBeInTheDocument();
   });
 
   it("shows the wordmark and solid Resume once the hero CTA leaves view", () => {

@@ -5,7 +5,6 @@ import { seoView } from "@/lib/selectors";
 
 describe("robots.txt", () => {
   it("lets crawlers in and points at the sitemap", () => {
-    // Recruiters find this page by searching his name; both files were 404.
     expect(seoView.indexable).toBe(true);
     expect(robots()).toEqual({
       rules: { userAgent: "*", allow: "/" },

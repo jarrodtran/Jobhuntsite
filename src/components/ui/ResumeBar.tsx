@@ -8,7 +8,7 @@ import { useHeroCtaVisibility } from "@/lib/useHeroCtaVisibility";
 
 type Props = {
   cta: Cta;
-  /** id of the in-hero Resume button; the bar shows only while it is off-screen. */
+  /** id of the work Resume (#work-resume); the bar shows only while it is off-screen. */
   watchId: string;
 };
 
@@ -17,7 +17,7 @@ const BAR_HEIGHT_PX = CHROME_HEIGHT_PX;
 
 /**
  * Mobile only (<640): a fixed h-12 solid-ink Resume bar along the bottom edge.
- * It shows only while the hero's own Resume button is off-screen — below the
+ * It shows only while the work Resume (#work-resume) is off-screen — below the
  * fold on a short phone, or scrolled away into Experience — so the two never
  * coexist. It hides again once `#contact` intersects, so email and footer
  * LinkedIn stay tappable. Server-rendered hidden; the observer reveals it

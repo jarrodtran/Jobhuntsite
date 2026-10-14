@@ -40,9 +40,6 @@ describe("Copy enrich lock", () => {
   });
 
   it("scans section headings and nav labels for placeholders too", () => {
-    // The gate stringified hero/roles/experience/contact/ui but not `sections`,
-    // which also holds copy — a todo() heading or nav label would have shipped
-    // indexable with "TODO_COPY:" in the nav.
     const gate = readFileSync(
       path.join(path.dirname(fileURLToPath(import.meta.url)), "lib/selectors.ts"),
       "utf8",

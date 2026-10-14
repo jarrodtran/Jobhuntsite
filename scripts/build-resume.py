@@ -59,7 +59,6 @@ ROLES = [
     (
         "Waymo (Alphabet)  |  Strategy & Operations Manager  |  Oct 2022 – May 2023",
         None,
-        # Matches the site: the old first bullet restated the row's own summary.
         [
             "Set up annual planning, OKRs, resource plans, business reviews, and decision milestones so bottlenecks showed up without ad-hoc reporting.",
             "Returned to Tesla in Aug 2023 to lead AI and factory strategy for Energy Manufacturing.",

@@ -12,12 +12,6 @@ import { ctaAnchorProps, footerView } from "@/lib/selectors";
  * `#contact` anchor the header nav points at, so it carries the same scroll
  * offset as every other anchor target.
  *
- * The heading is a real <h2> matching the other sections rather than an
- * `aria-label` on the landmark. Browsing by headings is a normal way to read a
- * page, and with the label hidden the outline ran h1 → Experience → Where I fit
- * → nothing: Contact did not exist to that reader. Sighted users clicking
- * "Contact" in the nav also landed on an unlabelled strip of links.
- *
  * Hooks: `data-section="contact"`, `data-slot="section-heading|contact-links"`.
  */
 export function SiteFooter() {

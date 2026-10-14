@@ -17,7 +17,6 @@ export const metadata: Metadata = {
   },
 };
 
-/** Recruiter path moved off the homepage: identity → Experience → Fit → footer. */
 export default function WorkPage() {
   return (
     <>
