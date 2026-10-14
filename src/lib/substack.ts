@@ -18,9 +18,6 @@ export type SubstackFeedFile = {
 };
 
 export const SUBSTACK_FEED_URL = "https://jarrodtran.substack.com/feed";
-export const SUBSTACK_SITE_URL = "https://jarrodtran.substack.com";
-export const SUBSTACK_SUBSCRIBE_URL =
-  "https://jarrodtran.substack.com/subscribe";
 
 const DEFAULT_FEED_FILE: SubstackFeedFile = {
   fetchedAt: null,
@@ -123,8 +120,4 @@ export function normalizeFeedFile(raw: unknown): SubstackFeedFile {
       typeof record.source === "string" ? record.source : SUBSTACK_FEED_URL,
     posts,
   };
-}
-
-export function emptyFeedFile(): SubstackFeedFile {
-  return { ...DEFAULT_FEED_FILE, posts: [] };
 }

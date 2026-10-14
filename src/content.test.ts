@@ -9,7 +9,6 @@ import {
   fitLead,
   hero,
   nowBody,
-  proofBand,
   roles,
   sections,
   siteIndexable,
@@ -18,8 +17,8 @@ import {
   contentHasPlaceholders,
   experienceView,
   footerView,
-  heroView,
   navView,
+  workHeaderView,
   seoView,
   writingView,
 } from "@/lib/selectors";
@@ -41,8 +40,8 @@ describe("Copy enrich lock", () => {
 
   it("scans section headings and nav labels for placeholders too", () => {
     // The gate stringified hero/roles/experience/contact/ui but not `sections`,
-    // which also holds copy — a todo() heading or nav label would have shipped
-    // indexable with "TODO_COPY:" in the nav.
+    // which also holds copy — a TODO_COPY heading would have shipped
+    // indexable in the nav.
     const gate = readFileSync(
       path.join(path.dirname(fileURLToPath(import.meta.url)), "lib/selectors.ts"),
       "utf8",
@@ -53,7 +52,6 @@ describe("Copy enrich lock", () => {
     expect(gate?.[1]).toBeDefined();
     for (const source of [
       "hero",
-      "proofBand",
       "fitLead",
       "roles",
       "experience",
@@ -81,18 +79,12 @@ describe("Copy enrich lock", () => {
     expect(hero.mappingLine).not.toMatch(/manufacturing scale/);
     expect(hero.mappingLine).not.toMatch(/Targeting/);
     expect(hero.voiceLine).toBe("");
-    expect(hero.proofChips).toEqual([
-      { metric: "10k+", label: "employees, AI enablement" },
-      { metric: "$260M", label: "led NPI cost-down" },
-      { metric: "20+", label: "AI tools shipped" },
-    ]);
-    expect(proofBand).toEqual([]);
     expect(contact.location).toBe("Houston");
   });
 
   it("puts Houston · open to relocate on the CTA line and in JSON-LD, city only in the footer", () => {
     expect(contact.relocation).toBe("open to relocate");
-    expect(heroView.location).toBe("Houston · open to relocate");
+    expect(workHeaderView.location).toBe("Houston · open to relocate");
     expect(footerView.location).toBe("Houston");
     expect(seoView.jsonLd.description).toBe(
       `${nowBody} Houston · open to relocate.`,
@@ -124,12 +116,8 @@ describe("Copy enrich lock", () => {
     ]);
   });
 
-  it("puts the current employer beside the Tesla-internal title on the fold", () => {
-    // "Manager, AI & Factory Strategy" names no company, and the employer strip
-    // below it reads as history. A sourcer's first fixation is title + company.
-    expect(heroView.currentCompany).toBe("Tesla");
-    expect(heroView.title).toBe(hero.title);
-    // JSON-LD jobTitle stays the real job name, not the concatenation.
+  it("keeps JSON-LD jobTitle as the Tesla-internal title", () => {
+    expect(workHeaderView.title).toBe(hero.title);
     expect(seoView.jsonLd.jobTitle).toBe("Manager, AI & Factory Strategy");
   });
 
@@ -159,9 +147,8 @@ describe("Copy enrich lock", () => {
   });
 
   it("opens the resume in a new tab instead of downloading it", () => {
-    expect(heroView.primaryCta.download).toBe(false);
-    expect(heroView.primaryCta.newTab).toBe(true);
-    expect(heroView.primaryCta.href).toBe("/resume.pdf");
+    expect(workHeaderView.primaryCta.newTab).toBe(true);
+    expect(workHeaderView.primaryCta.href).toBe("/resume.pdf");
   });
 
   it("uses month-precision dates", () => {
@@ -212,8 +199,6 @@ describe("Copy enrich lock", () => {
     expect(
       experienceView.rows.find((row) => row.id === "waymo")?.company,
     ).toBe("Waymo (Alphabet)");
-    expect(hero.employers).toContain("Waymo");
-    expect(hero.employers).not.toContain("Waymo (Alphabet)");
     expect(byId("waymo").bullets.at(-1)).toBe(
       "Returned to Tesla in Aug 2023 to lead AI and factory strategy for Energy Manufacturing.",
     );
@@ -311,15 +296,12 @@ describe("Copy enrich lock", () => {
   it("holds banned figures out of copy and keeps cities off experience rows", () => {
     const copy = JSON.stringify({
       hero,
-      proofBand,
       fitLead,
       experience,
       roles,
     });
     expect(copy).not.toMatch(/GWh|56%|26%/);
     expect(experience.every((row) => !row.location)).toBe(true);
-    expect(hero.proofChips.some((chip) => chip.metric === "$550M")).toBe(false);
-    expect(proofBand.some((chip) => chip.metric === "$550M")).toBe(false);
     expect(copy).not.toMatch(/AI-native org/);
     expect(copy).not.toMatch(/\bFDE\b/);
     expect(copy).not.toMatch(/Targeting/);

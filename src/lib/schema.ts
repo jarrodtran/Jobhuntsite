@@ -34,13 +34,6 @@ export type SubstackConfig = {
   subscribeUrl: string;
 };
 
-export type ProofChip = {
-  /** Headline number. Optional: leave out when there is no defensible figure. */
-  metric?: string;
-  /** Scope for the metric, or the whole claim when `metric` is absent. */
-  label: string;
-};
-
 export type Hero = {
   name: string;
   /** Tesla (or current) job name. On-page subtitle and JSON-LD jobTitle. */
@@ -54,18 +47,7 @@ export type Hero = {
   mappingLine?: string;
   /** Extra first-person line. Hidden when blank. */
   voiceLine: string;
-  /** Headline chips. Order is display order; the first chip is the visual lead. */
-  proofChips: ProofChip[];
-  /** Pedigree row. Order is display order. Hidden when empty. */
-  employers: string[];
 };
-
-/**
- * Secondary proof under the hero (hairline strip before Experience). Same
- * shape as a hero chip; every figure must already appear in `experience`.
- * Hidden when empty.
- */
-export type ProofBand = ProofChip[];
 
 export type Role = {
   id: RoleId;
@@ -94,8 +76,8 @@ export type ExperienceEntry = {
   end: string;
   /**
    * Parent company, e.g. Alphabet for Waymo. The Experience row renders
-   * "Waymo (Alphabet)" and JSON-LD adds `parentOrganization`. The hero employer
-   * strip and Fit link labels keep the short `company`.
+   * "Waymo (Alphabet)" and JSON-LD adds `parentOrganization`. Fit link
+   * labels keep the short `company`.
    */
   parentCompany?: string;
   location?: string;
@@ -113,11 +95,11 @@ export type Contact = {
   resumePdf: string;
   /** Stored, not rendered. */
   github?: string;
-  /** City. Hero and footer render it when set. */
+  /** City. /work header and footer render it when set. */
   location?: string;
   /**
    * Relocation stance in Jarrod's words, e.g. "open to relocate". Joined to
-   * `location` with a middot on the hero CTA line and in the JSON-LD
+   * `location` with a middot on the /work CTA line and in the JSON-LD
    * description; the footer stays city-only. Never name target cities here.
    */
   relocation?: string;
@@ -144,12 +126,10 @@ export type Site = {
   ogImage: OgImage;
 };
 
-/** Headings, nav labels, and anchors for each in-page section. */
+/** Headings and anchors for each in-page section. */
 export type SectionMeta = {
   id: SectionId;
   heading: string;
-  /** Present when the section appears in the header nav. */
-  navLabel?: string;
 };
 
 /**
@@ -164,14 +144,6 @@ export type UiStrings = {
     resumeAriaLabel: string;
     linkedin: string;
     subscribe: string;
-  };
-  hero: {
-    proofChipsLabel: string;
-    employersLabel: string;
-  };
-  proofBand: {
-    /** a11y label for the strip; not rendered visually. */
-    label: string;
   };
   experience: {
     /** Separator between start and end inside a date range. */
@@ -189,7 +161,6 @@ export type UiStrings = {
     allWriting: string;
   };
   nav: {
-    home: string;
     writing: string;
     work: string;
     contact: string;

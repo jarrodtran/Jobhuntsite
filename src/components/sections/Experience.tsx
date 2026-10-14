@@ -9,7 +9,7 @@ import { experienceView } from "@/lib/selectors";
  */
 export function Experience() {
   return (
-    <Section meta={experienceView.section} spacing="section">
+    <Section meta={experienceView.section}>
       <ExperienceRows
         rows={experienceView.rows}
         dateRangeSeparator={experienceView.dateRangeSeparator}

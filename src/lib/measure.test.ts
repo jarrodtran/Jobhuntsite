@@ -68,21 +68,18 @@ describe("measure tokens", () => {
 });
 
 describe("measure scale locks", () => {
-  it("sets the name in the display serif and parks proof beside it at ≥1024", () => {
-    const hero = readSrc("components/sections/Hero.tsx");
-    expect(hero).toMatch(
-      /data-slot="name"[\s\S]*font-display[\s\S]*text-6xl[\s\S]*lg:text-7xl/,
+  it("sets the name in the display serif on the mounted folds", () => {
+    const home = readSrc("components/sections/HomeIdentity.tsx");
+    expect(home).toMatch(
+      /data-slot="name"[\s\S]*font-display[\s\S]*lg:text-7xl/,
     );
-    expect(hero).toMatch(/lg:flex-row/);
-    expect(hero).not.toMatch(/lg:grid-cols-2/);
-  });
+    expect(home).not.toMatch(/lg:grid-cols-2/);
 
-  it("keeps the lead proof figure under billboard size so Experience can make the fold", () => {
-    const chips = readSrc("components/ui/ProofChips.tsx");
-    expect(chips).toMatch(/lead[\s\S]*\? "text-3xl font-medium lg:text-4xl"/);
-    expect(chips).not.toContain("text-6xl");
-    expect(chips).not.toContain("cardClass");
-    expect(chips).toContain("lg:flex-col");
+    const work = readSrc("components/sections/WorkHeader.tsx");
+    expect(work).toMatch(
+      /data-slot="name"[\s\S]*font-display[\s\S]*lg:text-6xl/,
+    );
+    expect(work).not.toMatch(/lg:grid-cols-2/);
   });
 
   it("keeps the open experience panel at p-6 on the unchanged rail", () => {

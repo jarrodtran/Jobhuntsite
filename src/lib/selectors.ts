@@ -18,7 +18,6 @@ import {
   fitLead,
   hero,
   nowBody,
-  proofBand,
   roles,
   sections,
   site,
@@ -26,12 +25,7 @@ import {
   substack,
   ui,
 } from "@/content";
-import type {
-  ExperienceEntry,
-  ProofChip,
-  Role,
-  SectionMeta,
-} from "@/lib/schema";
+import type { ExperienceEntry, Role } from "@/lib/schema";
 import {
   normalizeFeedFile,
   type SubstackPost,
@@ -87,7 +81,7 @@ function validateContent(): void {
 validateContent();
 
 // ---------------------------------------------------------------------------
-// Current role — needed by the hero, Experience, and JSON-LD alike
+// Current role — needed by Experience and JSON-LD
 // ---------------------------------------------------------------------------
 
 /** ISO-ish date, as opposed to a word like "Present". */
@@ -99,9 +93,6 @@ function isCurrent(entry: ExperienceEntry): boolean {
 }
 
 const currentEntry: ExperienceEntry | null = experience.find(isCurrent) ?? null;
-
-const currentEmployer: string | null =
-  currentEntry && hasText(currentEntry.company) ? currentEntry.company : null;
 
 // ---------------------------------------------------------------------------
 // Shared shapes
@@ -115,8 +106,6 @@ export type Cta = {
   href: string;
   /** Opens off-site; components add rel="noopener". */
   external: boolean;
-  /** When true, the browser saves the file instead of navigating. */
-  download: boolean;
   /** Open in a new browsing context. Resume uses this so the PDF is skimmable. */
   newTab: boolean;
   /** Overrides the visible label for assistive tech. Omit when the label says enough. */
@@ -129,9 +118,6 @@ export function ctaAnchorProps(cta: Cta) {
     href: cta.href,
     ...(cta.external || cta.newTab ? { rel: "noopener" as const } : {}),
     ...(cta.newTab ? { target: "_blank" as const } : {}),
-    ...(cta.download
-      ? { download: true as const, type: "application/pdf" as const }
-      : {}),
     ...(hasText(cta.ariaLabel) ? { "aria-label": cta.ariaLabel } : {}),
   };
 }
@@ -146,7 +132,6 @@ const resumeCta: Cta = {
   label: ui.cta.resume,
   href: asset(contact.resumePdf),
   external: false,
-  download: false,
   newTab: true,
   /** "Resume" alone says neither what the file is nor that the tab changes. */
   ariaLabel: ui.cta.resumeAriaLabel,
@@ -157,7 +142,6 @@ const linkedinCta: Cta = {
   label: ui.cta.linkedin,
   href: contact.linkedin,
   external: true,
-  download: false,
   newTab: false,
 };
 
@@ -167,7 +151,6 @@ const emailCta: Cta = {
   label: contact.email,
   href: mailto(contact.email),
   external: false,
-  download: false,
   newTab: false,
 };
 
@@ -176,7 +159,6 @@ const subscribeCta: Cta = {
   label: ui.cta.subscribe,
   href: substack.subscribeUrl,
   external: true,
-  download: false,
   newTab: true,
 };
 
@@ -186,17 +168,6 @@ const substackPosts: readonly SubstackPost[] =
 // ---------------------------------------------------------------------------
 // Sections + navigation
 // ---------------------------------------------------------------------------
-
-/**
- * Work-page section order (recruiter path on /work).
- * Kept for any caller that still walks in-page Experience → Fit → Contact.
- */
-export const sectionOrder: SectionMeta[] = [
-  sections.hero,
-  sections.experience,
-  sections.roles,
-  sections.contact,
-];
 
 /** Site chrome: wordmark is home; links are Writing / Work / Contact. */
 export const navView = {
@@ -209,48 +180,11 @@ export const navView = {
   ] satisfies Anchor[],
 };
 
-// ---------------------------------------------------------------------------
-// Hero
-// ---------------------------------------------------------------------------
-
-/** Drop chips with no label and blank metrics so a chip never renders empty. */
-function visibleChips(chips: ReadonlyArray<ProofChip>): ProofChip[] {
-  return chips
-    .filter((chip) => hasText(chip.label))
-    .map<ProofChip>((chip) => ({
-      label: chip.label,
-      ...(hasText(chip.metric) ? { metric: chip.metric } : {}),
-    }));
-}
-
-/** "Houston · open to relocate" — city plus stance, on the CTA line and in JSON-LD. */
+/** "Houston · open to relocate" — city plus stance, on the /work CTA line and in JSON-LD. */
 const locationLine: string | null = (() => {
   const line = joinMeta([contact.location, contact.relocation]);
   return hasText(line) ? line : null;
 })();
-
-export const heroView = {
-  section: sections.hero,
-  name: hero.name,
-  title: hero.title,
-  /**
-   * Current employer, read off the experience row that has no end date. The
-   * title slot on its own is a Tesla-internal job name with no company in it,
-   * and the employer strip below reads as history — a sourcer's first fixation
-   * is title plus company, so it belongs on the same line.
-   */
-  currentCompany: currentEmployer,
-  mappingLine: hasText(hero.mappingLine) ? hero.mappingLine : null,
-  voiceLine: hasText(hero.voiceLine) ? hero.voiceLine : null,
-  location: locationLine,
-  proofChips: visibleChips(hero.proofChips),
-  proofChipsLabel: ui.hero.proofChipsLabel,
-  employers: visible(hero.employers),
-  employersLabel: ui.hero.employersLabel,
-  /** Primary first (solid), then secondary (ghost). */
-  primaryCta: resumeCta,
-  secondaryCta: linkedinCta,
-};
 
 /** Compact identity + Resume for /work (not the publisher home). */
 export const workHeaderView = {
@@ -288,15 +222,6 @@ export const homeView = {
   title: hero.title,
   now: nowView,
   writing: writingView,
-};
-
-// ---------------------------------------------------------------------------
-// Proof band — secondary metrics strip between hero and Experience
-// ---------------------------------------------------------------------------
-
-export const proofBandView = {
-  label: ui.proofBand.label,
-  chips: visibleChips(proofBand),
 };
 
 // ---------------------------------------------------------------------------
@@ -431,13 +356,12 @@ export const footerView = {
 // ---------------------------------------------------------------------------
 
 /**
- * Ship gate. `sections` holds copy too — headings and nav labels — so a `todo()`
- * placeholder there would otherwise ship indexable with "TODO_COPY:" visible in
- * the nav.
+ * Ship gate. `sections` holds copy too — headings and nav labels — so a
+ * placeholder there would otherwise ship indexable with "TODO_COPY:" visible
+ * in the nav.
  */
 export const contentHasPlaceholders: boolean = JSON.stringify({
   hero,
-  proofBand,
   fitLead,
   nowBody,
   roles,
