@@ -8,9 +8,8 @@
  * Structural hooks available in the markup:
  *   [data-section="home|now|writing|hero|experience|roles|contact"]
  *   [data-page="home|writing|work"]                 publisher atmosphere
- *   [data-component="site-header|proof-band|resume-bar|scroll-rail"]
+ *   [data-component="site-header|resume-bar|scroll-rail"]
  *   [data-slot="..."]                               named rows inside a section
- *   [data-lead="true"]                              the 10k hero figure
  *   [data-role="<id>"]                              Fit lanes
  *   [data-entry="<id>"] [data-open="true|false"]    experience rows
  *   [data-cta="resume|linkedin|email|subscribe|substack"]
@@ -30,10 +29,6 @@
   /* Link underline. `--hairline` is a divider only. `--rule` stays ≥3:1 on
      paper and sheet so inline links read before hover / on touch. */
   --rule: #787266;
-
-  /* Card: sheet, 1px hairline, a single 1px shadow line. */
-  --card-shadow: 0 1px 0 rgb(18 17 16 / 0.06);
-  --card-radius: 0.25rem;
 
   /* Responsive measure (FE Designer spec). One column at every width; the
      column simply gets wider as the viewport does, capped at 56rem this unit.
@@ -75,9 +70,6 @@
   --color-rule: var(--rule);
   --color-accent: var(--accent);
   --color-surface: var(--surface);
-
-  --shadow-card: var(--card-shadow);
-  --radius-card: var(--card-radius);
 
   --font-sans:
     var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI",

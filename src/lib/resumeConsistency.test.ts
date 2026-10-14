@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import { contact, experience, hero } from "@/content";
-import { heroView } from "@/lib/selectors";
+import { workHeaderView } from "@/lib/selectors";
 
 const repoRoot = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -40,8 +40,9 @@ describe("resume.pdf matches the site", () => {
   });
 
   it("heads with the same title, employer, and location line as the fold", () => {
-    expect(script).toContain(`${hero.title} · ${heroView.currentCompany}`);
-    expect(script).toContain(heroView.location);
+    const current = experience.find((entry) => entry.end === "Present");
+    expect(script).toContain(`${hero.title} · ${current?.company}`);
+    expect(script).toContain(workHeaderView.location);
     expect(script).toContain(contact.email);
   });
 

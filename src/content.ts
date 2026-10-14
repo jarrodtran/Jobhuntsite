@@ -10,18 +10,17 @@
  * `location` may be omitted or left blank; the UI hides blank fields rather
  * than rendering empty labels.
  *
- * Placeholders are prefixed with `TODO_COPY:` and produced by the `todo()`
- * helper below. While any placeholder remains, the site stays `noindex`.
+ * Placeholders are prefixed with `TODO_COPY:`. While any placeholder
+ * remains, the site stays `noindex`.
  *
  * Locked (do not edit without Jarrod): hero.title, hero.searchTitle,
- * hero.mappingLine, hero.proofChips, roles, experience, contact.
+ * hero.mappingLine, roles, experience, contact.
  */
 
 import type {
   Contact,
   ExperienceEntry,
   Hero,
-  ProofBand,
   Role,
   SectionId,
   SectionMeta,
@@ -32,9 +31,6 @@ import type {
 
 export const TODO_COPY = "TODO_COPY";
 
-/** Mark a string as placeholder copy. `hint` tells Copy what belongs here. */
-export const todo = (hint: string): string => `${TODO_COPY}: ${hint}`;
-
 export const hero: Hero = {
   name: "Jarrod Tran",
   title: "Manager, AI & Factory Strategy",
@@ -42,19 +38,7 @@ export const hero: Hero = {
   mappingLine:
     "Strategy & Operations and Technical Program Manager. I run AI adoption across Tesla Energy manufacturing (10k employees).",
   voiceLine: "",
-  proofChips: [
-    { metric: "10k+", label: "employees, AI enablement" },
-    { metric: "$260M", label: "led NPI cost-down" },
-    { metric: "20+", label: "AI tools shipped" },
-  ],
-  employers: ["Tesla", "Waymo", "Apple", "Amazon"],
 };
-
-/**
- * Secondary proof strip under the hero. Hidden when empty. 20+ AI tools
- * moved into the hero chips so this strip does not delay Experience.
- */
-export const proofBand: ProofBand = [];
 
 /**
  * Filing sentence for the Fit section. Lanes below it are the two names
@@ -222,13 +206,6 @@ export const ui: UiStrings = {
     linkedin: "LinkedIn",
     subscribe: "Subscribe",
   },
-  hero: {
-    proofChipsLabel: "Proof points",
-    employersLabel: "Employers",
-  },
-  proofBand: {
-    label: "More proof points",
-  },
   experience: {
     dateRangeSeparator: "–",
   },
@@ -244,7 +221,6 @@ export const ui: UiStrings = {
     allWriting: "All writing",
   },
   nav: {
-    home: "Home",
     writing: "Writing",
     work: "Work",
     contact: "Contact",

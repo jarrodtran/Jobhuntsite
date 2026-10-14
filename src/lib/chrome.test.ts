@@ -166,9 +166,8 @@ describe("contrast tokens", () => {
     expect(css).not.toMatch(/\[data-theme|prefers-color-scheme:\s*dark|--bg-dark/);
   });
 
-  it("keeps the sheet slightly lighter than paper and ink-aligns the 1px card shadow", () => {
+  it("keeps the sheet slightly lighter than paper", () => {
     expect(tokenValue(css, "surface").toLowerCase()).toBe(SURFACE.toLowerCase());
-    expect(tokenValue(css, "card-shadow")).toBe("0 1px 0 rgb(18 17 16 / 0.06)");
   });
 
   it("gives muted ~6:1 contrast on the new paper (WCAG AA)", () => {
@@ -225,10 +224,15 @@ describe("site typeface", () => {
     expect(css).toMatch(/--font-display:\s*var\(--font-instrument-serif\)/);
     expect(css).toMatch(/--font-mono:\s*var\(--font-geist-mono\)/);
 
-    const hero = readFileSync(
-      path.join(srcDir, "components/sections/Hero.tsx"),
+    const home = readFileSync(
+      path.join(srcDir, "components/sections/HomeIdentity.tsx"),
       "utf8",
     );
-    expect(hero).toMatch(/data-slot="name"[\s\S]*font-display/);
+    const work = readFileSync(
+      path.join(srcDir, "components/sections/WorkHeader.tsx"),
+      "utf8",
+    );
+    expect(home).toMatch(/data-slot="name"[\s\S]*font-display/);
+    expect(work).toMatch(/data-slot="name"[\s\S]*font-display/);
   });
 });

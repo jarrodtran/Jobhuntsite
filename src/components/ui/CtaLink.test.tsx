@@ -8,7 +8,6 @@ const cta: Cta = {
   label: "Resume",
   href: "/resume.pdf",
   external: false,
-  download: false,
   newTab: true,
 };
 

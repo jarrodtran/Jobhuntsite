@@ -68,7 +68,6 @@ export default function RootLayout({
     <html
       lang={seoView.lang}
       className={`${GeistSans.variable} ${GeistMono.variable} ${instrumentSerif.variable}`}
-      id="top"
     >
       <body className="bg-bg text-ink antialiased [font-synthesis:none]">
         <a

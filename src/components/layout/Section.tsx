@@ -16,22 +16,9 @@ export const sectionShellClass = "mx-auto w-full max-w-content px-5 md:px-8";
 export const sectionLabelClass =
   "text-label font-semibold uppercase tracking-label text-muted";
 
-/**
- * Gap above the section. `section` is the default rhythm (`--spacing-section`:
- * 5rem, 6rem at ≥1024); `tight` (3rem, 4rem at ≥1024) is for a section that
- * directly follows the proof strip.
- */
-type Spacing = "section" | "tight";
-
-const spacingClass: Record<Spacing, string> = {
-  section: "mt-section",
-  tight: "mt-12 lg:mt-16",
-};
-
 type Props = {
   meta: SectionMeta;
   children: ReactNode;
-  spacing?: Spacing;
   className?: string;
 };
 
@@ -42,7 +29,6 @@ export function headingId(meta: SectionMeta): string {
 export function Section({
   meta,
   children,
-  spacing = "section",
   className,
 }: Props) {
   return (
@@ -52,7 +38,7 @@ export function Section({
       aria-labelledby={headingId(meta)}
       className={[
         sectionShellClass,
-        spacingClass[spacing],
+        "mt-section",
         ANCHOR_OFFSET_CLASS,
         className,
       ]
