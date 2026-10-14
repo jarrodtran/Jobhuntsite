@@ -1,8 +1,8 @@
 # Jarrod Tran — personal site
 
-Publisher-style personal site: homepage is Now + Writing (Substack), with the recruiter Experience / Fit path on `/work`. Posts sync from `https://jarrodtran.substack.com/feed` at build time into `src/data/substack-posts.json`.
+Publisher-style personal site at [jarrodtran.com](https://jarrodtran.com). `/` is Now + Writing (Substack). `/work` is the recruiter path. `/writing/` is the full Writing index.
 
-Content lives in `src/content.ts`. The visual system stays warm paper, Instrument Serif for the name, Geist for body, with stable `data-*` hooks.
+Posts sync from `https://jarrodtran.substack.com/feed` at build time into `src/data/substack-posts.json`. Copy lives in [`src/content.ts`](src/content.ts). Tokens live in [`src/app/globals.css`](src/app/globals.css). Display type is Instrument Serif; body is Geist. Markup keeps stable `data-*` hooks.
 
 ## Local development
 
@@ -22,104 +22,57 @@ pnpm test
 pnpm build
 ```
 
-`pnpm build` writes a static site to `out/` at the apex (`/`), matching production on [jarrodtran.com](https://jarrodtran.com). To preview the old project-pages path locally:
-
-```bash
-NEXT_PUBLIC_BASE_PATH=/Jobhuntsite pnpm build
-pnpm dlx serve out
-```
-
-Then open `http://localhost:3000/Jobhuntsite/`.
+`pnpm build` writes a static export to `out/` at the apex (`/`).
 
 ## Architecture
 
 One direction of data flow across three routes:
 
 ```
-src/content.ts             Copy-owned data (including nowBody + substack URLs).
+src/content.ts             Copy-owned data (nowBody, substack URLs, experience, roles).
 scripts/fetch-substack.mjs Build-time RSS → src/data/substack-posts.json
 src/lib/substack.ts        Parse / normalize Substack posts.
 src/lib/schema.ts          Eng-owned types.
 src/lib/selectors.ts       Render-ready views; validates content at build time.
-src/lib/url.ts             The only module that reads NEXT_PUBLIC_BASE_PATH.
-src/components/            Dumb renderers. Import from @/lib/selectors only.
-src/app/page.tsx           Home: identity → Now → Writing.
+src/lib/url.ts             Prefixes public paths with NEXT_PUBLIC_BASE_PATH.
+src/components/            Render views from @/lib/selectors, never @/content.
+src/app/page.tsx           Home: identity + Now + Writing.
 src/app/writing/page.tsx   Writing index (same feed).
 src/app/work/page.tsx      Work: compact header → Experience → Fit.
 src/app/layout.tsx         <title>, OG, Twitter, JSON-LD, robots — from seoView.
 src/app/globals.css        Design tokens + hooks.
 ```
 
-**Home.** Name, Now blurb, Writing list (or empty state + Subscribe to Substack). Nav: Home · Writing · Work · Contact.
+**Home.** Name, title, Now blurb, Writing list (or empty state + Subscribe to Substack). Chrome: wordmark → `/`; PrimaryNav is Writing · Work · Contact.
 
-**Work.** Compact header with Resume + LinkedIn, then Experience accordion and Where I fit. Sticky Resume chrome (`ResumeBar` / `ScrollRail`) watches `#work-resume` on this page only.
+**Work.** Compact header with Resume + LinkedIn, then Experience accordion and Where I fit. Sticky Resume (`ResumeBar` / `ScrollRail`) watches `#work-resume` on this page only.
 
-**Substack.** `pnpm fetch:substack` (also `prebuild`) pulls the feed. On failure the prior JSON is kept so `pnpm build` still succeeds. Deploy workflow also runs on a weekly cron so new posts can land without a manual commit.
+**Client components.** `ExperienceRows`, `ResumeBar`, `ScrollRail`, and `PrimaryNav` (route-aware `aria-current`).
 
-**Experience accordion.** `ExperienceRows`, `ResumeBar`, and `ScrollRail` are the only client components. Closed row = dates + title + company + scope line with a hairline underneath, denser `py-2.5` / `min-h-11` hit target; open row = the product panel: white card, 1.25rem padding, the 7rem date column (`--rail`) as its left rail, bullets aligned to the title column. One row open at a time at every width; the current role (`end` is a word such as "Present") is open on first paint and server-rendered, so the page reads correctly before hydration. A `#<experience-id>` hash (the Fit links, or a shared URL) opens that row. Headers are real `<button>`s (`aria-expanded`, Enter/Space). Under 640px dates stack above the title and the panel runs edge to edge. Motion is 150ms on `grid-template-rows` (height), opacity, and the chevron rotation.
+**Substack.** `pnpm fetch:substack` (also `prebuild`) pulls the feed. On failure the prior JSON is kept so `pnpm build` still succeeds. Deploy also runs on a weekly cron so new posts can land without a manual commit.
 
-**Ownership.** Copy edits `src/content.ts` and nothing else. Eng owns `src/lib`. FE Designer owns `src/app/globals.css` and the class strings inside `src/components`; the markup exposes stable hooks (`data-section`, `data-slot`, `data-role`, `data-primary`, `data-entry`, `data-cta`) so a visual overhaul does not need to change structure.
+**Experience accordion.** One row open at a time. The current role (`end` is a word such as "Present") is open on first paint and server-rendered. A `#<experience-id>` hash opens that row. Headers are real `<button>`s (`aria-expanded`).
 
-**Content validation.** `selectors.ts` throws during `next build` if a role has no (or more than one) `primary`, an `experienceIds` entry points at an unknown `id`, or a required contact field is blank. A typo cannot ship.
+**Ownership.** Copy edits `src/content.ts`. Eng owns `src/lib`. FE Designer owns `src/app/globals.css` and the class strings inside `src/components`.
+
+**Content validation.** `selectors.ts` throws during `next build` if a role has no (or more than one) `primary`, an `experienceIds` entry points at an unknown `id`, or a required contact field is blank.
+
+**Indexing.** `siteIndexable` is `true`. Indexing still requires no `TODO_COPY` in the content `selectors.ts` scans. Both the `robots` meta tag and `/robots.txt` follow `seoView.indexable`. Canonical origin is `https://jarrodtran.com`.
 
 ## Editing content
 
-All copy lives in [`src/content.ts`](src/content.ts). Types are in [`src/lib/schema.ts`](src/lib/schema.ts). Components never import content directly, so prose, metric, and ordering changes should never require touching `src/components`.
+Site copy lives in [`src/content.ts`](src/content.ts). Types are in [`src/lib/schema.ts`](src/lib/schema.ts). See those files for field shapes, locked fields, and values that are stored but not rendered.
 
-| Export | What it drives |
-| --- | --- |
-| `hero.name`, `title`, `voiceLine` | Hero identity and first-person positioning line. Also `<title>`, OG title/description, and JSON-LD `jobTitle` |
-| `hero.proofChips` | The figure block under the voice line. The first chip is the lead figure (`text-5xl`); the rest are the secondary pair in ruled cells. `metric` is optional; leave it out when there is no defensible number |
-| `proofBand` | Secondary metrics in the full-bleed strip under the hero. Same shape as a chip; every figure must already appear in `experience`. Hidden when empty |
-| `hero.employers` | Pedigree row. Hidden when empty |
-| `roles` | "Where I fit" text links. The one `primary: true` role renders first with the badge. Each link points at the first entry in `experienceIds` (a role with none renders as plain text). `summary`, `evidence`, and `audiences` are stored and validated but not rendered — proof lives in Experience bullets |
-| `experience` | Accordion rows. `id` is the anchor target and the key `Role.experienceIds` points at. Lead with an outcome-led bullet. `scopeLine` is the one-line scope (reports, book, org) under the title. `parentCompany` renders as "Waymo (Alphabet)" in the company slot and as JSON-LD `parentOrganization`; `location` is optional; `url` is stored, not rendered |
-| `contact.email`, `linkedin` | Footer links. `resumePdf` drives the hero Resume CTA |
-| `contact.location`, `relocation` | City and relocation stance. The hero CTA line renders `Houston · open to relocate`; the footer renders the city; JSON-LD gets `homeLocation` and the stance in `description` |
-| `contact.education`, `school` | One line under Experience; `school` feeds JSON-LD `alumniOf` alongside past employers (`worksFor` is the current one) |
-| `contact.github`, `availability`, `clearance` | Stored, not rendered |
-| `site.origin`, `lang`, `ogImage` | Canonical origin, `<html lang>`, and OG image path/dimensions |
-| `sections` | Heading, anchor id, and nav label per section |
-| `ui` | Every non-content string: CTA labels, badge text, a11y labels, date separator |
+Placeholders are `TODO_COPY: hint` via `todo()`. Blank optional fields are dropped in selectors before components see them.
 
-Placeholders are written as `TODO_COPY: hint` via the `todo()` helper. Blank or omitted optional fields (for example `location`) are never rendered — the selectors drop them before components see them. Indexing is gated twice: the site is served with `robots: noindex, nofollow` while any `TODO_COPY` remains anywhere in the content, and also while `siteIndexable` in `src/content.ts` is `false`. Flip `siteIndexable` to `true` only when the metrics and title are locked and the real `public/resume.pdf` is in place.
+[`public/resume.pdf`](public/resume.pdf) is the one-pager. Replace [`public/og.png`](public/og.png) in place (keep 1200×630 or update `site.ogImage`).
 
-[`public/resume.pdf`](public/resume.pdf) is the site-aligned one-pager. Replace [`public/og.png`](public/og.png) when the visual design lands; the OG tags already read title and description from `hero`, so only the image file needs to change (keep 1200×630 or update `site.ogImage`).
+## Styling
 
-## Styling and extension points
+[`src/app/globals.css`](src/app/globals.css) is the visual surface. Retune tokens there; do not copy values into this README.
 
-[`src/app/globals.css`](src/app/globals.css) is the visual surface. Type is Geist Sans on Tailwind's default scale with two weights that matter (semibold/bold) and muted for everything else: name `text-5xl` semibold `tracking-tighter`; title `text-base` muted; voice `text-sm` muted; lead figure `text-5xl` bold tabular `tracking-tighter`; pair `text-2xl` semibold; proof strip `text-lg` semibold; experience titles semibold; every label (section headings, figure labels, the Fit badge) is `text-label` 11px semibold uppercase `tracking-label`. Everything else is a token:
+## Deploy
 
-| Token | Utility | Value / used for |
-| --- | --- | --- |
-| `--bg`, `--ink`, `--muted`, `--hairline`, `--accent` | `bg-bg`, `text-ink`, `text-muted`, `border-hairline`, `bg-accent` | Warm paper `#F7F6F3`, ink `#111`, muted `#5F5B56`, hairline `#E7E5E4`, accent (solid-CTA hover) `#000` |
-| `--surface` | `bg-surface` | White. The only surface besides paper: the `$260M` block and the open experience panel |
-| `--card-shadow`, `--card-radius` | `shadow-card`, `rounded-card` | `0 1px 0 rgb(17 17 17 / 0.04)`; 0.5rem. Shared via `cardClass` / `bleedCardClass` (edge-to-edge under 640px) in `src/components/ui/card.ts` |
-| `--text-label`, `--tracking-label` | `text-label`, `tracking-label` | 11px / 1rem line height; 0.14em |
-| `--font-geist-sans` → `--font-sans` | body default | Geist Sans with `system-ui` fallback; sans only |
-| `--measure` → `--container-content`, `--container-voice` | `max-w-content`, `max-w-voice` | Responsive page column: full width <640, `min(44rem, 100%)` ≥640, `min(56rem, 100%)` ≥1024 (896px; not 60rem this unit); 60ch voice line (one line at desktop) |
-| `--section-gap` → `--spacing-section` | `mt-section` | 5rem gap between sections, 6rem ≥1024. Hero→proof strip is 2.5rem (`mt-10`, 3rem ≥1024) and strip→Experience 3rem (`Section spacing="tight"`, 4rem ≥1024) |
-| `--rail` | `sm:grid-cols-[var(--rail)_1fr_auto]`, `sm:pl-[calc(1.25rem+var(--rail)+1rem)]` | 7rem experience date column, 8rem ≥1024; inside the open panel it is the left rail the bullets clear |
-| `--motion-duration`, `--motion-ease` | default transition, `ease-soft` | 150ms ease; only the accordion (grid rows, opacity, chevron), the mobile Resume bar, and the desktop scroll rail (translate) animate. `prefers-reduced-motion` collapses it |
+[`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) builds at apex `/` and deploys `out/` on pushes to `main`. Pull requests lint and build only. `public/CNAME` ships `jarrodtran.com` so GitHub Pages keeps the custom domain.
 
-Page padding is `px-5 md:px-8` (1.25rem → 2rem at ≥768) on the shared shell in `Section.tsx`. The layout is one column at every width; it grows into the monitor by measure and type, not by adding columns. At ≥1024 the hero stays stacked and steps up instead: `$260M` `text-6xl`, the pair `text-3xl` in a 16rem column, title `text-lg`, voice `text-base`; proof strip values `text-xl`; open experience panel `p-6` on the 8rem rail; Fit links `text-lg`. Hovers are flat colour swaps with no scale: ghost CTAs take hairline → ink; focus rings are 2px ink, offset 2. The `link` utility styles inline text links. Markup hooks for targeted styling: `[data-section]`, `[data-component="site-header" | "proof-band" | "resume-bar" | "scroll-rail"]`, `[data-slot]`, `[data-lead]`, `[data-role][data-primary]`, `[data-entry][data-open]`, `[data-cta][data-variant]`.
-
-## Deploy (GitHub Pages)
-
-The workflow in [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml) builds with an empty `NEXT_PUBLIC_BASE_PATH` (apex `/`) and deploys `out/` on pushes to `main`. Pull requests lint and build only. `public/CNAME` ships `jarrodtran.com` into `out/` so GitHub Pages keeps the custom domain.
-
-The workflow enables Pages (source: GitHub Actions) on first deploy. GitHub Pages on a **private** repo still needs GitHub Pro or Team; this repo is public, so the site can go live.
-
-Site URL after a successful deploy: `https://jarrodtran.com`. The GitHub project-pages URL (`https://jarrodtran.github.io/Jobhuntsite/`) is the previous path; production no longer uses that prefix.
-
-[`src/lib/url.ts`](src/lib/url.ts) is the only module that reads `NEXT_PUBLIC_BASE_PATH`. `asset()` prefixes public-folder paths (`resume.pdf`, `og.png`) for raw `<a href>` and metadata; `siteUrl` is the canonical homepage URL. Do not use `asset()` with `next/link`. Copy still owns `site.origin` in `src/content.ts` (currently the github.io host) and will flip it after DNS is live.
-
-## What this shell is not (Phase 2+)
-
-Deferred until real copy exists:
-
-- Analytics (Plausible or Umami), added the day content ships
-- HTML `/resume` print route
-- Indexing (`robots` stays noindex until `siteIndexable` is flipped to `true` and no `TODO_COPY` remains)
-- Case studies, writing, or per-audience (`?for=`) highlight ordering
-- A “coming soon” work grid — never ship an empty one
+Site URL: `https://jarrodtran.com`. `site.origin` in `src/content.ts` is that origin. [`src/lib/url.ts`](src/lib/url.ts) builds `siteUrl` and prefixes public-folder paths (`resume.pdf`, `og.png`) for raw `<a href>` and metadata. Do not use `asset()` with `next/link`.
