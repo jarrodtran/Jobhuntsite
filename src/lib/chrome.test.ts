@@ -225,10 +225,10 @@ describe("site typeface", () => {
     expect(css).toMatch(/--font-display:\s*var\(--font-instrument-serif\)/);
     expect(css).toMatch(/--font-mono:\s*var\(--font-geist-mono\)/);
 
-    const hero = readFileSync(
-      path.join(srcDir, "components/sections/Hero.tsx"),
+    const home = readFileSync(
+      path.join(srcDir, "components/sections/HomeIdentity.tsx"),
       "utf8",
     );
-    expect(hero).toMatch(/data-slot="name"[\s\S]*font-display/);
+    expect(home).toMatch(/data-slot="name"[\s\S]*font-display/);
   });
 });

@@ -192,6 +192,14 @@ cmd_doctor() {
   grep -q '/resume.pdf' "$work" || die "/work missing resume.pdf href"
   rm -f "$work"
 
+  local writing
+  writing="$(mktemp)"
+  code="$(curl -sS -o "$writing" -w '%{http_code}' "${JOBHUNTSITE_URL}writing/" || true)"
+  [[ "$code" == "200" ]] || die "HTTP ${code} from ${JOBHUNTSITE_URL}writing/"
+  grep -q 'data-page="writing"' "$writing" || die "/writing missing data-page=writing"
+  grep -q 'data-section="writing"' "$writing" || die "/writing missing data-section=writing"
+  rm -f "$writing"
+
   # Port should still answer on the URL we recorded.
   owns_port=0
   if curl -fsS "http://127.0.0.1:${JOBHUNTSITE_PORT}/" >/dev/null 2>&1; then
