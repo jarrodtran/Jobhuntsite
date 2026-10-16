@@ -68,13 +68,11 @@ describe("measure tokens", () => {
 });
 
 describe("measure scale locks", () => {
-  it("sets the name in the display serif and parks proof beside it at ≥1024", () => {
-    const hero = readSrc("components/sections/Hero.tsx");
-    expect(hero).toMatch(
-      /data-slot="name"[\s\S]*font-display[\s\S]*text-6xl[\s\S]*lg:text-7xl/,
+  it("sets the publisher name in the display serif at the live home scale", () => {
+    const home = readSrc("components/sections/HomeIdentity.tsx");
+    expect(home).toMatch(
+      /data-slot="name"[\s\S]*font-display[\s\S]*text-5xl[\s\S]*sm:text-6xl[\s\S]*lg:text-7xl/,
     );
-    expect(hero).toMatch(/lg:flex-row/);
-    expect(hero).not.toMatch(/lg:grid-cols-2/);
   });
 
   it("keeps the lead proof figure under billboard size so Experience can make the fold", () => {

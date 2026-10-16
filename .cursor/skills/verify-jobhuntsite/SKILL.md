@@ -1,6 +1,6 @@
 ---
 name: verify-jobhuntsite
-description: Verify the Jarrod Tran personal site (jobhuntsite) web UI — launch a local Next.js instance, doctor publisher home plus /work, drive Now/Writing/Work paths with Playwright, and capture proof. Use after copy, nav, Substack feed, or Experience changes.
+description: Verify the Jarrod Tran personal site (jobhuntsite) web UI. Launch a local Next.js instance, doctor publisher home plus /writing and /work, drive Now/Writing/Work paths with Playwright, and capture proof. Use after copy, nav, Substack feed, or Experience changes.
 ---
 
 # Verify Jobhuntsite
@@ -37,7 +37,7 @@ Never drive an instance you did not start. Prefer local proof over production fo
 .cursor/skills/verify-jobhuntsite/bin/verify-jobhuntsite doctor
 ```
 
-Requires: PID alive, HTTP 200 on `/` and `/work/`, package `jobhuntsite`, home has `data-section="now"`, `data-section="writing"`, `data-cta="subscribe"`; `/work/` has `data-section="experience"` and `#work-resume` + `/resume.pdf`.
+Requires: PID alive, HTTP 200 on `/`, `/writing/`, and `/work/`, package `jobhuntsite`, home has `data-section="now"`, `data-section="writing"`, `data-cta="subscribe"`; `/writing/` has `data-page="writing"`; `/work/` has `data-section="experience"` and `#work-resume` + `/resume.pdf`.
 
 ```bash
 .cursor/skills/verify-jobhuntsite/bin/verify-jobhuntsite url
