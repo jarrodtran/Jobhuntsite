@@ -151,8 +151,8 @@ describe("Copy enrich lock", () => {
     expect(seoView.description).toMatch(/Tesla Energy Manufacturing/);
   });
 
-  it("exposes an empty Writing feed until Substack has posts", () => {
-    expect(writingView.posts).toEqual([]);
+  it("exposes Writing subscribe and index links", () => {
+    expect(Array.isArray(writingView.posts)).toBe(true);
     expect(writingView.subscribe.href).toContain("substack.com/subscribe");
     expect(writingView.indexHref).toBe("/writing/");
     expect(writingView.allWritingLabel).toBe("All writing");
